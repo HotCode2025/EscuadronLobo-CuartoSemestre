@@ -1,0 +1,121 @@
+09:53:26 PM: DEBUG [cursor_del_pool.py:10] Inicio del método with __enter__
+09:53:26 PM: ERROR [conexion.py:31] Ocurrió un error al obtener el pool: 'utf-8' codec can't decode byte 0xab in position 90: invalid start byte
+09:55:01 PM: DEBUG [cursor_del_pool.py:10] Inicio del método with __enter__
+09:55:01 PM: ERROR [conexion.py:32] Ocurrió un error al obtener el pool: 'utf-8' codec can't decode byte 0xab in position 90: invalid start byte
+09:56:27 PM: DEBUG [cursor_del_pool.py:10] Inicio del método with __enter__
+09:56:27 PM: ERROR [conexion.py:32] Ocurrió un error al obtener el pool: 'utf-8' codec can't decode byte 0xab in position 90: invalid start byte
+09:56:56 PM: DEBUG [cursor_del_pool.py:10] Inicio del método with __enter__
+09:56:56 PM: ERROR [conexion.py:32] Ocurrió un error al obtener el pool: 'utf-8' codec can't decode byte 0xab in position 90: invalid start byte
+09:58:59 PM: DEBUG [cursor_del_pool.py:10] Inicio del método with __enter__
+09:58:59 PM: ERROR [conexion.py:32] Ocurrió un error al obtener el pool: 'utf-8' codec can't decode byte 0xab in position 90: invalid start byte
+09:59:12 PM: DEBUG [cursor_del_pool.py:10] Inicio del método with __enter__
+09:59:12 PM: ERROR [conexion.py:32] Ocurrió un error al obtener el pool: 'utf-8' codec can't decode byte 0xab in position 90: invalid start byte
+10:00:27 PM: DEBUG [cursor_del_pool.py:10] Inicio del método with __enter__
+10:00:27 PM: ERROR [conexion.py:34] Ocurrió un error al obtener el pool: 'utf-8' codec can't decode byte 0xab in position 90: invalid start byte
+10:01:56 PM: DEBUG [cursor_del_pool.py:10] Inicio del método with __enter__
+10:01:56 PM: ERROR [conexion.py:34] Ocurrió un error al obtener el pool: 'utf-8' codec can't decode byte 0xab in position 90: invalid start byte
+10:05:36 PM: DEBUG [cursor_del_pool.py:10] Inicio del método with __enter__
+10:05:36 PM: ERROR [conexion.py:34] Ocurrió un error al obtener el pool: 'utf-8' codec can't decode byte 0xab in position 90: invalid start byte
+10:06:45 PM: DEBUG [cursor_del_pool.py:10] Inicio del método with __enter__
+10:06:45 PM: ERROR [conexion.py:39] Ocurrió un error al obtener el pool: 'utf-8' codec can't decode byte 0xab in position 90: invalid start byte
+10:06:57 PM: DEBUG [cursor_del_pool.py:10] Inicio del método with __enter__
+10:06:57 PM: ERROR [conexion.py:39] Ocurrió un error al obtener el pool: 'utf-8' codec can't decode byte 0xab in position 90: invalid start byte
+10:07:29 PM: DEBUG [cursor_del_pool.py:10] Inicio del método with __enter__
+10:07:29 PM: ERROR [conexion.py:39] Ocurrió un error al obtener el pool: 'utf-8' codec can't decode byte 0xab in position 90: invalid start byte
+10:08:34 PM: DEBUG [cursor_del_pool.py:10] Inicio del método with __enter__
+10:08:34 PM: ERROR [conexion.py:36] Ocurrió un error al obtener el pool: La autenticación de PostgreSQL falló o el servicio está detenido.
+10:08:34 PM: ERROR [conexion.py:37] Por favor, verifica que _PASSWORD sea la correcta y que la BD test_db exista en pgAdmin.
+10:10:19 PM: DEBUG [cursor_del_pool.py:10] Inicio del método with __enter__
+10:10:19 PM: DEBUG [conexion.py:33] Creación del pool exitosa: <psycopg2.pool.SimpleConnectionPool object at 0x00000224D8C89D30>
+10:10:19 PM: DEBUG [conexion.py:47] Conexión obtenida del pool: <connection object at 0x00000224D69F2CE0; dsn: 'user=postgres password=xxx dbname=test_bd host=127.0.0.1 port=5432', closed: 0>
+10:10:19 PM: DEBUG [cursor_del_pool.py:16] Se ejecuta método __exit__
+10:10:19 PM: DEBUG [cursor_del_pool.py:22] Se realiza commit de la transacción
+10:10:19 PM: DEBUG [conexion.py:53] Conexión regresada al pool: <connection object at 0x00000224D69F2CE0; dsn: 'user=postgres password=xxx dbname=test_bd host=127.0.0.1 port=5432', closed: 0>
+10:10:34 PM: DEBUG [cursor_del_pool.py:10] Inicio del método with __enter__
+10:10:34 PM: DEBUG [conexion.py:47] Conexión obtenida del pool: <connection object at 0x00000224D69F2CE0; dsn: 'user=postgres password=xxx dbname=test_bd host=127.0.0.1 port=5432', closed: 0>
+10:10:34 PM: DEBUG [usuario_dao.py:27] Usuario insertado: Usuario [ID: None, Username: dario, Password: 123456]
+10:10:34 PM: DEBUG [cursor_del_pool.py:16] Se ejecuta método __exit__
+10:10:34 PM: DEBUG [cursor_del_pool.py:22] Se realiza commit de la transacción
+10:10:34 PM: DEBUG [conexion.py:53] Conexión regresada al pool: <connection object at 0x00000224D69F2CE0; dsn: 'user=postgres password=xxx dbname=test_bd host=127.0.0.1 port=5432', closed: 0>
+10:10:34 PM: INFO [menu_app_usuario.py:33] Usuarios insertados: 1
+10:10:37 PM: DEBUG [cursor_del_pool.py:10] Inicio del método with __enter__
+10:10:37 PM: DEBUG [conexion.py:47] Conexión obtenida del pool: <connection object at 0x00000224D69F2CE0; dsn: 'user=postgres password=xxx dbname=test_bd host=127.0.0.1 port=5432', closed: 0>
+10:10:37 PM: DEBUG [cursor_del_pool.py:16] Se ejecuta método __exit__
+10:10:37 PM: DEBUG [cursor_del_pool.py:22] Se realiza commit de la transacción
+10:10:37 PM: DEBUG [conexion.py:53] Conexión regresada al pool: <connection object at 0x00000224D69F2CE0; dsn: 'user=postgres password=xxx dbname=test_bd host=127.0.0.1 port=5432', closed: 0>
+03:03:03 PM: ERROR [menu_app_usuario.py:64] Ocurrió un error: invalid literal for int() with base 10: 'e'
+03:03:33 PM: DEBUG [cursor_del_pool.py:21] Inicio del método with __enter__
+03:03:33 PM: DEBUG [conexion.py:42] Creación del pool exitosa: <psycopg2.pool.SimpleConnectionPool object at 0x0000016754AB9E80>
+03:03:33 PM: DEBUG [conexion.py:59] Conexión obtenida del pool: <connection object at 0x0000016752822F00; dsn: 'user=postgres password=xxx dbname=test_bd host=127.0.0.1 port=5432', closed: 0>
+03:03:33 PM: DEBUG [cursor_del_pool.py:29] Se ejecuta método __exit__
+03:03:33 PM: DEBUG [cursor_del_pool.py:37] Se realiza commit de la transacción
+03:03:33 PM: DEBUG [conexion.py:66] Conexión regresada al pool: <connection object at 0x0000016752822F00; dsn: 'user=postgres password=xxx dbname=test_bd host=127.0.0.1 port=5432', closed: 0>
+03:04:20 PM: DEBUG [cursor_del_pool.py:21] Inicio del método with __enter__
+03:04:20 PM: DEBUG [conexion.py:59] Conexión obtenida del pool: <connection object at 0x0000016752822F00; dsn: 'user=postgres password=xxx dbname=test_bd host=127.0.0.1 port=5432', closed: 0>
+03:04:20 PM: DEBUG [usuario_dao.py:45] Usuario actualizado: Usuario [ID: 2, Username: karlagomez, Password: 456]
+03:04:20 PM: DEBUG [cursor_del_pool.py:29] Se ejecuta método __exit__
+03:04:20 PM: DEBUG [cursor_del_pool.py:37] Se realiza commit de la transacción
+03:04:20 PM: DEBUG [conexion.py:66] Conexión regresada al pool: <connection object at 0x0000016752822F00; dsn: 'user=postgres password=xxx dbname=test_bd host=127.0.0.1 port=5432', closed: 0>
+03:04:20 PM: INFO [menu_app_usuario.py:53] Usuarios actualizados: 1
+03:04:30 PM: DEBUG [cursor_del_pool.py:21] Inicio del método with __enter__
+03:04:30 PM: DEBUG [conexion.py:59] Conexión obtenida del pool: <connection object at 0x0000016752822F00; dsn: 'user=postgres password=xxx dbname=test_bd host=127.0.0.1 port=5432', closed: 0>
+03:04:30 PM: DEBUG [cursor_del_pool.py:29] Se ejecuta método __exit__
+03:04:30 PM: DEBUG [cursor_del_pool.py:37] Se realiza commit de la transacción
+03:04:30 PM: DEBUG [conexion.py:66] Conexión regresada al pool: <connection object at 0x0000016752822F00; dsn: 'user=postgres password=xxx dbname=test_bd host=127.0.0.1 port=5432', closed: 0>
+03:04:59 PM: DEBUG [cursor_del_pool.py:21] Inicio del método with __enter__
+03:04:59 PM: DEBUG [conexion.py:59] Conexión obtenida del pool: <connection object at 0x0000016752822F00; dsn: 'user=postgres password=xxx dbname=test_bd host=127.0.0.1 port=5432', closed: 0>
+03:04:59 PM: DEBUG [usuario_dao.py:54] Usuario eliminado con id: 3
+03:04:59 PM: DEBUG [cursor_del_pool.py:29] Se ejecuta método __exit__
+03:04:59 PM: DEBUG [cursor_del_pool.py:37] Se realiza commit de la transacción
+03:04:59 PM: DEBUG [conexion.py:66] Conexión regresada al pool: <connection object at 0x0000016752822F00; dsn: 'user=postgres password=xxx dbname=test_bd host=127.0.0.1 port=5432', closed: 0>
+03:04:59 PM: INFO [menu_app_usuario.py:60] Usuarios eliminados: 1
+03:05:01 PM: DEBUG [cursor_del_pool.py:21] Inicio del método with __enter__
+03:05:01 PM: DEBUG [conexion.py:59] Conexión obtenida del pool: <connection object at 0x0000016752822F00; dsn: 'user=postgres password=xxx dbname=test_bd host=127.0.0.1 port=5432', closed: 0>
+03:05:01 PM: DEBUG [cursor_del_pool.py:29] Se ejecuta método __exit__
+03:05:01 PM: DEBUG [cursor_del_pool.py:37] Se realiza commit de la transacción
+03:05:01 PM: DEBUG [conexion.py:66] Conexión regresada al pool: <connection object at 0x0000016752822F00; dsn: 'user=postgres password=xxx dbname=test_bd host=127.0.0.1 port=5432', closed: 0>
+09:28:43 PM: DEBUG [cursor_del_pool.py:21] Inicio del método with __enter__
+09:28:43 PM: DEBUG [conexion.py:42] Creación del pool exitosa: <psycopg2.pool.SimpleConnectionPool object at 0x0000022C2C929E80>
+09:28:43 PM: DEBUG [conexion.py:59] Conexión obtenida del pool: <connection object at 0x0000022C2A652F00; dsn: 'user=postgres password=xxx dbname=test_bd host=127.0.0.1 port=5432', closed: 0>
+09:28:43 PM: DEBUG [cursor_del_pool.py:29] Se ejecuta método __exit__
+09:28:43 PM: DEBUG [cursor_del_pool.py:37] Se realiza commit de la transacción
+09:28:43 PM: DEBUG [conexion.py:66] Conexión regresada al pool: <connection object at 0x0000022C2A652F00; dsn: 'user=postgres password=xxx dbname=test_bd host=127.0.0.1 port=5432', closed: 0>
+09:31:24 PM: ERROR [menu_app_usuario.py:64] Ocurrió un error: invalid literal for int() with base 10: 'e'
+09:34:24 PM: DEBUG [cursor_del_pool.py:21] Inicio del método with __enter__
+09:34:24 PM: DEBUG [conexion.py:42] Creación del pool exitosa: <psycopg2.pool.SimpleConnectionPool object at 0x000001E357AE9E80>
+09:34:24 PM: DEBUG [conexion.py:59] Conexión obtenida del pool: <connection object at 0x000001E355892F00; dsn: 'user=postgres password=xxx dbname=test_bd host=127.0.0.1 port=5432', closed: 0>
+09:34:24 PM: DEBUG [cursor_del_pool.py:29] Se ejecuta método __exit__
+09:34:24 PM: DEBUG [cursor_del_pool.py:37] Se realiza commit de la transacción
+09:34:24 PM: DEBUG [conexion.py:66] Conexión regresada al pool: <connection object at 0x000001E355892F00; dsn: 'user=postgres password=xxx dbname=test_bd host=127.0.0.1 port=5432', closed: 0>
+09:34:37 PM: DEBUG [cursor_del_pool.py:21] Inicio del método with __enter__
+09:34:37 PM: DEBUG [conexion.py:59] Conexión obtenida del pool: <connection object at 0x000001E355892F00; dsn: 'user=postgres password=xxx dbname=test_bd host=127.0.0.1 port=5432', closed: 0>
+09:34:37 PM: DEBUG [usuario_dao.py:36] Usuario insertado: Usuario [ID: None, Username: Ariel, Password: 123456]
+09:34:37 PM: DEBUG [cursor_del_pool.py:29] Se ejecuta método __exit__
+09:34:37 PM: DEBUG [cursor_del_pool.py:37] Se realiza commit de la transacción
+09:34:37 PM: DEBUG [conexion.py:66] Conexión regresada al pool: <connection object at 0x000001E355892F00; dsn: 'user=postgres password=xxx dbname=test_bd host=127.0.0.1 port=5432', closed: 0>
+09:34:37 PM: INFO [menu_app_usuario.py:44] Usuarios insertados: 1
+09:35:01 PM: DEBUG [cursor_del_pool.py:21] Inicio del método with __enter__
+09:35:01 PM: DEBUG [conexion.py:59] Conexión obtenida del pool: <connection object at 0x000001E355892F00; dsn: 'user=postgres password=xxx dbname=test_bd host=127.0.0.1 port=5432', closed: 0>
+09:35:01 PM: DEBUG [usuario_dao.py:45] Usuario actualizado: Usuario [ID: 4, Username: Ariel, Password: 125]
+09:35:01 PM: DEBUG [cursor_del_pool.py:29] Se ejecuta método __exit__
+09:35:01 PM: DEBUG [cursor_del_pool.py:37] Se realiza commit de la transacción
+09:35:01 PM: DEBUG [conexion.py:66] Conexión regresada al pool: <connection object at 0x000001E355892F00; dsn: 'user=postgres password=xxx dbname=test_bd host=127.0.0.1 port=5432', closed: 0>
+09:35:01 PM: INFO [menu_app_usuario.py:53] Usuarios actualizados: 1
+09:35:03 PM: DEBUG [cursor_del_pool.py:21] Inicio del método with __enter__
+09:35:03 PM: DEBUG [conexion.py:59] Conexión obtenida del pool: <connection object at 0x000001E355892F00; dsn: 'user=postgres password=xxx dbname=test_bd host=127.0.0.1 port=5432', closed: 0>
+09:35:03 PM: DEBUG [cursor_del_pool.py:29] Se ejecuta método __exit__
+09:35:03 PM: DEBUG [cursor_del_pool.py:37] Se realiza commit de la transacción
+09:35:03 PM: DEBUG [conexion.py:66] Conexión regresada al pool: <connection object at 0x000001E355892F00; dsn: 'user=postgres password=xxx dbname=test_bd host=127.0.0.1 port=5432', closed: 0>
+09:35:11 PM: DEBUG [cursor_del_pool.py:21] Inicio del método with __enter__
+09:35:11 PM: DEBUG [conexion.py:59] Conexión obtenida del pool: <connection object at 0x000001E355892F00; dsn: 'user=postgres password=xxx dbname=test_bd host=127.0.0.1 port=5432', closed: 0>
+09:35:11 PM: DEBUG [usuario_dao.py:54] Usuario eliminado con id: 4
+09:35:11 PM: DEBUG [cursor_del_pool.py:29] Se ejecuta método __exit__
+09:35:11 PM: DEBUG [cursor_del_pool.py:37] Se realiza commit de la transacción
+09:35:11 PM: DEBUG [conexion.py:66] Conexión regresada al pool: <connection object at 0x000001E355892F00; dsn: 'user=postgres password=xxx dbname=test_bd host=127.0.0.1 port=5432', closed: 0>
+09:35:11 PM: INFO [menu_app_usuario.py:60] Usuarios eliminados: 1
+09:35:14 PM: DEBUG [cursor_del_pool.py:21] Inicio del método with __enter__
+09:35:14 PM: DEBUG [conexion.py:59] Conexión obtenida del pool: <connection object at 0x000001E355892F00; dsn: 'user=postgres password=xxx dbname=test_bd host=127.0.0.1 port=5432', closed: 0>
+09:35:14 PM: DEBUG [cursor_del_pool.py:29] Se ejecuta método __exit__
+09:35:14 PM: DEBUG [cursor_del_pool.py:37] Se realiza commit de la transacción
+09:35:14 PM: DEBUG [conexion.py:66] Conexión regresada al pool: <connection object at 0x000001E355892F00; dsn: 'user=postgres password=xxx dbname=test_bd host=127.0.0.1 port=5432', closed: 0>
+09:35:21 PM: ERROR [menu_app_usuario.py:64] Ocurrió un error: invalid literal for int() with base 10: 'f'
