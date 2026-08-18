@@ -1,0 +1,529 @@
+/* =========================================================================
+   AVATAR: LA LEYENDA DE AANG — Hoja de estilos base
+   -------------------------------------------------------------------------
+   Esta hoja es el PUNTO DE PARTIDA para que cada grupo de Escuadrón Lobo
+   la haga propia. Los "tokens" (colores, tipografías, espaciados) están
+   centralizados en :root para que cambiarlos cambie todo el juego de una
+   sola vez, sin salir a buscar valores sueltos por todo el archivo.
+
+   Paleta OFICIAL de Escuadrón Lobo (una variable CSS por cada color de
+   la tabla, con su uso tal cual está definido):
+     🔵 Azul agua     #168BD4  → agua, efectos y energía
+     💙 Azul oscuro   #082F5A  → sombras, ropa y fondos
+     🟢 Verde         #5FAE24  → tierra / naturaleza
+     🟩 Verde oscuro  #214B19  → sombras y vegetación
+     🟠 Naranja fuego #FF6A00  → fuego y efectos
+     🔴 Rojo oscuro   #B72D0C  → fuego, sombras y detalles
+     🟡 Amarillo      #FFC400  → títulos y elementos destacados
+     🟤 Marrón tierra #713A1C  → rocas, suelo y personajes
+     🟫 Marrón oscuro #2E1B14  → contornos y sombras
+     ⚫ Negro carbón   #0B1115  → fondo, contornos y texto
+     🤍 Crema         #F4E6C5  → pieles, ropa y texto
+     🟠 Dorado        #D99518  → iluminación y detalles
+
+   Elemento de cada personaje (según el arte de Escuadrón Lobo):
+     🔥 Fuego (Zuko) → naranja fuego / rojo oscuro
+     💧 Agua (Katara) → azul agua / azul oscuro
+     🌱 Tierra (Toph) → verde / verde oscuro
+     🌪️ Aire (Aang)  → amarillo / dorado
+
+   Los 6 puntos pedidos en la consigna siguen marcados con [TAREA n].
+   ========================================================================= */
+
+/* Importamos las tipografías de Google Fonts (ver [TAREA 3] Tipografía) */
+@import url("https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Work+Sans:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap");
+
+:root {
+    /* --- Paleta oficial --- */
+    --azul-agua: #168bd4;
+    --azul-oscuro: #082f5a;
+    --verde: #5fae24;
+    --verde-oscuro: #214b19;
+    --naranja-fuego: #ff6a00;
+    --rojo-oscuro: #b72d0c;
+    --amarillo: #ffc400;
+    --marron-tierra: #713a1c;
+    --marron-oscuro: #2e1b14;
+    --negro-carbon: #0b1115;
+    --crema: #f4e6c5;
+    --dorado: #d99518;
+
+    /* --- Roles: qué color de la paleta cumple cada función del sitio --- */
+    --color-bg: var(--negro-carbon);
+    --color-bg-panel: var(--azul-oscuro);
+    --color-bg-panel-alt: var(--marron-oscuro);
+    --color-borde: #3a2c22;
+
+    --color-texto: var(--crema);
+    --color-texto-tenue: #c9bda3;
+
+    --color-fuego: var(--naranja-fuego);
+    --color-fuego-sombra: var(--rojo-oscuro);
+    --color-agua: var(--azul-agua);
+    --color-agua-sombra: var(--azul-oscuro);
+    --color-tierra: var(--verde);
+    --color-tierra-sombra: var(--verde-oscuro);
+    --color-aire: var(--amarillo);
+    --color-aire-sombra: var(--dorado);
+
+    /* [TAREA 3] Tipografía: una fuente "display" para títulos y otra para texto */
+    --fuente-display: "Cinzel", serif;
+    --fuente-texto: "Work Sans", system-ui, sans-serif;
+    --fuente-mono: "JetBrains Mono", "Courier New", monospace;
+
+    /* --- Layout --- */
+    --ancho-tablero: 720px;
+    --radio: 14px;
+    --sombra: 0 12px 30px rgba(0, 0, 0, 0.45);
+}
+
+/* =========================================================================
+   Base
+   ========================================================================= */
+
+* {
+    box-sizing: border-box; /* así el padding no rompe los anchos calculados */
+}
+
+/* [TAREA 2] Background a todo el sitio: la imagen principal del elenco cubre
+   toda la pantalla, con un degradé oscuro encima para que el texto se siga
+   leyendo bien sobre ella */
+body {
+    margin: 0;
+    min-height: 100vh;
+    background-color: var(--color-bg);
+    background-image:
+        linear-gradient(180deg, rgba(11, 17, 21, 0.88), rgba(11, 17, 21, 0.95)),
+        url("../assets/img/fondo-elementos.png");
+    background-repeat: no-repeat, no-repeat;
+    background-position: center, center top;
+    background-size: cover, cover;
+    background-attachment: fixed, fixed;
+    color: var(--color-texto);
+    font-family: var(--fuente-texto);
+    line-height: 1.5;
+    padding: 32px 16px 64px;
+}
+
+h1, h2, h3, h4 {
+    font-family: var(--fuente-display);
+    letter-spacing: 0.02em;
+    margin: 0 0 12px;
+}
+
+/* [TAREA 4] Flexbox: el tablero completo se acomoda en columna con separación pareja */
+.tablero {
+    max-width: var(--ancho-tablero);
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* =========================================================================
+   Encabezado: imagen principal centrada + título
+   ========================================================================= */
+
+.encabezado {
+    text-align: center;
+    padding: 12px 0 4px;
+}
+
+/* Imagen principal del juego, centrada y responsive (nunca se desborda) */
+.logo-wrap {
+    position: relative;
+    display: inline-block;
+    max-width: 480px;
+    width: 100%;
+    margin: 0 auto 18px;
+}
+
+.logo-principal {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: var(--radio);
+    box-shadow: var(--sombra);
+}
+
+/* [TAREA 4] Flexbox: el emblema de los 4 elementos gira sobre sí mismo (animación).
+   El <span> exterior tiene su propio fondo sólido + borde, así "tapa" por completo
+   lo que haya debajo (no se ve la imagen del logo transparentándose en los bordes).
+   Se ubica *adentro* del recuadro del logo (no colgando del borde) para que se
+   lea como una insignia propia del arte, no como algo pegado encima. */
+.emblema-flotante {
+    position: absolute;
+    right: 14px;
+    bottom: 14px;
+    width: 64px;
+    height: 64px;
+    display: block;
+    border-radius: 50%;
+    background: var(--negro-carbon);
+    border: 2px solid var(--dorado);
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.6), 0 0 0 4px rgba(11, 17, 21, 0.85);
+    overflow: hidden; /* recorta la imagen interna en un círculo perfecto */
+    animation: girar-emblema 12s linear infinite;
+}
+
+.emblema-flotante__img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* llena todo el círculo sin dejar bordes vacíos */
+}
+
+@keyframes girar-emblema {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
+}
+
+/* [TAREA 1] Color y background al h1 + [TAREA 5] Formato y layout del título principal.
+   El h1 ahora contiene la imagen del título; el brillo dorado de fondo hace de
+   "background" del título sin taparle el marco propio que ya trae la imagen. */
+h1 {
+    display: inline-block;
+    background: radial-gradient(circle, rgba(217, 149, 24, 0.22), transparent 70%);
+    border-radius: var(--radio);
+    padding: 14px 18px;
+}
+
+.titulo-imagen {
+    display: block;
+    width: 100%;
+    max-width: 420px;
+    height: auto;
+    filter: drop-shadow(0 10px 22px rgba(0, 0, 0, 0.55));
+}
+
+.subtitulo {
+    margin: 10px 0 0;
+    color: var(--color-texto-tenue);
+    font-family: var(--fuente-mono);
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+}
+
+/* =========================================================================
+   Paneles / secciones generales
+   ========================================================================= */
+
+.panel {
+    background: var(--color-bg-panel);
+    border: 1px solid var(--color-borde);
+    border-radius: var(--radio);
+    padding: 22px 24px;
+    box-shadow: var(--sombra);
+}
+
+/* [TAREA 5] Formato y layout de los subtítulos h2 de cada sección */
+.panel h2 {
+    font-size: 1.2rem;
+    color: var(--color-texto);
+    border-left: 4px solid var(--azul-agua);
+    padding-left: 10px;
+}
+
+/* =========================================================================
+   Selección de personaje: tarjetas con el arte de cada participante
+   ========================================================================= */
+
+/* [TAREA 4] Tipos de display: acá usamos GRID (a diferencia del resto, que usa flex)
+   para mostrar cómo se comportan distinto: grid reparte en filas y columnas a la vez */
+.grilla-personajes {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    gap: 14px;
+    margin: 16px 0 20px;
+}
+
+.carta-personaje {
+    position: relative;
+}
+
+/* El input queda invisible pero sigue siendo clickeable y accesible por teclado */
+.carta-personaje__input {
+    position: absolute;
+    opacity: 0;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    cursor: pointer;
+}
+
+/* [TAREA 4] Flexbox para centrar la imagen del personaje dentro de cada tarjeta */
+.carta-personaje__label {
+    display: flex;
+    justify-content: center;
+    padding: 10px;
+    border-radius: 12px;
+    border: 2px solid var(--color-borde);
+    background: var(--crema);
+    cursor: pointer;
+    overflow: hidden;
+    transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.carta-personaje__imagen {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1 / 1;
+    object-fit: contain;
+    border-radius: 8px;
+}
+
+.carta-personaje__label:hover {
+    transform: translateY(-3px);
+}
+
+.carta-personaje--zuko   .carta-personaje__label:hover { border-color: var(--color-fuego); }
+.carta-personaje--katara .carta-personaje__label:hover { border-color: var(--color-agua); }
+.carta-personaje--aang   .carta-personaje__label:hover { border-color: var(--color-aire); }
+.carta-personaje--toph   .carta-personaje__label:hover { border-color: var(--color-tierra); }
+
+.carta-personaje--zuko   .carta-personaje__input:checked ~ .carta-personaje__label {
+    border-color: var(--color-fuego);
+    box-shadow: 0 0 0 3px rgba(255, 106, 0, 0.35);
+}
+.carta-personaje--katara .carta-personaje__input:checked ~ .carta-personaje__label {
+    border-color: var(--color-agua);
+    box-shadow: 0 0 0 3px rgba(22, 139, 212, 0.35);
+}
+.carta-personaje--aang   .carta-personaje__input:checked ~ .carta-personaje__label {
+    border-color: var(--color-aire);
+    box-shadow: 0 0 0 3px rgba(255, 196, 0, 0.35);
+}
+.carta-personaje--toph   .carta-personaje__input:checked ~ .carta-personaje__label {
+    border-color: var(--color-tierra);
+    box-shadow: 0 0 0 3px rgba(95, 174, 36, 0.35);
+}
+
+.carta-personaje__input:focus-visible ~ .carta-personaje__label {
+    outline: 2px solid var(--color-texto);
+    outline-offset: 2px;
+}
+
+/* =========================================================================
+   Marcador de vidas
+   ========================================================================= */
+
+.marcador {
+    background: var(--color-bg-panel-alt);
+    border: 1px solid var(--color-borde);
+    border-radius: 10px;
+    padding: 12px 16px;
+    margin-bottom: 16px;
+}
+
+.marcador__fila {
+    margin: 6px 0;
+}
+
+.marcador__nombre {
+    font-weight: 600;
+    color: var(--color-agua);
+}
+
+/* [TAREA 4] Tipos de display: inline-block para que el número de vidas
+   se comporte como una "píldora" sin romper el flujo del texto */
+.marcador__vidas {
+    display: inline-block;
+    min-width: 1.6em;
+    text-align: center;
+    font-family: var(--fuente-mono);
+    font-weight: 700;
+    color: var(--color-fuego);
+}
+
+/* =========================================================================
+   Botones
+   ========================================================================= */
+
+/* [TAREA 4] Tipos de display: inline-flex, para centrar ícono + texto dentro
+   de un elemento que sigue siendo "en línea" con lo que lo rodea */
+.boton {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--fuente-texto);
+    font-weight: 600;
+    font-size: 0.95rem;
+    padding: 11px 20px;
+    border-radius: 999px;
+    border: 1px solid var(--color-borde);
+    background: var(--negro-carbon);
+    color: var(--color-texto);
+    cursor: pointer;
+    transition: transform 0.12s ease, background 0.12s ease, border-color 0.12s ease;
+}
+
+.boton:hover:not(:disabled) {
+    transform: translateY(-2px);
+    border-color: var(--color-texto-tenue);
+}
+
+.boton:active:not(:disabled) {
+    transform: translateY(0);
+}
+
+.boton:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.boton--primario {
+    background: var(--azul-agua);
+    border-color: var(--azul-agua);
+    color: var(--negro-carbon);
+}
+
+/* [TAREA 4] Flexbox con wrap: en pantallas angostas los botones bajan de línea solos */
+.fila-ataques {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 4px 0 0;
+}
+
+.boton--ataque:nth-of-type(1):hover:not(:disabled) { border-color: var(--color-fuego); }
+.boton--ataque:nth-of-type(2):hover:not(:disabled) { border-color: var(--color-aire); }
+.boton--ataque:nth-of-type(3):hover:not(:disabled) { border-color: var(--color-tierra); }
+
+/* =========================================================================
+   Mensajes de combate
+   ========================================================================= */
+
+.panel--mensajes {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+/* [TAREA 4] Tipos de display: "none" para ocultar el panel apenas está vacío
+   (todavía no hubo ningún combate) */
+.panel--mensajes:empty {
+    display: none;
+}
+
+.mensaje {
+    margin: 0;
+    padding: 10px 14px;
+    border-radius: 8px;
+    background: var(--color-bg-panel-alt);
+    border-left: 3px solid var(--color-borde);
+    font-size: 0.92rem;
+    animation: aparecer-mensaje 0.2s ease;
+}
+
+@keyframes aparecer-mensaje {
+    from { opacity: 0; transform: translateY(-4px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* =========================================================================
+   Reiniciar
+   ========================================================================= */
+
+.panel--reiniciar {
+    text-align: center;
+}
+
+/* =========================================================================
+   Reglas (details/summary)
+   ========================================================================= */
+
+.panel--reglas {
+    padding-top: 14px;
+    padding-bottom: 14px;
+}
+
+/* [TAREA 5] Formato y layout del h3 de esta sección */
+.panel--reglas h3 {
+    font-size: 1rem;
+    color: var(--color-texto-tenue);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+
+#reglas summary {
+    cursor: pointer;
+    font-weight: 600;
+    padding: 4px 0;
+}
+
+#reglas ul {
+    padding-left: 20px;
+}
+
+/* [TAREA 5] Formato y layout de los h4 dentro de las reglas */
+#reglas h4 {
+    font-size: 0.95rem;
+    margin-top: 14px;
+    color: var(--color-agua);
+}
+
+/* =========================================================================
+   [TAREA 6] Responsive
+   -------------------------------------------------------------------------
+   Con el viewport meta-tag del HTML + unidades relativas (clamp, %, fr) el
+   juego ya se acomoda solo en la mayoría de los tamaños. Estos breakpoints
+   ajustan los detalles finos en pantallas medianas y chicas.
+   ========================================================================= */
+
+@media (max-width: 600px) {
+    body {
+        padding: 20px 12px 48px;
+        /* background-attachment: fixed genera trabas de scroll en varios navegadores
+           de celular, así que en pantallas chicas lo cambiamos a scroll normal */
+        background-attachment: scroll, scroll;
+    }
+
+    .panel {
+        padding: 18px 16px;
+    }
+
+    .logo-wrap {
+        max-width: 360px;
+    }
+
+    .emblema-flotante {
+        width: 46px;
+        height: 46px;
+        right: 8px;
+        bottom: 8px;
+    }
+
+    .titulo-imagen {
+        max-width: 300px;
+    }
+
+    .grilla-personajes {
+        grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    }
+}
+
+@media (max-width: 480px) {
+    h1 {
+        padding: 10px 14px;
+    }
+
+    /* En celulares los botones de ataque pasan de fila a columna y ocupan todo el ancho */
+    .fila-ataques {
+        flex-direction: column;
+    }
+
+    .boton--ataque {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+/* =========================================================================
+   Zona de trabajo por grupo
+   -------------------------------------------------------------------------
+   A partir de acá cada grupo puede sumar sus propias reglas, variantes de
+   color (redefiniendo las variables de :root) o animaciones nuevas sin
+   pisar la base del juego.
+   ========================================================================= */

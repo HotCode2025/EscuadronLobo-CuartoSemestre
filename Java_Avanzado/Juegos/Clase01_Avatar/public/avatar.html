@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!--Clave para que el responsive funcione en celulares-->
+    <title>LA LEYENDA DE AANG: AVATAR</title>
+    <link rel="stylesheet" href="./css/styles.css" />
+</head>
+
+<body>
+    <div class="tablero">
+
+        <header class="encabezado">
+            <div class="logo-wrap">
+                <img class="logo-principal" src="./assets/img/logo.png" alt="Los Elementos: La Leyenda de Aang — Escuadrón Lobo" />
+                <span class="emblema-flotante">
+                    <img class="emblema-flotante__img" src="./assets/img/emblema-elementos.png" alt="Los cuatro elementos" />
+                </span>
+            </div>
+            <h1><img class="titulo-imagen" src="./assets/img/titulo-avatar.png" alt="AVATAR" /></h1> <!--Esto es estático, No cambia, el h1 se usa una sola vez-->
+            <p class="subtitulo">La leyenda de Aang</p>
+        </header>
+
+        <section id="seleccionar-personaje" class="panel">
+            <h2>Elige personaje</h2>
+
+            <div class="grilla-personajes">
+                <div class="carta-personaje carta-personaje--zuko">
+                    <input class="carta-personaje__input" type="radio" name="personaje" id="zuko" value="zuko" /> <!--name es para agrupar todos los inputs y poder seleccionar-->
+                    <label class="carta-personaje__label" for="zuko"> <!--Esta etiqueta es para darle un indicador a los usuarios de que están seleccionando-->
+                        <img class="carta-personaje__imagen" src="./assets/img/zuko.png" alt="Zuko" />
+                    </label>
+                </div>
+
+                <div class="carta-personaje carta-personaje--katara">
+                    <input class="carta-personaje__input" type="radio" name="personaje" id="katara" value="katara" /> <!--Acá van los personajes-->
+                    <label class="carta-personaje__label" for="katara"> <!--El atributo for ayuda a vincular un label con un input a través del mismo id-->
+                        <img class="carta-personaje__imagen" src="./assets/img/katara.png" alt="Katara" />
+                    </label>
+                </div>
+
+                <div class="carta-personaje carta-personaje--aang">
+                    <input class="carta-personaje__input" type="radio" name="personaje" id="aang" value="aang" /> <!--Le damos un atributo id para saber cual es el valor de cada uno-->
+                    <label class="carta-personaje__label" for="aang">
+                        <img class="carta-personaje__imagen" src="./assets/img/aang.png" alt="Aang" />
+                    </label>
+                </div>
+
+                <div class="carta-personaje carta-personaje--toph">
+                    <input class="carta-personaje__input" type="radio" name="personaje" id="toph" value="toph" />
+                    <label class="carta-personaje__label" for="toph">
+                        <img class="carta-personaje__imagen" src="./assets/img/toph.png" alt="Toph" />
+                    </label>
+                </div>
+            </div>
+
+            <button id="boton-personaje" class="boton boton--primario">Seleccionar</button> <!-- El botón para seleccionar el personaje -->
+        </section>
+
+        <section id="seleccionar-ataque" class="panel">
+            <h2>Elige tu ataque</h2> <!--Se puede utilizar varias veces-->
+
+            <div class="marcador">
+                <p class="marcador__fila">Tu personaje <span id="personaje-jugador" class="marcador__nombre"></span> tiene <span id="vidas-jugador" class="marcador__vidas">3</span> vidas</p> <!--Pero esto debe ser dinámico, necesitamos que cambie-->
+                <p class="marcador__fila">El personaje <span id="personaje-enemigo" class="marcador__nombre"></span> del enemigo tiene <span id="vidas-enemigo" class="marcador__vidas">3</span> vidas</p> <!--Con la etiqueta spam vamos a modificar el 3 con JS-->
+            </div>
+
+            <div class="fila-ataques">
+                <button id="boton-punio" class="boton boton--ataque">Puño 👊</button>
+                <button id="boton-patada" class="boton boton--ataque">Patada 🦵</button>
+                <button id="boton-barrida" class="boton boton--ataque">Barrida 🧹</button>
+            </div>
+        </section>
+
+        <section id="mensajes" class="panel panel--mensajes"> <!--Será un párrafo dinámico-->
+
+        </section>
+
+        <section id="reiniciar" class="panel panel--reiniciar">
+            <button id="boton-reiniciar" class="boton boton--primario">Reiniciar</button>
+        </section>
+
+        <section id="reglas" class="panel panel--reglas">
+            <h3>Ayuda del juego</h3>
+            <details>
+                <summary id="mostrar-reglas">📜 Reglas del juego</summary> <!-- Muestra u oculta las reglas del juego -->
+                    <ul style="list-style-type: square;">
+                        <h4>1️⃣ Seleccion de Personajes:</h4>
+                        <ul>
+                            <li>El jugador elige uno de los cuatro personajes: Zuko, Katara, Aang o Toph.</li>
+                            <li>El enemigo es asignado aleatoriamente de entre estos personajes.</li>
+                        </ul>
+                        <h4>2️⃣ Ataques:</h4>
+                        <ul>
+                            <li>El jugador elige entre tres ataques: Puño, Patada o Barrida.</li>
+                            <li>El enemigo elige su ataque aleatoriamente.</li>
+                        </ul>
+                        <h4>3️⃣ Reglas del Combate:</h4>
+                        <ul>
+                            <li>Si ambos usan el mismo ataque, la ronda termina en empate.</li>
+                            <li>Victoria del Jugador:</li>
+                            <ul>
+                                <li>👊 Puño vence a 🧹 Barrida.</li>
+                                <li>🦵 Patada vence a 👊 Puño.</li>
+                                <li>🧹 Barrida vence a 🦵 Patada.</li>
+                            </ul>
+                            <li>Derrota del Jugador: Cualquier otra combinación</li>
+                        </ul>
+                        <h4>4️⃣ Vidas:</h4>
+                        <ul>
+                            <li>Ambos comienzan con 3 vidas</li>
+                            <li>Perder un combate disminuye una vida</li>
+                        </ul>
+                        <h4>5️⃣ Fin del Juego:</h4>
+                        <ul>
+                            <li>Victoria del Jugador: Enemigo pierde todas sus vidas.</li>
+                            <li>Derrota del Jugador: Jugador pierde todas sus vidas.</li>
+                            <li>Se deshabilitan los botones de ataque y se muestra un botón para reiniciar el juego</li>
+                        </ul>
+                        <h4>6️⃣ Reinicio del Juego:</h4>
+                        <ul>
+                            <li>El jugador puede reiniciar el juego, recargando la página.</li>
+                        </ul>
+                    </ul>
+            </details>
+        </section>
+
+    </div>
+    <script src="./js/avatar.js"></script>
+</body>
+</html>
