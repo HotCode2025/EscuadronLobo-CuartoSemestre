@@ -62,8 +62,25 @@
             <h2>Elige tu ataque</h2> <!--Se puede utilizar varias veces-->
 
             <div class="marcador">
-                <p class="marcador__fila">Tu personaje <span id="personaje-jugador" class="marcador__nombre"></span> tiene <span id="vidas-jugador" class="marcador__vidas">3</span> vidas</p> <!--Pero esto debe ser dinámico, necesitamos que cambie-->
-                <p class="marcador__fila">El personaje <span id="personaje-enemigo" class="marcador__nombre"></span> del enemigo tiene <span id="vidas-enemigo" class="marcador__vidas">3</span> vidas</p> <!--Con la etiqueta spam vamos a modificar el 3 con JS-->
+                <div class="marcador__lado">
+                    <p class="marcador__fila">Tu personaje <span id="personaje-jugador" class="marcador__nombre"></span></p>
+                    <div class="vidas" id="vidas-jugador-corazones"> <!--Flexbox: fila de corazones animada-->
+                        <span class="vidas__corazon">❤️</span>
+                        <span class="vidas__corazon">❤️</span>
+                        <span class="vidas__corazon">❤️</span>
+                    </div>
+                    <span id="vidas-jugador" class="visualmente-oculto">3</span> <!--Con esta etiqueta vamos a modificar el 3 con JS, queda oculta pero accesible-->
+                </div>
+
+                <div class="marcador__lado">
+                    <p class="marcador__fila">El personaje <span id="personaje-enemigo" class="marcador__nombre"></span> del enemigo</p>
+                    <div class="vidas" id="vidas-enemigo-corazones">
+                        <span class="vidas__corazon">❤️</span>
+                        <span class="vidas__corazon">❤️</span>
+                        <span class="vidas__corazon">❤️</span>
+                    </div>
+                    <span id="vidas-enemigo" class="visualmente-oculto">3</span>
+                </div>
             </div>
 
             <div class="fila-ataques">
@@ -73,8 +90,8 @@
             </div>
         </section>
 
-        <section id="mensajes" class="panel panel--mensajes"> <!--Será un párrafo dinámico-->
-
+        <section id="mensajes" class="panel panel--mensajes">
+            <div id="resultados-rondas" class="fila-resultados"></div> <!--Acá se van agregando en fila los resultados de cada ronda-->
         </section>
 
         <section id="reiniciar" class="panel panel--reiniciar">

@@ -8,6 +8,7 @@ Carpeta para los recursos multimedia del juego.
   - `emblema-elementos.png` → esfera de los 4 elementos, gira como insignia sobre el logo del header.
   - `titulo-avatar.png` → banner del nombre "AVATAR" con los íconos de los 4 elementos, usado dentro del `h1`.
   - `zuko.png`, `katara.png`, `aang.png`, `toph.png` → arte de cada participante, usado en las tarjetas de selección.
+  - `ganaste.png`, `perdiste.png`, `empate.png` → resultado de cada ronda (y de la partida completa), generadas por `avatar.js` dentro de la sección de mensajes.
 - `sfx/` → carpeta lista para que cada grupo sume sonidos (ataque, victoria, derrota, música de fondo, etc.).
 
 Para usar una imagen nueva desde el CSS: `background-image: url("../assets/img/nombre.png");`
