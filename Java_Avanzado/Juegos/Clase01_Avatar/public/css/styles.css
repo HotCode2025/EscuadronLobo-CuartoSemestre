@@ -632,6 +632,29 @@ h1 {
 }
 
 /* =========================================================================
+   Pie de página
+   ========================================================================= */
+
+.pie {
+    text-align: center;
+    padding-top: 4px;
+}
+
+.pie__enlace {
+    color: var(--color-texto-tenue);
+    font-family: var(--fuente-mono);
+    font-size: 0.85rem;
+    text-decoration: none;
+    border-bottom: 1px dashed var(--color-borde);
+    transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+.pie__enlace:hover {
+    color: var(--amarillo);
+    border-color: var(--amarillo);
+}
+
+/* =========================================================================
    Zona de trabajo por grupo
    -------------------------------------------------------------------------
    A partir de acá cada grupo puede sumar sus propias reglas, variantes de

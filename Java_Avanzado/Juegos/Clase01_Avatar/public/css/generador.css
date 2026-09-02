@@ -1,0 +1,195 @@
+/* =========================================================================
+   Generador de Personajes (POO) — estilos propios de esta página
+   -------------------------------------------------------------------------
+   Reutiliza las variables de color/tipografía definidas en :root dentro de
+   styles.css (que se carga antes que este archivo en generador.html).
+   ========================================================================= */
+
+.generador__explicacion {
+    margin: 10px 0 16px;
+    color: var(--color-texto-tenue);
+    font-size: 0.92rem;
+}
+
+.generador__explicacion code {
+    font-family: var(--fuente-mono);
+    color: var(--amarillo);
+    background: rgba(255, 196, 0, 0.1);
+    padding: 1px 5px;
+    border-radius: 4px;
+}
+
+/* Bloque de código de ejemplo, solo ilustrativo (no se ejecuta) */
+.codigo-muestra {
+    margin: 0;
+    padding: 14px 16px;
+    background: var(--negro-carbon);
+    border: 1px solid var(--color-borde);
+    border-radius: 10px;
+    overflow-x: auto;
+    font-family: var(--fuente-mono);
+    font-size: 0.82rem;
+    line-height: 1.6;
+    color: var(--crema);
+}
+
+.codigo-muestra__comentario {
+    color: var(--color-texto-tenue);
+}
+
+/* [TAREA 4] Flexbox: los controles del generador se acomodan en columna en
+   mobile y se estiran en fila en pantallas más anchas */
+.generador__controles {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-top: 14px;
+}
+
+/* Botones 100 / 1.000 / 10.000 en fila, con wrap */
+.generador__presets {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.boton--preset {
+    background: var(--color-bg-panel-alt);
+}
+
+.generador__personalizado label {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 0.85rem;
+    color: var(--color-texto-tenue);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+
+.generador__personalizado-fila {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+#input-cantidad {
+    flex: 1 1 140px;
+    min-width: 0;
+    padding: 11px 14px;
+    border-radius: 999px;
+    border: 1px solid var(--color-borde);
+    background: var(--negro-carbon);
+    color: var(--color-texto);
+    font-family: var(--fuente-mono);
+    font-size: 0.95rem;
+}
+
+#input-cantidad:focus-visible {
+    outline: 2px solid var(--azul-agua);
+    outline-offset: 2px;
+}
+
+/* La sección de resultado empieza oculta hasta la primera generación */
+.resultado {
+    display: none;
+}
+
+.resultado.resultado--visible {
+    display: block;
+}
+
+.resultado__resumen {
+    margin: 0 0 16px;
+    color: var(--color-texto-tenue);
+}
+
+.resultado__resumen strong {
+    color: var(--amarillo);
+    font-family: var(--fuente-mono);
+}
+
+/* [TAREA 4] Flexbox en columna: una barra por elemento, una debajo de otra */
+.resultado__conteo {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+/* Cada barra es en sí misma una fila flex: etiqueta + pista + valor */
+.barra-elemento {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.barra-elemento__etiqueta {
+    flex: 0 0 60px;
+    font-family: var(--fuente-display);
+    font-size: 0.85rem;
+}
+
+.barra-elemento__pista {
+    flex: 1 1 auto;
+    height: 10px;
+    border-radius: 999px;
+    background: var(--color-bg-panel-alt);
+    overflow: hidden;
+}
+
+.barra-elemento__relleno {
+    height: 100%;
+    border-radius: 999px;
+    transition: width 0.5s ease;
+}
+
+.barra-elemento__valor {
+    flex: 0 0 auto;
+    min-width: 2.4em;
+    text-align: right;
+    font-family: var(--fuente-mono);
+    font-size: 0.85rem;
+    color: var(--color-texto-tenue);
+}
+
+.barra-elemento--fuego .barra-elemento__relleno { background: var(--naranja-fuego); }
+.barra-elemento--agua  .barra-elemento__relleno { background: var(--azul-agua); }
+.barra-elemento--tierra .barra-elemento__relleno { background: var(--verde); }
+.barra-elemento--aire  .barra-elemento__relleno { background: var(--amarillo); }
+
+.resultado h3 {
+    font-size: 0.95rem;
+    color: var(--color-texto-tenue);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 10px;
+}
+
+/* Lista de vista previa: cada personaje generado, en su propia línea */
+.resultado__lista {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    max-height: 320px;
+    overflow-y: auto;
+}
+
+.resultado__lista li {
+    padding: 7px 10px;
+    border-radius: 6px;
+    background: var(--color-bg-panel-alt);
+    font-family: var(--fuente-mono);
+    font-size: 0.82rem;
+    color: var(--color-texto);
+}
+
+@media (min-width: 560px) {
+    .generador__controles {
+        flex-direction: row;
+        align-items: flex-end;
+        justify-content: space-between;
+    }
+}

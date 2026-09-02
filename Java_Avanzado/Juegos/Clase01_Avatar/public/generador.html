@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generador de Personajes (POO) — AVATAR</title>
+    <link rel="stylesheet" href="./css/styles.css" />
+    <link rel="stylesheet" href="./css/generador.css" />
+</head>
+
+<body>
+    <div class="tablero">
+
+        <header class="encabezado">
+            <h1>Generador de Personajes</h1>
+            <p class="subtitulo">Paradigma POO · Escuadrón Lobo</p>
+        </header>
+
+        <section class="panel">
+            <h2>¿Cómo funciona?</h2>
+            <p class="generador__explicacion">
+                Cada personaje generado es una <strong>instancia</strong> de una clase
+                (<code>PersonajeFuego</code>, <code>PersonajeAgua</code>, <code>PersonajeTierra</code>
+                o <code>PersonajeAire</code>), y las cuatro <strong>heredan</strong> de una clase
+                base <code>Personaje</code>. El generador arma la cantidad que le pidas
+                combinando un nombre y un elemento al azar.
+            </p>
+
+            <pre class="codigo-muestra"><code>class Personaje {
+  #vidas               <span class="codigo-muestra__comentario">// encapsulado: no se toca desde afuera</span>
+  constructor(nombre, elemento) { ... }
+  atacar() { return `${this.nombre} ataca` }
+}
+
+class PersonajeFuego extends Personaje {   <span class="codigo-muestra__comentario">// herencia</span>
+  atacar() { return `${this.nombre} 🔥 lanza una bola de fuego` } <span class="codigo-muestra__comentario">// polimorfismo</span>
+}</code></pre>
+        </section>
+
+        <section class="panel">
+            <h2>¿Cuántos personajes generar?</h2>
+
+            <div class="generador__controles">
+                <div class="generador__presets">
+                    <button class="boton boton--preset" data-cantidad="100">100</button>
+                    <button class="boton boton--preset" data-cantidad="1000">1.000</button>
+                    <button class="boton boton--preset" data-cantidad="10000">10.000</button>
+                </div>
+
+                <div class="generador__personalizado">
+                    <label for="input-cantidad">Cantidad personalizada</label>
+                    <div class="generador__personalizado-fila">
+                        <input type="number" id="input-cantidad" min="1" max="200000" value="100" />
+                        <button id="boton-generar" class="boton boton--primario">Generar</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="resultado" class="panel resultado">
+            <h2>Resultado</h2>
+
+            <p class="resultado__resumen">
+                <strong id="resultado-total">0</strong> personajes generados en
+                <strong id="resultado-tiempo">0</strong> ms
+            </p>
+
+            <div class="resultado__conteo" id="resultado-conteo"></div>
+
+            <h3>Vista previa (primeros 20)</h3>
+            <ul class="resultado__lista" id="resultado-lista"></ul>
+        </section>
+
+        <footer class="pie">
+            <a href="./avatar.html" class="pie__enlace">← Volver al juego</a>
+        </footer>
+
+    </div>
+
+    <script src="./js/personajes-poo.js"></script>
+    <script src="./js/generador-demo.js"></script>
+</body>
+
+</html>
