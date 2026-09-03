@@ -39,6 +39,44 @@
 
 /* [TAREA 4] Flexbox: los controles del generador se acomodan en columna en
    mobile y se estiran en fila en pantallas más anchas */
+.generador__custom {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: end;
+    gap: 12px;
+    margin-top: 14px;
+}
+
+.generador__campo {
+    flex: 1 1 180px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.generador__campo label {
+    font-size: 0.8rem;
+    color: var(--color-texto-tenue);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+
+.generador__campo input,
+.generador__campo select {
+    width: 100%;
+    padding: 11px 14px;
+    border-radius: 999px;
+    border: 1px solid var(--color-borde);
+    background: var(--negro-carbon);
+    color: var(--color-texto);
+    font-family: var(--fuente-mono);
+    font-size: 0.9rem;
+}
+
+.generador__custom .boton {
+    margin-top: 0;
+}
+
 .generador__controles {
     display: flex;
     flex-direction: column;

@@ -55,7 +55,20 @@
                 </div>
             </div>
 
-            <button id="boton-personaje" class="boton boton--primario">Seleccionar</button> <!-- El botón para seleccionar el personaje -->
+            <div class="seleccion-personalizada" id="seleccion-personalizada">
+                <label for="select-personaje-custom">Personajes personalizados</label>
+                <div class="seleccion-personalizada__fila">
+                    <select id="select-personaje-custom">
+                        <option value="">Elegí un personaje disponible</option>
+                    </select>
+                    <button id="boton-limpiar-personajes" class="boton boton--secundario boton--mini">Limpiar</button>
+                </div>
+            </div>
+
+            <div class="acciones-personaje">
+                <button id="boton-personaje" class="boton boton--primario">Seleccionar</button>
+                <a href="./generador.html" class="boton boton--secundario">Generador</a>
+            </div>
         </section>
 
         <section id="seleccionar-ataque" class="panel">
@@ -144,7 +157,6 @@
         </section>
 
         <footer class="pie">
-            <a href="./generador.html" class="pie__enlace">🧬 Generador de personajes (POO) →</a>
         </footer>
 
     </div>

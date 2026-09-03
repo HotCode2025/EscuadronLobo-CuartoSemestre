@@ -281,6 +281,46 @@ h1 {
     transform: translateY(-3px);
 }
 
+.seleccion-personalizada {
+    display: flex;
+    /* display: none;  ocultamos selector de personaje personalizado */
+    flex-direction: column;
+    gap: 8px;
+    margin: 14px 0 10px;
+    padding-top: 12px;
+    border-top: 1px solid var(--color-borde);
+}
+
+.seleccion-personalizada label {
+    font-size: 0.8rem;
+    color: var(--color-texto-tenue);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+
+.seleccion-personalizada__fila {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+#select-personaje-custom {
+    flex: 1;
+    min-width: 0;
+    padding: 11px 14px;
+    border-radius: 999px;
+    border: 1px solid var(--color-borde);
+    background: var(--negro-carbon);
+    color: var(--color-texto);
+    font-family: var(--fuente-texto);
+    font-size: 0.9rem;
+}
+
+.boton--mini {
+    padding: 10px 12px;
+    font-size: 0.78rem;
+}
+
 .carta-personaje--zuko   .carta-personaje__label:hover { border-color: var(--color-fuego); }
 .carta-personaje--katara .carta-personaje__label:hover { border-color: var(--color-agua); }
 .carta-personaje--aang   .carta-personaje__label:hover { border-color: var(--color-aire); }
@@ -421,6 +461,21 @@ h1 {
 
 .boton:active:not(:disabled) {
     transform: translateY(0);
+}
+
+.acciones-personaje {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 14px;
+}
+
+.boton--secundario {
+    background: var(--color-bg-panel-alt);
+    border-color: var(--color-borde);
+    color: var(--color-texto);
+    text-decoration: none;
 }
 
 .boton:disabled {

@@ -10,6 +10,10 @@
 const inputCantidad = document.getElementById('input-cantidad')
 const botonGenerar = document.getElementById('boton-generar')
 const botonesPreset = document.querySelectorAll('.boton--preset')
+const inputNombrePersonaje = document.getElementById('input-nombre-personaje')
+const selectElementoPersonaje = document.getElementById('select-elemento-personaje')
+const botonAgregarPersonaje = document.getElementById('boton-agregar-personaje')
+const STORAGE_KEY_PERSONAJES = 'avatarPersonajesDisponibles'
 
 const sectionResultado = document.getElementById('resultado')
 const elResultadoTotal = document.getElementById('resultado-total')
@@ -27,6 +31,47 @@ const CLASE_CSS_POR_ELEMENTO = {
 
 const CANTIDAD_MAXIMA = 200000
 
+function obtenerPersonajesDisponibles() {
+    try {
+        const personajes = JSON.parse(sessionStorage.getItem(STORAGE_KEY_PERSONAJES) || '[]')
+        return Array.isArray(personajes) ? personajes : []
+    } catch {
+        return []
+    }
+}
+
+function guardarPersonajesDisponibles(personajes) {
+    sessionStorage.setItem(STORAGE_KEY_PERSONAJES, JSON.stringify(personajes))
+    return personajes
+}
+
+function normalizarPersonajes(personajes) {
+    return personajes
+        .map((personaje) => ({
+            nombre: String(personaje.nombre ?? '').trim(),
+            elemento: String(personaje.elemento ?? 'Fuego').trim(),
+        }))
+        .filter((personaje) => personaje.nombre)
+}
+
+function quitarDuplicados(personajes) {
+    const mapa = new Map()
+
+    personajes.forEach((personaje) => {
+        const clave = String(personaje.nombre ?? '').trim().toLowerCase()
+
+        if (!clave) {
+            return
+        }
+
+        if (!mapa.has(clave)) {
+            mapa.set(clave, personaje)
+        }
+    })
+
+    return [...mapa.values()]
+}
+
 function iniciar() {
     botonesPreset.forEach((boton) => {
         boton.addEventListener('click', () => {
@@ -39,6 +84,26 @@ function iniciar() {
     botonGenerar.addEventListener('click', () => {
         const cantidad = Number(inputCantidad.value)
         generarYMostrar(cantidad)
+    })
+
+    botonAgregarPersonaje.addEventListener('click', () => {
+        const nombre = inputNombrePersonaje.value
+        const elemento = selectElementoPersonaje.value
+
+        try {
+            const personajes = GeneradorPersonajes.crearPersonajesPersonalizados(nombre, elemento)
+            const personajesGuardados = obtenerPersonajesDisponibles()
+            const nuevos = personajes.map((personaje) => ({
+                nombre: personaje.nombre,
+                elemento: personaje.elemento,
+            }))
+
+            guardarPersonajesDisponibles(quitarDuplicados([...personajesGuardados, ...nuevos]))
+            mostrarResultado(personajes, 0)
+            inputNombrePersonaje.value = ''
+        } catch (error) {
+            alert(error.message)
+        }
     })
 }
 
@@ -54,6 +119,14 @@ function generarYMostrar(cantidad) {
     const personajes = GeneradorPersonajes.generar(cantidadFinal)
     const tiempoMs = performance.now() - inicio
 
+    const personajesNormalizados = normalizarPersonajes(personajes)
+    const personajesExistentes = obtenerPersonajesDisponibles()
+    const listaUnificada = quitarDuplicados([
+        ...personajesExistentes,
+        ...personajesNormalizados,
+    ])
+
+    guardarPersonajesDisponibles(listaUnificada)
     mostrarResultado(personajes, tiempoMs)
 }
 

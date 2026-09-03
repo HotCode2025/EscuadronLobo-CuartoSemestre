@@ -28,6 +28,9 @@ const inputZuko = document.getElementById('zuko')
 const inputKatara = document.getElementById('katara')
 const inputAang = document.getElementById('aang')
 const inputToph = document.getElementById('toph')
+const selectPersonajeCustom = document.getElementById('select-personaje-custom')
+const botonLimpiarPersonajes = document.getElementById('boton-limpiar-personajes')
+const STORAGE_KEY_PERSONAJES = 'avatarPersonajesDisponibles'
 
 /* --- Textos que se actualizan durante la partida --- */
 const spanPersonajeJugador = document.getElementById('personaje-jugador')
@@ -51,7 +54,7 @@ const PERSONAJES = ['Zuko', 'Katara', 'Aang', 'Toph']
 const ATAQUES = ['Punio', 'Patada', 'Barrida']
 const BOTONES_ATAQUE = [botonPunio, botonPatada, botonBarrida] // mismo orden que ATAQUES
 
-const INPUTS_PERSONAJE = [
+let INPUTS_PERSONAJE = [
     { input: inputZuko, nombre: 'Zuko' },
     { input: inputKatara, nombre: 'Katara' },
     { input: inputAang, nombre: 'Aang' },
@@ -78,12 +81,57 @@ let ataqueEnemigo
 let vidasJugador = 3
 let vidasEnemigo = 3
 
+function cargarPersonajesCustom() {
+    try {
+        const personajes = JSON.parse(sessionStorage.getItem(STORAGE_KEY_PERSONAJES) || '[]')
+        return Array.isArray(personajes) ? personajes : []
+    } catch {
+        return []
+    }
+}
+
+function renderizarPersonajesCustom() {
+    const personajesCustom = cargarPersonajesCustom()
+
+    if (!selectPersonajeCustom) {
+        return
+    }
+
+    selectPersonajeCustom.innerHTML = '<option value="">Elegí un personaje disponible</option>'
+
+    if (personajesCustom.length === 0) {
+        const opcion = document.createElement('option')
+        opcion.value = ''
+        opcion.textContent = 'Creá personajes desde el generador'
+        opcion.disabled = true
+        selectPersonajeCustom.appendChild(opcion)
+        return
+    }
+
+    personajesCustom.forEach((personaje) => {
+        const opcion = document.createElement('option')
+        opcion.value = personaje.nombre
+        opcion.textContent = `${personaje.nombre} (${personaje.elemento})`
+        selectPersonajeCustom.appendChild(opcion)
+    })
+}
+
+function limpiarPersonajesCustom() {
+    sessionStorage.removeItem(STORAGE_KEY_PERSONAJES)
+    renderizarPersonajesCustom()
+}
+
 function iniciarJuego() {
     sectionSeleccionarAtaque.style.display = 'none'
     sectionReiniciar.style.display = 'none'
+    renderizarPersonajesCustom()
 
     botonPersonaje.addEventListener('click', seleccionarPersonajeJugador)
     botonReiniciar.addEventListener('click', reiniciarJuego)
+
+    if (botonLimpiarPersonajes) {
+        botonLimpiarPersonajes.addEventListener('click', limpiarPersonajesCustom)
+    }
 
     // Un solo loop registra el escuchador de los 3 botones de ataque,
     // en vez de repetir addEventListener 3 veces
@@ -95,13 +143,14 @@ function iniciarJuego() {
 function seleccionarPersonajeJugador() {
     // Buscamos, dentro del arreglo, cuál input quedó marcado
     const seleccionado = INPUTS_PERSONAJE.find((personaje) => personaje.input.checked)
+    const personajeCustomSeleccionado = selectPersonajeCustom && selectPersonajeCustom.value
 
-    if (!seleccionado) {
+    if (!seleccionado && !personajeCustomSeleccionado) {
         mostrarError('Selecciona un personaje')
         return
     }
 
-    const personajeJugador = seleccionado.nombre
+    const personajeJugador = seleccionado ? seleccionado.nombre : personajeCustomSeleccionado
     spanPersonajeJugador.innerHTML = personajeJugador
 
     sectionSeleccionarAtaque.style.display = 'block' // mostramos

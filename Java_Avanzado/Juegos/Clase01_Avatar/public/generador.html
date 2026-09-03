@@ -39,6 +39,29 @@ class PersonajeFuego extends Personaje {   <span class="codigo-muestra__comentar
         </section>
 
         <section class="panel">
+            <h2>Crear personaje personalizado</h2>
+
+            <div class="generador__custom">
+                <div class="generador__campo">
+                    <label for="input-nombre-personaje">Nombres separados por coma</label>
+                    <input type="text" id="input-nombre-personaje" placeholder="Ej: Tenzin, Aang, Katara" />
+                </div>
+
+                <div class="generador__campo">
+                    <label for="select-elemento-personaje">Elemento</label>
+                    <select id="select-elemento-personaje">
+                        <option value="Fuego">Fuego</option>
+                        <option value="Agua">Agua</option>
+                        <option value="Tierra">Tierra</option>
+                        <option value="Aire">Aire</option>
+                    </select>
+                </div>
+
+                <button id="boton-agregar-personaje" class="boton boton--primario">Crear personaje</button>
+            </div>
+        </section>
+
+        <section class="panel">
             <h2>¿Cuántos personajes generar?</h2>
 
             <div class="generador__controles">

@@ -27,21 +27,53 @@ class Personaje {
     static #totalCreados = 0
 
     constructor(nombre, elemento) {
+        const nombreLimpio = this.#validarNombre(nombre)
+        const elementoLimpio = this.#validarElemento(elemento)
+
         Personaje.#totalCreados++
         this.id = Personaje.#totalCreados
-        this.nombre = nombre
-        this.elemento = elemento
+        this.nombre = nombreLimpio
+        this.elemento = elementoLimpio
         this.#vidas = 3
+    }
+
+    #validarNombre(nombre) {
+        if (typeof nombre !== 'string' || nombre.trim() === '') {
+            throw new Error('El nombre del personaje no puede estar vacío.')
+        }
+
+        return nombre.trim()
+    }
+
+    #validarElemento(elemento) {
+        if (typeof elemento !== 'string' || elemento.trim() === '') {
+            throw new Error('El elemento del personaje no puede estar vacío.')
+        }
+
+        return elemento.trim()
     }
 
     get vidas() {
         return this.#vidas
     }
 
+    estaVivo() {
+        return this.#vidas > 0
+    }
+
     recibirGolpe() {
         if (this.#vidas > 0) {
             this.#vidas--
         }
+        return this.#vidas
+    }
+
+    curar(cantidad = 1) {
+        if (!Number.isInteger(cantidad) || cantidad <= 0) {
+            throw new Error('La cantidad de vida a curar debe ser un entero positivo.')
+        }
+
+        this.#vidas = Math.min(this.#vidas + cantidad, 3)
         return this.#vidas
     }
 
@@ -53,7 +85,12 @@ class Personaje {
     }
 
     describir() {
-        return `#${this.id} · ${this.nombre} (${this.elemento}) · ${this.#vidas} vidas`
+        const estado = this.estaVivo() ? 'vivo' : 'derrotado'
+        return `#${this.id} · ${this.nombre} (${this.elemento}) · ${this.#vidas} vidas · ${estado}`
+    }
+
+    static obtenerTotalCreados() {
+        return Personaje.#totalCreados
     }
 
     static reiniciarContador() {
@@ -127,6 +164,10 @@ class GeneradorPersonajes {
     ]
 
     static generar(cantidad) {
+        if (!Number.isInteger(cantidad) || cantidad < 0) {
+            throw new Error('La cantidad debe ser un número entero mayor o igual a cero.')
+        }
+
         Personaje.reiniciarContador()
         const personajes = []
 
@@ -137,6 +178,35 @@ class GeneradorPersonajes {
         }
 
         return personajes
+    }
+
+    static crearPersonajePersonalizado(nombre, elemento = 'Fuego') {
+        const nombreLimpio = String(nombre ?? '').trim()
+        const elementoLimpio = String(elemento ?? 'Fuego').trim()
+
+        if (!nombreLimpio) {
+            throw new Error('El nombre del personaje personalizado no puede estar vacío.')
+        }
+
+        const claseMapeada = this.#CLASES_POR_ELEMENTO.find(
+            ({ elemento: elementoActual }) => elementoActual.toLowerCase() === elementoLimpio.toLowerCase()
+        )
+
+        const Clase = claseMapeada ? claseMapeada.Clase : Personaje
+        return new Clase(nombreLimpio, elementoLimpio)
+    }
+
+    static crearPersonajesPersonalizados(nombres, elemento = 'Fuego') {
+        const nombresSeparados = String(nombres ?? '')
+            .split(',')
+            .map((nombre) => nombre.trim())
+            .filter(Boolean)
+
+        if (nombresSeparados.length === 0) {
+            throw new Error('Ingresá al menos un nombre para crear personajes personalizados.')
+        }
+
+        return nombresSeparados.map((nombre) => this.crearPersonajePersonalizado(nombre, elemento))
     }
 
     // Agrupa el resultado por elemento, para poder mostrar un resumen
