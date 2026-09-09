@@ -283,7 +283,6 @@ h1 {
 
 .seleccion-personalizada {
     display: flex;
-    /* display: none;  ocultamos selector de personaje personalizado */
     flex-direction: column;
     gap: 8px;
     margin: 14px 0 10px;

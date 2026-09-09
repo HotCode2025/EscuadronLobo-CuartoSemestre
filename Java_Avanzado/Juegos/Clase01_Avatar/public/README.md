@@ -1,4 +1,4 @@
-# AVATAR: La leyenda de Aang — Escuadrón Lobo
+# AVATAR: La leyenda de Aang — Escuadrón Lobo🐺
 
 ## Páginas
 
@@ -10,6 +10,10 @@
 
 ## JavaScript
 
+- **`js/avatar-clase.js`** — ejercicio de la Clase 01 (POO): define la clase
+  `Avatar`, instancia a Zuko, Katara, Aang y Toph, y los carga en el array
+  `avatares` con `push()`. Se carga antes que `avatar.js` y solo usa
+  `console.log()`, así que no interfiere con el juego.
 - **`js/avatar.js`** — lógica del juego (avatar.html). Estilo funcional: variables
   globales que apuntan a elementos del DOM, y funciones que se llaman entre sí.
 - **`js/personajes-poo.js`** — las clases del generador (generador.html):
