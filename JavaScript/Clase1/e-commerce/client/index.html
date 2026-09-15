@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="api-url" content="https://tecnicatura3.onrender.com">
+    <link rel="stylesheet" href="./css/styles.css" />
+    <script src="https://sdk.mercadopago.com/js/v2"></script>
+    <title>E-Commerce</title>
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="/" aria-label="EscuadronLobo Market, inicio">
+        <img src="./media/logo-escuadronlobo.png" alt="EscuadronLobo" />
+        <span>MARKET</span>
+      </a>
+      <div class="header-note">Tecnología para tu próxima misión</div>
+      <button class="header-cart" id="header-cart" type="button">
+        <span>Tu carrito</span>
+        <strong id="header-cart-count">0</strong>
+      </button>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div class="hero-copy">
+          <p class="eyebrow">EQUIPAMIENTO // ESCRITORIO // RENDIMIENTO</p>
+          <h1>Armá tu estación.<br /><em>Entrá en modo lobo.</em></h1>
+          <p class="hero-text">Componentes y periféricos elegidos para quienes no se conforman con lo básico.</p>
+          <a class="hero-link" href="#catalogo">Explorar productos <span>↘</span></a>
+        </div>
+        <div class="hero-mark" aria-hidden="true"><span>//</span></div>
+      </section>
+
+      <section class="catalog-section" id="catalogo">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">SELECCIÓN DEL ESCUADRÓN</p>
+            <h2>Lo que necesitás,<br /><span>sin ruido.</span></h2>
+          </div>
+          <p class="section-caption">Hardware confiable para crear, jugar y trabajar mejor.</p>
+        </div>
+        <div class="card-products-container">
+          <div class="card-products" id="shopContent"></div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <span>ESCUADRONLOBO MARKET</span>
+      <span>Buenos Aires · 2026</span>
+    </footer>
+
+    <div class="cart-btn" id="cart-btn" aria-label="Abrir carrito" role="button" tabindex="0">🛒</div>
+    <div class="cart-counter" id="cart-counter">0</div>
+
+    <!--modal-->
+    <div class="modal-overlay" id="modal-overlay"></div>
+    <div class="modal-container" id="modal-container"></div>
+
+    <script src="./js/products.js"></script>
+    <script src="./js/index.js"></script>
+    <script src="./js/cart.js"></script>
+  </body>
+</html>

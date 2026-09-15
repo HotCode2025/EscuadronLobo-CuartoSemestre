@@ -1,0 +1,18 @@
+# Dependencias instaladas localmente
+**/node_modules/
+
+# Archivos de depuracion y logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Salidas comunes de herramientas JavaScript
+**/dist/
+**/build/
+**/.cache/
+
+# Variables de entorno; conservar solo plantillas sin secretos
+**/.env
+!**/.env.example

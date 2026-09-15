@@ -1,0 +1,53 @@
+@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=DM+Sans:wght@400;500;700&display=swap');
+
+:root { --ink:#131518; --paper:#f2efe9; --white:#fffdf9; --muted:#7e817e; --line:#d9d5cd; --amber:#e8a43a; --blue:#6e8fdb; --shadow:0 18px 45px rgba(19,21,24,.09); }
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body { background:var(--paper); color:var(--ink); font-family:"DM Sans",sans-serif; margin:0; }
+button,a { font:inherit; }
+a { color:inherit; text-decoration:none; }
+.site-header { align-items:center; background:var(--ink); color:var(--white); display:flex; gap:30px; justify-content:space-between; min-height:82px; padding:12px clamp(22px,5vw,76px); }
+.brand { align-items:center; display:flex; gap:12px; }
+.brand img { background:var(--white); height:58px; object-fit:contain; width:58px; }
+.brand span { color:var(--amber); font-family:"Barlow Condensed",sans-serif; font-size:18px; font-weight:700; letter-spacing:3px; }
+.header-note { color:#aeb1ad; font-size:12px; letter-spacing:1px; text-transform:uppercase; }
+.header-cart { align-items:center; background:transparent; border:1px solid #4a4e50; color:var(--white); cursor:pointer; display:flex; gap:14px; padding:10px 15px; }
+.header-cart strong { align-items:center; background:var(--amber); border-radius:50%; color:var(--ink); display:flex; font-size:12px; height:23px; justify-content:center; width:23px; }
+.hero { background:var(--ink); color:var(--white); display:flex; justify-content:space-between; min-height:445px; overflow:hidden; padding:76px clamp(22px,10vw,150px) 92px; position:relative; }
+.hero::after { background:repeating-linear-gradient(135deg,transparent 0 17px,rgba(255,255,255,.035) 18px 19px); content:""; inset:0 0 0 58%; position:absolute; transform:skewX(-16deg); }
+.hero-copy { max-width:670px; position:relative; z-index:1; }
+.eyebrow { color:var(--amber); font-size:11px; font-weight:700; letter-spacing:2.2px; margin:0 0 18px; }
+h1,h2 { font-family:"Barlow Condensed",sans-serif; letter-spacing:.2px; margin:0; text-transform:uppercase; }
+h1 { font-size:clamp(48px,7vw,94px); line-height:.88; }
+h1 em { color:var(--blue); font-style:normal; }
+.hero-text { color:#b9bbb8; font-size:16px; line-height:1.6; margin:28px 0; max-width:410px; }
+.hero-link { border-bottom:1px solid var(--amber); color:var(--white); display:inline-flex; font-size:13px; font-weight:700; gap:17px; padding-bottom:7px; text-transform:uppercase; }
+.hero-link span { color:var(--amber); font-size:18px; line-height:10px; }
+.hero-mark { align-self:center; color:rgba(255,255,255,.06); font-family:"Barlow Condensed",sans-serif; font-size:clamp(130px,26vw,360px); font-weight:800; line-height:.7; position:relative; z-index:1; }
+.hero-mark span { color:var(--amber); font-size:.35em; }
+.catalog-section { margin:0 auto; max-width:1300px; padding:82px clamp(22px,5vw,76px) 105px; }
+.section-heading { align-items:end; border-bottom:1px solid var(--line); display:flex; justify-content:space-between; margin-bottom:34px; padding-bottom:28px; }
+h2 { font-size:clamp(42px,5vw,65px); line-height:.85; }
+h2 span { color:var(--blue); }
+.section-caption { color:var(--muted); font-size:13px; line-height:1.5; max-width:180px; }
+.card-products { display:grid; gap:22px; grid-template-columns:repeat(5,1fr); }
+.card-products > div { animation:rise .5s ease both; background:var(--white); box-shadow:0 3px 0 rgba(19,21,24,.03); display:flex; flex-direction:column; min-width:0; padding:14px; transition:box-shadow .2s,transform .2s; }
+.card-products > div:hover { box-shadow:var(--shadow); transform:translateY(-5px); }
+.card-products img { background:#eeece6; height:185px; margin:0 0 16px; object-fit:contain; padding:13px; width:100%; }
+.card-products h3 { font-family:"Barlow Condensed",sans-serif; font-size:22px; line-height:.95; margin:0 0 9px; text-transform:uppercase; }
+.card-products p { color:var(--muted); font-size:17px; font-weight:700; margin:0 0 17px; }
+.card-products button,.btn-primary { background:var(--ink); border:0; color:var(--white); cursor:pointer; font-size:12px; font-weight:700; letter-spacing:.5px; margin-top:auto; padding:13px 10px; text-transform:uppercase; transition:background .2s; }
+.card-products button:hover,.btn-primary:hover { background:var(--amber); color:var(--ink); }
+.site-footer { border-top:1px solid var(--line); color:var(--muted); display:flex; font-size:10px; justify-content:space-between; letter-spacing:1.5px; margin:0 auto; max-width:1148px; padding:22px 0 32px; }
+.cart-btn { align-items:center; background:var(--amber); border:3px solid var(--paper); border-radius:50%; bottom:26px; box-shadow:0 8px 25px rgba(19,21,24,.2); cursor:pointer; display:flex; font-size:21px; height:58px; justify-content:center; position:fixed; right:27px; width:58px; z-index:4; }
+.cart-counter { background:var(--blue); border:2px solid var(--paper); border-radius:50%; color:white; display:none; font-size:11px; font-weight:700; height:22px; line-height:18px; position:fixed; right:22px; bottom:69px; text-align:center; width:22px; z-index:5; }
+.payment-status { border:1px solid; margin:20px auto; max-width:600px; padding:14px 20px; text-align:center; font-weight:bold; }
+.payment-status-approved { background:#dfeee1; color:#245332; }.payment-status-pending { background:#fff2d5; color:#765416; }.payment-status-rejected { background:#f8dddd; color:#792e2e; }
+.modal-overlay { background:rgba(19,21,24,.72); inset:0; display:none; position:fixed; z-index:8; }
+.modal-container { background:var(--white); box-shadow:var(--shadow); display:none; left:50%; max-height:82vh; max-width:590px; overflow-y:auto; padding:30px; position:fixed; top:50%; transform:translate(-50%,-50%); width:calc(100% - 36px); z-index:9; }
+.modal-close { cursor:pointer; float:right; font-size:16px; }.modal-title { font-family:"Barlow Condensed",sans-serif; font-size:30px; margin-bottom:24px; text-transform:uppercase; }.modal-body { border-bottom:1px solid var(--line); margin:0; padding:0 0 17px; }
+.product { align-items:center; display:flex; gap:14px; justify-content:space-between; margin:0; padding:12px 0; }.product-img { background:#eeece6; height:62px; margin:0; object-fit:contain; width:62px; }.product-info { flex:1; text-align:left; }.product-info h4 { font-family:"Barlow Condensed",sans-serif; font-size:18px; margin:0; text-transform:uppercase; }.quantity { align-items:center; display:flex; gap:9px; margin:0; }.quantity-btn-decrese,.quantity-btn-increse { cursor:pointer; font-size:21px; font-weight:bold; }.quantity-input { font-weight:bold; min-width:17px; text-align:center; }.price { font-size:14px; font-weight:bold; margin:0; }.delete-product { cursor:pointer; margin:0; }
+.modal-footer { border-top:1px solid var(--line); margin-top:20px; padding-top:20px; text-align:right; }.total-price { font-family:"Barlow Condensed",sans-serif; font-size:27px; margin:0 0 15px; text-transform:uppercase; }.btn-primary { font-size:13px; padding:14px 18px; }.btn-primary span { color:var(--amber); font-size:17px; } #button-checkout { z-index:10; }
+@keyframes rise { from { opacity:0; transform:translateY(13px); } to { opacity:1; transform:translateY(0); } }
+@media (max-width:850px) { .header-note { display:none; } .card-products { grid-template-columns:repeat(2,1fr); } .card-products img { height:210px; } .hero-mark { position:absolute; right:-25px; } }
+@media (max-width:520px) { .site-header { min-height:72px; padding:10px 17px; }.brand img { height:48px; width:48px; }.brand span { font-size:15px; letter-spacing:2px; }.header-cart span { display:none; }.hero { min-height:470px; padding:63px 22px 75px; }.hero-mark { bottom:43px; font-size:160px; right:-5px; }.hero-copy { z-index:2; }.catalog-section { padding-top:62px; }.section-heading { align-items:start; flex-direction:column; gap:22px; }.section-caption { max-width:240px; }.card-products { gap:12px; }.card-products > div { padding:9px; }.card-products img { height:145px; margin-bottom:12px; padding:6px; }.card-products h3 { font-size:18px; }.card-products p { font-size:14px; }.site-footer { margin:0 22px; }.site-footer span:last-child { display:none; }.modal-container { padding:24px 18px; }.product { gap:7px; }.product-info h4 { font-size:15px; }.price { font-size:12px; } }
