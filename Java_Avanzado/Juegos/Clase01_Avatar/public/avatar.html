@@ -25,35 +25,11 @@
         <section id="seleccionar-personaje" class="panel">
             <h2>Elige personaje</h2>
 
-            <div class="grilla-personajes">
-                <div class="carta-personaje carta-personaje--zuko">
-                    <input class="carta-personaje__input" type="radio" name="personaje" id="zuko" value="zuko" /> <!--name es para agrupar todos los inputs y poder seleccionar-->
-                    <label class="carta-personaje__label" for="zuko"> <!--Esta etiqueta es para darle un indicador a los usuarios de que están seleccionando-->
-                        <img class="carta-personaje__imagen" src="./assets/img/zuko.png" alt="Zuko" />
-                    </label>
-                </div>
-
-                <div class="carta-personaje carta-personaje--katara">
-                    <input class="carta-personaje__input" type="radio" name="personaje" id="katara" value="katara" /> <!--Acá van los personajes-->
-                    <label class="carta-personaje__label" for="katara"> <!--El atributo for ayuda a vincular un label con un input a través del mismo id-->
-                        <img class="carta-personaje__imagen" src="./assets/img/katara.png" alt="Katara" />
-                    </label>
-                </div>
-
-                <div class="carta-personaje carta-personaje--aang">
-                    <input class="carta-personaje__input" type="radio" name="personaje" id="aang" value="aang" /> <!--Le damos un atributo id para saber cual es el valor de cada uno-->
-                    <label class="carta-personaje__label" for="aang">
-                        <img class="carta-personaje__imagen" src="./assets/img/aang.png" alt="Aang" />
-                    </label>
-                </div>
-
-                <div class="carta-personaje carta-personaje--toph">
-                    <input class="carta-personaje__input" type="radio" name="personaje" id="toph" value="toph" />
-                    <label class="carta-personaje__label" for="toph">
-                        <img class="carta-personaje__imagen" src="./assets/img/toph.png" alt="Toph" />
-                    </label>
-                </div>
-            </div>
+            <!-- Las tarjetas de personaje ya NO están escritas a mano acá: las genera
+                 dinámicamente js/avatar-clase.js recorriendo el array "avatares" con
+                 forEach() e inyectando el HTML con innerHTML (Ciclos: manipulando el
+                 DOM con iteradores). Este div arranca vacío a propósito. -->
+            <div class="grilla-personajes" id="contenedorTarjetas"></div>
 
             <div class="seleccion-personalizada" id="seleccion-personalizada">
                 <label for="select-personaje-custom">Personajes personalizados</label>
