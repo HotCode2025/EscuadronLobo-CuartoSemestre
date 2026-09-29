@@ -1,0 +1,5 @@
+{% extends 'shop/base.html' %}
+{% block title %}Mis pedidos | LOBO Market{% endblock %}
+{% block content %}
+<section class="container page-container"><div class="page-heading"><div><span class="eyebrow">TU HISTORIAL</span><h1>Mis pedidos</h1></div></div>{% if orders %}<div class="orders-list">{% for order in orders %}<a class="order-row" href="{% url 'order_detail' order.id %}"><div><span class="order-number">PEDIDO #{{ order.id }}</span><strong>{{ order.ordered_date|date:'d/m/Y - H:i' }}</strong></div><span class="status-pill status-{{ order.status }}">{{ order.get_status_display }}</span><strong>${{ order.total|floatformat:2 }}</strong><i class="bi bi-arrow-up-right"></i></a>{% endfor %}</div>{% else %}<div class="empty-state"><i class="bi bi-box-seam"></i><h2>Todavia no hay pedidos</h2><p>Tus compras confirmadas van a aparecer aca.</p><a href="{% url 'home' %}" class="btn btn-dark">Ir al catalogo</a></div>{% endif %}</section>
+{% endblock %}

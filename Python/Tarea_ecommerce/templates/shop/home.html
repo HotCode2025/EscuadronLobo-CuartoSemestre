@@ -1,0 +1,30 @@
+{% extends 'shop/base.html' %}
+{% block title %}LOBO Market | Compra con criterio{% endblock %}
+{% block content %}
+<section class="hero-wrap">
+  <div id="homeCarousel" class="carousel slide" data-bs-ride="carousel">
+    <div class="carousel-indicators"><button type="button" data-bs-target="#homeCarousel" data-bs-slide-to="0" class="active" aria-label="Banner 1"></button><button type="button" data-bs-target="#homeCarousel" data-bs-slide-to="1" aria-label="Banner 2"></button></div>
+    <div class="carousel-inner">
+      <div class="carousel-item active">
+        <div class="hero-slide hero-one"><div class="hero-copy"><span class="eyebrow">OBJETOS PARA TODOS LOS DIAS</span><h1>Elegir bien<br>se siente bien.</h1><p>Diseno, tecnologia y esenciales que hacen la diferencia.</p><a class="btn btn-light btn-lg" href="#catalogo">Explorar productos <i class="bi bi-arrow-down-right"></i></a></div><div class="hero-note">NUEVA<br>TEMPORADA <span>01 / 02</span></div></div>
+      </div>
+      <div class="carousel-item">
+        <div class="hero-slide hero-two"><div class="hero-copy"><span class="eyebrow">HASTA 30% OFF</span><h1>Pequenos upgrades.<br>Grandes dias.</h1><p>Descubri favoritos para tu casa, tu rutina y tu proximo plan.</p><a class="btn btn-light btn-lg" href="#catalogo">Ver seleccion <i class="bi bi-arrow-down-right"></i></a></div><div class="hero-note">SELECCION<br>LOBO <span>02 / 02</span></div></div>
+      </div>
+    </div>
+    <button class="carousel-control-prev" type="button" data-bs-target="#homeCarousel" data-bs-slide="prev" aria-label="Anterior"><span class="carousel-control-prev-icon"></span></button>
+    <button class="carousel-control-next" type="button" data-bs-target="#homeCarousel" data-bs-slide="next" aria-label="Siguiente"><span class="carousel-control-next-icon"></span></button>
+  </div>
+</section>
+<section class="container catalog-section" id="catalogo">
+  <div class="section-heading"><div><span class="eyebrow">CURADURIA LOBO</span><h2>{% if search_query %}Resultados para &ldquo;{{ search_query }}&rdquo;{% elif active_category %}Lo que buscas{% else %}Elegidos para vos{% endif %}</h2></div><span class="result-count">{{ products|length }} productos</span></div>
+  <div class="category-strip"><a class="category-chip {% if not active_category %}is-active{% endif %}" href="{% url 'home' %}">Todo</a>{% for category in categories %}<a class="category-chip {% if active_category == category.slug %}is-active{% endif %}" href="?categoria={{ category.slug }}">{{ category.name }}</a>{% endfor %}</div>
+  {% if products %}<div class="product-grid">{% for product in products %}
+    <article class="product-card">
+      <a class="product-image" href="{% url 'product_detail' product.slug %}"><img src="{{ product.image_source }}" alt="{{ product.title }}" loading="lazy">{% if product.has_discount %}<span class="discount-label">OFERTA</span>{% endif %}</a>
+      <div class="product-info"><div class="product-meta"><span>{{ product.category.name }}</span><span>{{ product.brand }}</span></div><a href="{% url 'product_detail' product.slug %}" class="product-title">{{ product.title }}</a><div class="price-row">{% if product.has_discount %}<span class="old-price">${{ product.price|floatformat:2 }}</span>{% endif %}<strong>${{ product.current_price|floatformat:2 }}</strong></div><form method="post" action="{% url 'cart_add' product.id %}">{% csrf_token %}<input type="hidden" name="next" value="{% url 'home' %}"><button class="btn btn-add" type="submit" {% if product.stock == 0 %}disabled{% endif %}><i class="bi bi-bag-plus"></i> {% if product.stock %}Agregar{% else %}Sin stock{% endif %}</button></form></div>
+    </article>
+  {% endfor %}</div>{% else %}<div class="empty-state"><i class="bi bi-search"></i><h3>No encontramos productos</h3><p>Proba otra busqueda o elegi una categoria.</p><a href="{% url 'home' %}" class="btn btn-outline-dark">Ver todo</a></div>{% endif %}
+</section>
+<section class="promise-band"><div class="container promise-grid"><div><i class="bi bi-truck"></i><span><strong>Envios a todo el pais</strong><small>Segui tu pedido en cada paso</small></span></div><div><i class="bi bi-shield-check"></i><span><strong>Compra segura</strong><small>Pago de prueba protegido</small></span></div><div><i class="bi bi-arrow-repeat"></i><span><strong>Compra sin apuro</strong><small>Atencion clara y cercana</small></span></div></div></section>
+{% endblock %}
