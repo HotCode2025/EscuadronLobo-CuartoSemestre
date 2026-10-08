@@ -1,0 +1,51 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: soydonante_postgres
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgrespassword
+      POSTGRES_DB: soydonante_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./database/schema.sql:/docker-entrypoint-initdb.d/1_schema.sql
+      - ./database/seed.sql:/docker-entrypoint-initdb.d/2_seed.sql
+
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    container_name: soydonante_backend
+    restart: always
+    environment:
+      DATABASE_URL: postgresql://postgres:postgrespassword@postgres:5432/soydonante_db
+      SECRET_KEY: soydonante_secret_key_mendoza_2026_super_secure
+      PORT: 8000
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend/app:/app/backend/app
+    depends_on:
+      - postgres
+
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+    container_name: soydonante_frontend
+    restart: always
+    environment:
+      FRONTEND_PORT: 3000
+      BACKEND_API_URL: http://backend:8000
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend/public:/app/public
+    depends_on:
+      - backend
+
+volumes:
+  pgdata:

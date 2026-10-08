@@ -1,0 +1,1568 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Soy Donante – Sistema de Donantes</title>
+  <link rel="stylesheet" href="css/styles.css" />
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🩸</text></svg>" />
+</head>
+<body>
+
+<!-- ============================================================
+     LOGIN SCREEN
+     ============================================================ -->
+<div class="login-wrap" id="login-screen">
+  <div class="login-box">
+    <div class="login-logo">
+      <div class="login-logo-icon">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 2C12 2 4 10 4 15.5C4 19.09 7.58 22 12 22C16.42 22 20 19.09 20 15.5C20 10 12 2 12 2Z" fill="white" opacity=".95"/>
+          <polyline points="7,16 9.5,16 11,13 13,19 14.5,14 16,16 17,16" stroke="#B71C1C" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div class="login-app-name">Soy Donante</div>
+      <div class="login-app-sub">Sistema de donantes de sangre &middot; Mendoza</div>
+    </div>
+
+    <div class="login-title">Ingres&aacute; a tu cuenta</div>
+
+    <div id="login-error" style="display:none;margin-bottom:14px">
+      <div class="alert urgent" style="margin-bottom:0">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:18px;height:18px;flex-shrink:0"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        <div><div class="alert-title">DNI o fecha incorrectos</div><div class="alert-body">Verific&aacute; los datos e intent&aacute; de nuevo.</div></div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">N&uacute;mero de DNI</label>
+      <input class="form-control" id="input-dni" type="text" placeholder="Ej: 30123456" maxlength="10" />
+    </div>
+    <div class="form-group">
+      <label class="form-label">Fecha de nacimiento</label>
+      <input class="form-control" id="input-fecha" type="date" />
+    </div>
+
+    <button class="btn btn-primary" style="width:100%;justify-content:center;padding:12px;font-size:15px;margin-top:6px" onclick="handleLogin()">
+      Ingresar
+    </button>
+
+    <div style="text-align:center;margin-top:14px">
+      <button class="btn btn-outline btn-sm" style="width:100%;justify-content:center" onclick="openDonorModal()">
+        ¿No estás registrado? Crear cuenta de donante
+      </button>
+    </div>
+
+    <div class="login-hint">
+      Acceso para donantes y personal de Hemoterapia.<br/>
+      <strong style="color:var(--navy)">Admin Hemoterapia:</strong> DNI <code style="background:var(--gray-light);padding:2px 6px;border-radius:4px">99999999</code> &middot; Fecha <code style="background:var(--gray-light);padding:2px 6px;border-radius:4px">1980-01-01</code>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     APP SHELL (oculto hasta login)
+     ============================================================ -->
+<div class="app-shell" id="app-shell" style="display:none">
+
+  <!-- ===== SIDEBAR ===== -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-icon">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 2C12 2 4 10 4 15.5C4 19.09 7.58 22 12 22C16.42 22 20 19.09 20 15.5C20 10 12 2 12 2Z" fill="white" opacity=".9"/>
+          <polyline points="7,16 9.5,16 11,13 13,19 14.5,14 16,16 17,16" stroke="#B71C1C" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div class="logo-text">
+        <span class="logo-name">Soy Donante</span>
+        <span class="logo-sub">Sistema de Donantes</span>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <div class="nav-group-label">Principal</div>
+
+      <div class="nav-item" data-page="dashboard">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        Panel de control
+      </div>
+
+      <div class="nav-item" data-page="perfil">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        Mi perfil
+      </div>
+
+      <div class="nav-item" data-page="historial">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+        Historial
+      </div>
+
+      <div class="nav-item" data-page="tarjeta">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+        Tarjeta digital
+      </div>
+
+      <div class="nav-item" data-page="centros">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        Centros de donación
+      </div>
+
+      <div class="nav-item" data-page="notificaciones">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+        Notificaciones
+        <span class="nav-badge" id="notif-badge">0</span>
+      </div>
+
+      <div class="nav-item" data-page="informacion">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+        Tenés que saber
+      </div>
+
+      <div class="nav-item" data-page="requisitos">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/><polyline points="9 14 11 16 15 12"/></svg>
+        Requisitos
+      </div>
+
+      <!-- SECCIÓN EXCLUSIVA DE ADMINISTRACIÓN / HEMOTERAPIA -->
+      <div id="sidebar-admin-section">
+        <div class="nav-group-label" style="margin-top:12px">Administración</div>
+
+        <div class="nav-item" data-page="donantes">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          Donantes
+        </div>
+
+        <div class="nav-item" data-page="stock">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+          Stock de sangre
+        </div>
+
+        <div class="nav-item" data-page="turnos">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><path d="M9 16l2 2 4-4"/></svg>
+          Turnos de donación
+          <span class="nav-badge" id="turnos-pending-badge" style="display:none;background:var(--primary);color:#fff">0</span>
+        </div>
+
+        <div class="nav-item" data-page="reportes">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          Reportes
+        </div>
+
+        <div class="nav-item" data-page="configuracion">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          Configuración
+        </div>
+      </div>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="user-card">
+        <div class="user-avatar">MG</div>
+        <div style="flex:1">
+          <div class="user-name">María González</div>
+          <div class="user-role">Donante · O+</div>
+        </div>
+        <button onclick="handleLogout()" title="Cerrar sesión" style="background:none;border:none;cursor:pointer;color:rgba(255,255,255,.4);padding:4px;border-radius:6px;display:flex;align-items:center;transition:.2s" onmouseover="this.style.color='white'" onmouseout="this.style.color='rgba(255,255,255,.4)'">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:17px;height:17px"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ===== MAIN ===== -->
+  <div class="main-content">
+
+    <!-- Topbar -->
+    <header class="topbar">
+      <button class="menu-toggle" id="menu-toggle">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+      <span class="topbar-title" id="topbar-title">Panel de control</span>
+      <div class="topbar-actions" style="display:flex;align-items:center;gap:10px">
+        <button class="btn btn-primary btn-sm" id="topbar-btn-quiero-donar" onclick="openAppointmentModal()" style="display:none;font-weight:700;padding:6px 14px;box-shadow:0 2px 8px rgba(183,28,28,0.25)">
+          🩸 Quiero donar
+        </button>
+        <button class="btn-icon" onclick="navigate('notificaciones')" title="Notificaciones">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+          <span class="notif-dot" id="notif-dot" style="display:none"></span>
+        </button>
+        <button class="btn-icon" onclick="openSettingsModal()" title="Configuración">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- DASHBOARD -->
+    <div class="page active" id="page-dashboard">
+      <!-- WIDGET HERO DONANTE: Semáforo médico + Contador días + Próximo turno -->
+      <div id="donor-hero-widget" class="mb-24"></div>
+      <div class="grid grid-4 mb-24" id="dashboard-stats-grid">
+        <div class="stat-card red">
+          <div class="stat-icon red">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2C12 2 4 10 4 15.5C4 19.09 7.58 22 12 22C16.42 22 20 19.09 20 15.5C20 10 12 2 12 2Z"/></svg>
+          </div>
+          <div class="stat-info">
+            <div class="label">Mis donaciones</div>
+            <div class="value" id="stat-donaciones">—</div>
+            <div class="delta">↑ Total registradas</div>
+          </div>
+        </div>
+        <div class="stat-card green" id="card-stat-donantes">
+          <div class="stat-icon green">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          </div>
+          <div class="stat-info">
+            <div class="label">Donantes activos</div>
+            <div class="value" id="stat-donantes">—</div>
+            <div class="delta">↑ en el sistema</div>
+          </div>
+        </div>
+        <div class="stat-card orange">
+          <div class="stat-icon orange">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+          </div>
+          <div class="stat-info">
+            <div class="label">Alertas activas</div>
+            <div class="value" id="stat-alertas">—</div>
+            <div class="delta neg">Sin leer</div>
+          </div>
+        </div>
+        <div class="stat-card navy">
+          <div class="stat-icon navy">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+          </div>
+          <div class="stat-info">
+            <div class="label">Centros habilitados</div>
+            <div class="value" id="stat-centros">—</div>
+            <div class="delta">En toda la provincia</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Alerts + Chart -->
+      <div class="grid grid-2 mb-24">
+        <div class="card">
+          <div class="section-hdr mb-14">
+            <span class="section-title">Alertas urgentes</span>
+            <button class="btn btn-primary btn-sm" id="dashboard-btn-nueva-alerta" onclick="openAlertModal()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              Nueva alerta
+            </button>
+          </div>
+          <div id="dashboard-alerts"></div>
+        </div>
+        <div class="card">
+          <div class="section-hdr mb-14">
+            <span class="section-title">Donaciones por mes</span>
+            <span class="tag navy">2025–2026</span>
+          </div>
+          <div class="chart-wrap">
+            <div class="chart-placeholder" id="chart-bars"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recent donors (Solo para Personal de Hemoterapia / Administradores) -->
+      <div class="card" id="dashboard-recent-donors-card">
+        <div class="section-hdr mb-14">
+          <span class="section-title">Donantes recientes</span>
+          <button class="btn btn-outline btn-sm" onclick="navigate('donantes')">Ver todos</button>
+        </div>
+        <div id="recent-donors"></div>
+      </div>
+    </div>
+
+    <!-- PERFIL -->
+    <div class="page" id="page-perfil">
+      <div class="grid grid-2 mb-24">
+        <div class="card">
+          <div style="display:flex;align-items:center;gap:18px;margin-bottom:24px">
+            <div style="width:72px;height:72px;background:var(--red);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:800;color:white;flex-shrink:0" class="user-avatar" id="profile-avatar">MG</div>
+            <div>
+              <div style="font-size:22px;font-weight:800;color:var(--navy)" class="user-name" id="profile-display-name">María González</div>
+              <div style="font-size:14px;color:var(--gray)" id="profile-display-dni">DNI 30.123.456</div>
+              <div style="margin-top:6px" id="profile-status-badge"><span class="tag green">✓ Apto para donar</span></div>
+            </div>
+          </div>
+          <div class="grid grid-2" style="gap:14px">
+            <div style="background:var(--red-light);border-radius:10px;padding:16px">
+              <div style="font-size:11px;color:var(--gray);font-weight:600;text-transform:uppercase;letter-spacing:.5px">Grupo sanguíneo</div>
+              <div style="font-size:38px;font-weight:900;color:var(--red);line-height:1.1;margin-top:4px" id="profile-badge-group">O+</div>
+              <div style="font-size:11px;color:var(--gray);margin-top:2px" id="profile-compat">Compatible con O+, AB+</div>
+            </div>
+            <div style="background:var(--green-light);border-radius:10px;padding:16px">
+              <div style="font-size:11px;color:var(--gray);font-weight:600;text-transform:uppercase;letter-spacing:.5px">Estado actual</div>
+              <div style="font-size:18px;font-weight:800;color:var(--green);margin-top:6px" id="profile-state-text">Apto</div>
+              <div style="font-size:11px;color:var(--gray);margin-top:2px">Próxima donación disponible</div>
+              <div style="font-size:13px;font-weight:700;color:var(--navy);margin-top:2px" id="profile-next-date">15/08/2026</div>
+            </div>
+          </div>
+          <div style="background:var(--orange-light);border-radius:10px;padding:16px;margin-top:14px;border-left:4px solid var(--orange)" id="profile-alert-box">
+            <div style="font-size:12px;font-weight:700;color:var(--orange)">⚠ Alerta activa en tu zona</div>
+            <div style="font-size:13px;color:var(--navy-mid);margin-top:4px" id="profile-alert-text">Se necesitan donantes con carácter urgente en centros de Mendoza.</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="section-title mb-14">Información personal</div>
+          <div class="form-group">
+            <label class="form-label">Nombre completo</label>
+            <input class="form-control" id="profile-nombre" value="María González" readonly style="background:var(--gray-light)" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Número de DNI</label>
+            <input class="form-control" id="profile-dni" value="30.123.456" readonly style="background:var(--gray-light)" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Fecha de nacimiento</label>
+            <input class="form-control" id="profile-birth" value="1992-06-14" readonly style="background:var(--gray-light)" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Grupo sanguíneo</label>
+            <input class="form-control" id="profile-group" value="O+" readonly style="background:var(--gray-light)" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Teléfono</label>
+            <input class="form-control" id="input-phone" value="+54 9 261 555-1234" />
+          </div>
+          <button class="btn btn-primary" onclick="handleProfileSave()">Guardar cambios</button>
+        </div>
+      </div>
+
+      <!-- Historial personal de donaciones -->
+      <div class="card" id="profile-history-card">
+        <div class="section-hdr mb-14">
+          <div style="display:flex;align-items:center;gap:10px">
+            <span class="section-title">Historial de mis donaciones</span>
+            <span class="tag red" id="profile-history-count">0 donaciones</span>
+          </div>
+          <button class="btn btn-primary btn-sm" onclick="openDonationModal()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Registrar donación
+          </button>
+        </div>
+        <div id="profile-history-list"></div>
+      </div>
+    </div>
+
+    <!-- HISTORIAL -->
+    <div class="page" id="page-historial">
+      <div class="card">
+        <div class="section-hdr mb-20">
+          <div>
+            <span class="section-title">Historial de donaciones</span>
+            <span class="tag red" style="margin-left:8px" id="historial-count-badge">Cargando...</span>
+          </div>
+          <button class="btn btn-primary btn-sm" onclick="openDonationModal()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Registrar donación
+          </button>
+        </div>
+        <div class="alert info mb-14">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          <div>
+            <div class="alert-title" id="historial-next-banner">Próxima donación disponible: Calculando...</div>
+            <div class="alert-body">Debés esperar al menos 90 días entre donaciones consecutivas.</div>
+          </div>
+        </div>
+        <div id="historial-list"></div>
+      </div>
+    </div>
+
+    <!-- TARJETA DIGITAL -->
+    <div class="page" id="page-tarjeta">
+      <div class="grid grid-2">
+        <div>
+          <div class="section-title mb-14">Tu tarjeta de donante digital</div>
+          <p style="color:var(--gray);font-size:14px;margin-bottom:20px">Esta tarjeta identifica tu grupo sanguíneo y tu historial como donante. Podés descargarla en tu dispositivo o compartirla.</p>
+          <div class="digital-card" id="digital-card-element">
+            <div class="dc-app">SOY DONANTE · Donante registrado</div>
+            <div class="dc-name">María González</div>
+            <div class="dc-dni">DNI 30.123.456</div>
+            <div class="dc-group">O+</div>
+            <div class="dc-compat" id="card-compat">Compatible con: O+, AB+</div>
+            <div class="dc-qr" id="qr-dots" style="background:white;padding:4px;border-radius:6px;display:flex;align-items:center;justify-content:center;overflow:hidden" title="Código QR oficial de verificación"></div>
+          </div>
+          <div style="margin-top:16px;display:flex;gap:10px">
+            <button class="btn btn-primary" onclick="downloadDigitalCard()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Descargar tarjeta
+            </button>
+            <button class="btn btn-outline" onclick="shareDigitalCard()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+              Compartir
+            </button>
+          </div>
+        </div>
+        <div class="card">
+          <div class="section-title mb-14">Compatibilidades sanguíneas</div>
+          <table>
+            <thead><tr><th>Grupo</th><th>Puede donar a</th><th>Puede recibir de</th></tr></thead>
+            <tbody>
+              <tr><td><strong>O+</strong></td><td>O+, A+, B+, AB+</td><td>O+, O–</td></tr>
+              <tr><td><strong>O–</strong></td><td>Todos los grupos (Donante universal)</td><td>O–</td></tr>
+              <tr><td><strong>A+</strong></td><td>A+, AB+</td><td>A+, A–, O+, O–</td></tr>
+              <tr><td><strong>A–</strong></td><td>A+, A–, AB+, AB–</td><td>A–, O–</td></tr>
+              <tr><td><strong>B+</strong></td><td>B+, AB+</td><td>B+, B–, O+, O–</td></tr>
+              <tr><td><strong>B–</strong></td><td>B+, B–, AB+, AB–</td><td>B–, O–</td></tr>
+              <tr><td><strong>AB+</strong></td><td>AB+ (Receptor universal)</td><td>Todos los grupos</td></tr>
+              <tr><td><strong>AB–</strong></td><td>AB+, AB–</td><td>AB–, A–, B–, O–</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- TENÉS QUE SABER -->
+    <div class="page" id="page-informacion">
+      <div class="section-hdr mb-14 info-hdr">
+        <p class="page-lead">Respuestas rápidas a las dudas más frecuentes de quienes quieren donar sangre.</p>
+        <div class="legend">
+          <span class="tag green">✓ Podés donar</span>
+          <span class="tag orange">◷ Tenés que esperar</span>
+          <span class="tag red">✗ No podés donar</span>
+        </div>
+      </div>
+      <div id="info-content"></div>
+    </div>
+
+    <!-- REQUISITOS -->
+    <div class="page" id="page-requisitos">
+      <div id="req-content"></div>
+    </div>
+
+    <!-- DONANTES -->
+    <div class="page" id="page-donantes">
+      <div class="card">
+        <div class="section-hdr mb-20">
+          <span class="section-title">Gestión de donantes</span>
+          <div style="display:flex;gap:10px;align-items:center">
+            <input id="donor-search" class="form-control" placeholder="Buscar por nombre, DNI o grupo..." style="width:260px" />
+            <button class="btn btn-primary btn-sm" onclick="openDonorModal()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              Agregar donante
+            </button>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Donante</th>
+                <th>Grupo</th>
+                <th>Rol</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="donantes-list"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- CENTROS -->
+    <div class="page" id="page-centros">
+      <div class="section-hdr mb-20">
+        <div>
+          <span class="section-title">Centros de donación en Mendoza</span>
+          <div style="font-size:12px;color:var(--gray);margin-top:2px">Acercate al centro más cómodo para vos o coordiná tu visita online con antelación.</div>
+        </div>
+        <button class="btn btn-primary btn-sm" onclick="openAppointmentModal()">
+          🩸 Agendar turno de donación
+        </button>
+      </div>
+
+      <div class="card mb-20" style="padding:14px 18px">
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px">
+          <div style="display:flex;gap:8px;flex-wrap:wrap" id="centros-zone-filters">
+            <button class="btn btn-sm btn-primary active" id="btn-zone-all" onclick="filterCentersByZone('all', this)">Todos (<span id="centros-count-badge">6</span>)</button>
+            <button class="btn btn-sm btn-outline" onclick="filterCentersByZone('Gran Mendoza', this)">Gran Mendoza</button>
+            <button class="btn btn-sm btn-outline" onclick="filterCentersByZone('Valle de Uco', this)">Valle de Uco</button>
+            <button class="btn btn-sm btn-outline" onclick="filterCentersByZone('Zona Este', this)">Zona Este</button>
+          </div>
+          <input id="centros-search" class="form-control" placeholder="Buscar por hospital o calle..." style="width:240px" oninput="filterCentersSearch(this.value)" />
+        </div>
+      </div>
+
+      <div id="centros-list"></div>
+    </div>
+
+    <!-- NOTIFICACIONES -->
+    <div class="page" id="page-notificaciones">
+      <div class="card">
+        <div class="section-hdr mb-20">
+          <span class="section-title">Centro de notificaciones</span>
+          <button class="btn btn-outline btn-sm" onclick="ApiClient.markAllNotificationsRead().then(() => { renderNotificaciones(); updateNotifBadge(); })">Marcar todas como leídas</button>
+        </div>
+        <div id="notif-list"></div>
+      </div>
+    </div>
+
+    <!-- STOCK -->
+    <div class="page" id="page-stock">
+      <div class="grid grid-2">
+        <div class="card">
+          <div class="section-hdr mb-20">
+            <span class="section-title">Stock de sangre por grupo</span>
+            <span class="tag orange">Actualizado en tiempo real</span>
+          </div>
+          <div class="alert warning mb-20" id="stock-warning-banner">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            <div><div class="alert-title">Atención en reservas de sangre</div><div class="alert-body">Verificá los niveles críticos y enviá alertas urgentes a donantes compatibles.</div></div>
+          </div>
+          <div id="stock-list"></div>
+        </div>
+        <div class="card">
+          <div class="section-title mb-14">Enviar alerta urgente</div>
+          <p style="font-size:13px;color:var(--gray);margin-bottom:18px">Notificá a todos los donantes compatibles con el grupo que necesitás, con un solo clic.</p>
+          <div class="form-group">
+            <label class="form-label">Grupo sanguíneo requerido</label>
+            <select class="form-control" id="stock-grupo">
+              <option>O+</option><option>O–</option><option>A+</option><option>A–</option>
+              <option>B+</option><option>B–</option><option>AB+</option><option>AB–</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Centro de referencia</label>
+            <select class="form-control" id="stock-centro">
+              <option>Banco Central de Sangre</option>
+              <option>Hospital Central</option>
+              <option>Hospital Notti</option>
+              <option>Hospital Lagomaggiore</option>
+              <option>Hospital Tupungato</option>
+              <option>Hospital San Martín</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Mensaje de la alerta</label>
+            <textarea class="form-control" id="stock-msg" rows="3" placeholder="Ej: Se necesitan donantes del grupo B– con carácter urgente en Hospital Notti."></textarea>
+          </div>
+          <button class="btn btn-primary" style="width:100%" onclick="sendStockAlert()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+            Enviar alerta
+          </button>
+        </div>
+      </div>
+
+      <!-- Historial y Trazabilidad de Movimientos -->
+      <div class="card" style="margin-top:24px">
+        <div class="section-hdr mb-14">
+          <div>
+            <span class="section-title">Trazabilidad y Registro de Movimientos de Stock</span>
+            <div style="font-size:12px;color:var(--gray);margin-top:4px">
+              Auditoría obligatoria de ingresos (donaciones) y egresos de stock con detalle de paciente/campaña y operador responsable.
+            </div>
+          </div>
+          <button class="btn btn-outline btn-sm" onclick="renderStockMovements()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+            Actualizar registros
+          </button>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Fecha y Hora</th>
+                <th>Tipo</th>
+                <th>Grupo</th>
+                <th>Bolsas</th>
+                <th>Destinatario / Paciente / Origen</th>
+                <th>Motivo</th>
+                <th>Responsable de la baja</th>
+                <th>Observaciones</th>
+              </tr>
+            </thead>
+            <tbody id="stock-movements-list">
+              <tr><td colspan="8" style="text-align:center;color:var(--gray);padding:24px">Cargando trazabilidad de movimientos...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- REPORTES -->
+    <div class="page" id="page-reportes">
+      <div class="grid grid-4 mb-24">
+        <div class="stat-card red">
+          <div class="stat-icon red">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+          </div>
+          <div class="stat-info">
+            <div class="label">Total donaciones</div>
+            <div class="value" id="report-total-donaciones">—</div>
+            <div class="delta">↑ Registros totales</div>
+          </div>
+        </div>
+        <div class="stat-card green">
+          <div class="stat-icon green">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+          </div>
+          <div class="stat-info">
+            <div class="label">Tasa de respuesta</div>
+            <div class="value" id="report-tasa-respuesta">—</div>
+            <div class="delta">↑ 7× vs redes sociales</div>
+          </div>
+        </div>
+        <div class="stat-card orange">
+          <div class="stat-icon orange">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          </div>
+          <div class="stat-info">
+            <div class="label">Tiempo respuesta</div>
+            <div class="value" id="report-tiempo-respuesta">—</div>
+            <div class="delta">↓ antes 48h promedio</div>
+          </div>
+        </div>
+        <div class="stat-card navy">
+          <div class="stat-icon navy">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07"/><path d="M1 1l22 22"/></svg>
+          </div>
+          <div class="stat-info">
+            <div class="label">Llamadas reducidas</div>
+            <div class="value" id="report-reduccion-llamadas">—</div>
+            <div class="delta">↓ vs línea base</div>
+          </div>
+        </div>
+      </div>
+      <div class="grid grid-2">
+        <div class="card">
+          <div class="section-title mb-14">Donaciones por grupo sanguíneo</div>
+          <table>
+            <thead><tr><th>Grupo</th><th>Donaciones</th><th>% del total</th><th>Tendencia</th></tr></thead>
+            <tbody id="report-grupos-body">
+              <tr><td colspan="4" style="text-align:center;color:var(--gray)">Cargando métricas...</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="card">
+          <div class="section-title mb-14">Indicadores clave del MVP</div>
+          <div id="report-mvp-metrics-wrap">
+            <div style="color:var(--gray);text-align:center;padding:20px">Cargando indicadores...</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- GESTIÓN Y ASIGNACIÓN DE TURNOS (ADMINISTRACIÓN) -->
+    <div class="page" id="page-turnos">
+      <div class="section-hdr mb-20">
+        <div>
+          <span class="section-title">Gestión y Asignación de Turnos de Donación</span>
+          <div style="font-size:12px;color:var(--gray);margin-top:2px">
+            Revisá y administrá los turnos agendados, visualizá la agenda mensual, reprogramá fechas y asigná nuevos turnos.
+          </div>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+          <div class="btn-group" style="display:flex;background:#F1F5F9;padding:3px;border-radius:10px;border:1px solid var(--gray-border)">
+            <button id="turnos-view-table-btn" class="btn btn-sm" style="background:white;font-weight:700;color:var(--navy);box-shadow:0 1px 3px rgba(0,0,0,0.06);border-radius:7px;padding:6px 12px" onclick="setTurnosViewMode('table')">
+              📋 Lista de Turnos
+            </button>
+            <button id="turnos-view-cal-btn" class="btn btn-sm" style="background:transparent;font-weight:600;color:var(--gray);border-radius:7px;padding:6px 12px" onclick="setTurnosViewMode('calendar')">
+              📅 Agenda / Calendario
+            </button>
+          </div>
+          <button class="btn btn-primary btn-sm" onclick="openAdminNewAppointmentModal()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            + Asignar Turno
+          </button>
+          <button class="btn btn-outline btn-sm" onclick="renderTurnosAdmin()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+            Actualizar
+          </button>
+        </div>
+      </div>
+
+      <!-- Métricas rápidas de turnos -->
+      <div class="grid grid-4 mb-20">
+        <div class="stat-card navy" style="padding:16px 20px">
+          <div class="stat-icon navy">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          </div>
+          <div class="stat-info">
+            <div class="label">Total solicitudes</div>
+            <div class="value" id="turnos-kpi-total">0</div>
+            <div class="delta">Turnos registrados</div>
+          </div>
+        </div>
+
+        <div class="stat-card orange" style="padding:16px 20px">
+          <div class="stat-icon orange">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          </div>
+          <div class="stat-info">
+            <div class="label">Pendientes</div>
+            <div class="value" id="turnos-kpi-pendientes">0</div>
+            <div class="delta neg">A la espera de confirmación</div>
+          </div>
+        </div>
+
+        <div class="stat-card green" style="padding:16px 20px">
+          <div class="stat-icon green">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          </div>
+          <div class="stat-info">
+            <div class="label">Confirmados</div>
+            <div class="value" id="turnos-kpi-confirmados">0</div>
+            <div class="delta">Próximos a asistir</div>
+          </div>
+        </div>
+
+        <div class="stat-card red" style="padding:16px 20px">
+          <div class="stat-icon red">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2C12 2 4 10 4 15.5C4 19.09 7.58 22 12 22C16.42 22 20 19.09 20 15.5C20 10 12 2 12 2Z"/></svg>
+          </div>
+          <div class="stat-info">
+            <div class="label">Donaciones realizadas</div>
+            <div class="value" id="turnos-kpi-completados">0</div>
+            <div class="delta">Turnos completados</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- VISTA 1: TABLA DE TURNOS -->
+      <div id="turnos-table-view-container">
+        <!-- Barra de Filtros y Búsqueda -->
+        <div class="card mb-20" style="padding:14px 18px">
+          <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px">
+            <div style="display:flex;gap:8px;flex-wrap:wrap" id="turnos-status-filters">
+              <button class="btn btn-sm btn-primary active" data-estado="Todos" onclick="filterTurnosByEstado('Todos', this)">Todos (<span id="turnos-count-all">0</span>)</button>
+              <button class="btn btn-sm btn-outline" data-estado="Pendiente" onclick="filterTurnosByEstado('Pendiente', this)">Pendientes (<span id="turnos-count-pen">0</span>)</button>
+              <button class="btn btn-sm btn-outline" data-estado="Confirmada" onclick="filterTurnosByEstado('Confirmada', this)">Confirmados (<span id="turnos-count-conf">0</span>)</button>
+              <button class="btn btn-sm btn-outline" data-estado="Completada" onclick="filterTurnosByEstado('Completada', this)">Completados (<span id="turnos-count-comp">0</span>)</button>
+              <button class="btn btn-sm btn-outline" data-estado="Cancelada" onclick="filterTurnosByEstado('Cancelada', this)">Cancelados (<span id="turnos-count-canc">0</span>)</button>
+            </div>
+            <div style="display:flex;gap:10px;align-items:center">
+              <input id="turnos-search-input" class="form-control" placeholder="Buscar por donante, DNI o centro..." style="width:260px" oninput="filterTurnosSearch(this.value)" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Tabla de Turnos -->
+        <div class="card">
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Fecha y Horario</th>
+                  <th>Donante</th>
+                  <th>Grupo</th>
+                  <th>Contacto / WhatsApp</th>
+                  <th>Centro Asignado</th>
+                  <th>Motivo / Notas</th>
+                  <th>Estado</th>
+                  <th style="text-align:right">Acciones y Notificación</th>
+                </tr>
+              </thead>
+              <tbody id="turnos-table-body">
+                <tr>
+                  <td colspan="8" style="text-align:center;padding:24px;color:var(--gray)">Cargando turnos de donación...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- VISTA 2: AGENDA / CALENDARIO INTERACTIVO -->
+      <div id="turnos-calendar-view-container" style="display:none">
+        <div class="calendar-wrap">
+          <div class="calendar-header">
+            <div class="calendar-nav">
+              <button class="btn btn-outline btn-sm" onclick="navigateTurnosCalendar(-1)">&lt; Mes Anterior</button>
+              <button class="btn btn-outline btn-sm" onclick="navigateTurnosCalendar(0)">Hoy</button>
+              <button class="btn btn-outline btn-sm" onclick="navigateTurnosCalendar(1)">Mes Siguiente &gt;</button>
+            </div>
+            <div class="calendar-month-title" id="calendar-current-month-label">Octubre 2026</div>
+            <button class="btn btn-primary btn-sm" onclick="openAdminNewAppointmentModal()">
+              + Asignar Turno
+            </button>
+          </div>
+          <div class="calendar-weekdays">
+            <div class="calendar-weekday">Lun</div>
+            <div class="calendar-weekday">Mar</div>
+            <div class="calendar-weekday">Mié</div>
+            <div class="calendar-weekday">Jue</div>
+            <div class="calendar-weekday">Vie</div>
+            <div class="calendar-weekday">Sáb</div>
+            <div class="calendar-weekday">Dom</div>
+          </div>
+          <div class="calendar-days-grid" id="calendar-days-grid-body">
+            <!-- Días generados dinámicamente -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONFIGURACIÓN DEL SISTEMA Y CENTROS DE DONACIÓN (ADMINISTRACIÓN) -->
+    <div class="page" id="page-configuracion">
+      <div class="section-hdr mb-20">
+        <div>
+          <span class="section-title">Configuración del Sistema y Centros de Donación</span>
+          <div style="font-size:12px;color:var(--gray);margin-top:2px">
+            Establecé los parámetros clínicos de espera entre donaciones y administrá los centros oficiales de hemoterapia de Mendoza.
+          </div>
+        </div>
+        <button class="btn btn-primary btn-sm" onclick="openCenterModal()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          + Nuevo Centro
+        </button>
+      </div>
+
+      <!-- Card: Intervalo de Recuperación Biológica -->
+      <div class="card mb-20" style="padding:22px 26px">
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:18px">
+          <div style="max-width:680px">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+              <span style="font-size:20px">⏳</span>
+              <span style="font-size:16px;font-weight:800;color:var(--navy)">Intervalo de Espera entre Donaciones</span>
+              <span class="tag green" id="config-status-tag">Activo: 90 días</span>
+            </div>
+            <p style="font-size:13px;color:var(--gray);line-height:1.5;margin:0">
+              Cantidad de días mínimos de reposo que deben transcurrir entre donaciones de sangre para que un donante figure como <strong>Apto</strong> y pueda postularse a solicitudes o turnos. Al registrar una donación, el sistema calcula automáticamente la fecha de disponibilidad según este valor.
+            </p>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;background:#F8FAFC;padding:12px 18px;border-radius:12px;border:1px solid var(--gray-border)">
+            <label style="font-size:13px;font-weight:700;color:var(--navy);white-space:nowrap">Días de reposo:</label>
+            <input type="number" id="config-dias-espera" class="form-control" style="width:90px;font-weight:700;text-align:center" min="1" max="365" value="90" />
+            <button class="btn btn-primary btn-sm" onclick="saveConfigDiasEspera()">
+              Guardar
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card: Centros de Donación CRUD -->
+      <div class="card">
+        <div class="section-hdr mb-14" style="padding-bottom:12px;border-bottom:1px solid var(--gray-border)">
+          <div>
+            <div style="font-size:16px;font-weight:800;color:var(--navy)">Centros de Donación y Colecta</div>
+            <div style="font-size:12px;color:var(--gray)">Gestioná altas, modificaciones, bajas y disponibilidad de puntos de extracción en la provincia.</div>
+          </div>
+          <div style="display:flex;gap:8px">
+            <input id="config-centers-search" class="form-control" placeholder="Buscar centro..." style="width:220px;height:34px;font-size:12px" oninput="filterConfigCenters(this.value)" />
+          </div>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Centro de Donación</th>
+                <th>Dirección</th>
+                <th>Horarios de Atención</th>
+                <th>Días de Atención</th>
+                <th>Contacto</th>
+                <th>Estado</th>
+                <th style="text-align:right">Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="config-centers-table-body">
+              <tr>
+                <td colspan="7" style="text-align:center;padding:24px;color:var(--gray)">Cargando centros de donación...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /main-content -->
+</div><!-- /app-shell -->
+
+<!-- ============================================================
+     MODALES INTERACTIVOS
+     ============================================================ -->
+
+<!-- MODAL: Nueva alerta urgente -->
+<div class="modal-overlay" id="alert-modal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeAlertModal()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+    <div class="modal-title">Enviar alerta urgente</div>
+    <div class="form-group">
+      <label class="form-label">Grupo sanguíneo requerido</label>
+      <select class="form-control" id="alert-grupo">
+        <option>O+</option><option>O–</option><option>A+</option><option>A–</option>
+        <option>B+</option><option>B–</option><option>AB+</option><option>AB–</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Centro de referencia</label>
+      <select class="form-control" id="alert-centro">
+        <option>Banco Central de Sangre</option>
+        <option>Hospital Central</option>
+        <option>Hospital Notti</option>
+        <option>Hospital Lagomaggiore</option>
+        <option>Hospital Tupungato</option>
+        <option>Hospital San Martín</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Mensaje</label>
+      <textarea class="form-control" id="alert-msg" rows="3" placeholder="Ej: Se necesitan donantes del grupo B– con carácter urgente."></textarea>
+    </div>
+    <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:8px">
+      <button class="btn btn-outline" onclick="closeAlertModal()">Cancelar</button>
+      <button class="btn btn-primary" onclick="sendAlert()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+        Enviar alerta
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Agregar Donante -->
+<div class="modal-overlay" id="donor-modal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeDonorModal()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+    <div class="modal-title">Registrar nuevo donante</div>
+    <div class="grid grid-2" style="gap:12px">
+      <div class="form-group">
+        <label class="form-label">Nombre</label>
+        <input class="form-control" id="new-donor-name" placeholder="Ej: Mateo" required />
+      </div>
+      <div class="form-group">
+        <label class="form-label">Apellido</label>
+        <input class="form-control" id="new-donor-surname" placeholder="Ej: Rossi" required />
+      </div>
+    </div>
+    <div class="grid grid-2" style="gap:12px">
+      <div class="form-group">
+        <label class="form-label">DNI (sin puntos)</label>
+        <input class="form-control" id="new-donor-dni" placeholder="Ej: 35123456" maxlength="10" required />
+      </div>
+      <div class="form-group">
+        <label class="form-label">Fecha de nacimiento</label>
+        <input class="form-control" id="new-donor-birth" type="date" required />
+      </div>
+    </div>
+    <div class="grid grid-2" style="gap:12px">
+      <div class="form-group">
+        <label class="form-label">Grupo sanguíneo</label>
+        <select class="form-control" id="new-donor-group">
+          <option>O+</option><option>O–</option><option>A+</option><option>A–</option>
+          <option>B+</option><option>B–</option><option>AB+</option><option>AB–</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Teléfono de contacto</label>
+        <input class="form-control" id="new-donor-phone" placeholder="Ej: +54 9 261 555-9999" />
+      </div>
+    </div>
+    <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:10px">
+      <button class="btn btn-outline" onclick="closeDonorModal()">Cancelar</button>
+      <button class="btn btn-primary" onclick="submitNewDonor()">Guardar donante</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Ficha / Perfil de Donante -->
+<div class="modal-overlay" id="donor-detail-modal">
+  <div class="modal-box" style="max-width:580px">
+    <button class="modal-close" onclick="closeDonorDetailModal()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+    <div class="modal-title" id="donor-detail-title">Ficha del donante</div>
+    <div id="donor-detail-body">Cargando información...</div>
+  </div>
+</div>
+
+<!-- MODAL: Registrar Donación -->
+<div class="modal-overlay" id="donation-modal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeDonationModal()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+    <div class="modal-title">Registrar nueva donación</div>
+    
+    <!-- Identificación o selección del Donante -->
+    <div class="form-group" id="donation-donor-select-group">
+      <label class="form-label">Donante asociado</label>
+      <select class="form-control" id="donation-user-id"></select>
+    </div>
+    <div class="form-group" id="donation-donor-info-card" style="display:none">
+      <label class="form-label">Donante</label>
+      <div style="background:var(--gray-light);padding:10px 14px;border-radius:8px;font-size:13px;font-weight:600;color:var(--navy);display:flex;align-items:center;gap:8px;border:1px solid var(--gray-border)">
+        <span style="font-size:18px">👤</span>
+        <span id="donation-donor-info-text">Cargando datos del donante...</span>
+      </div>
+      <input type="hidden" id="donation-donor-hidden-id" />
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Centro de extracción</label>
+      <select class="form-control" id="donation-centro"></select>
+    </div>
+    <div class="grid grid-2" style="gap:12px">
+      <div class="form-group">
+        <label class="form-label">Fecha de donación</label>
+        <input class="form-control" id="donation-fecha" type="date" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">Hemoglobina</label>
+        <input class="form-control" id="donation-hemoglobina" value="14.2 g/dl" />
+      </div>
+    </div>
+    <div class="grid grid-2" style="gap:12px">
+      <div class="form-group">
+        <label class="form-label">Presión arterial</label>
+        <input class="form-control" id="donation-presion" value="120/80" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">Serología</label>
+        <select class="form-control" id="donation-serologia">
+          <option value="Negativa">Negativa (Apto)</option>
+          <option value="En estudio">En estudio</option>
+        </select>
+      </div>
+    </div>
+    <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:10px">
+      <button class="btn btn-outline" onclick="closeDonationModal()">Cancelar</button>
+      <button class="btn btn-primary" onclick="submitNewDonation()">Guardar donación</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Configuración del Sistema -->
+<div class="modal-overlay" id="settings-modal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeSettingsModal()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+    <div class="modal-title">Configuración del sistema</div>
+    <div class="form-group">
+      <label class="form-label">Servicio Provincial</label>
+      <div style="font-size:14px;color:var(--navy-mid);font-weight:600">Servicio de Hemoterapia · Mendoza</div>
+      <div style="font-size:12px;color:var(--gray)">Versión 1.1 Fullstack (Python FastAPI + Node.js + PostgreSQL)</div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Notificaciones Push del Navegador</label>
+      <button class="btn btn-outline btn-sm" onclick="requestPushNotifications()">Habilitar notificaciones en este equipo</button>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Borrar caché de sesión</label>
+      <button class="btn btn-outline btn-sm" style="color:var(--red);border-color:var(--red)" onclick="handleLogout()">Cerrar sesión y limpiar credenciales</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Consumir / Dar de Baja Stock de Sangre con Trazabilidad -->
+<div class="modal-overlay" id="stock-consume-modal">
+  <div class="modal-box" style="max-width:540px">
+    <button class="modal-close" onclick="closeStockConsumeModal()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+    <div class="modal-title" style="display:flex;align-items:center;gap:8px">
+      <span>🩸 Registrar Baja / Consumo de Stock</span>
+    </div>
+    <p style="font-size:13px;color:var(--gray);margin-bottom:16px">
+      Trazabilidad obligatoria: especificá el paciente, campaña o servicio hospitalario destinatario para registrar el egreso y el operador a cargo.
+    </p>
+
+    <input type="hidden" id="consume-stock-id" />
+
+    <div class="grid grid-2" style="gap:12px">
+      <div class="form-group">
+        <label class="form-label">Grupo sanguíneo</label>
+        <input class="form-control" id="consume-grupo" readonly style="font-weight:700;background:var(--gray-light)" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">Disponibles en banco</label>
+        <input class="form-control" id="consume-disponibles" readonly style="background:var(--gray-light)" />
+      </div>
+    </div>
+
+    <div class="grid grid-2" style="gap:12px">
+      <div class="form-group">
+        <label class="form-label">Unidades a consumir *</label>
+        <input class="form-control" id="consume-unidades" type="number" min="1" value="1" required />
+      </div>
+      <div class="form-group">
+        <label class="form-label">Motivo de egreso *</label>
+        <select class="form-control" id="consume-motivo">
+          <option value="Transfusión a paciente">Transfusión a paciente</option>
+          <option value="Urgencia quirúrgica / Guardia">Urgencia quirúrgica / Guardia</option>
+          <option value="Traslado a otro hospital">Traslado a otro hospital</option>
+          <option value="Campaña sanitaria">Campaña sanitaria</option>
+          <option value="Descarte por vencimiento">Descarte por vencimiento</option>
+          <option value="Otro">Otro destino</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Destinatario / Paciente / Campaña *</label>
+      <input class="form-control" id="consume-destinatario" placeholder="Ej: Paciente Juan Gómez (HC 84920) / Quirófano 2" required />
+      <span style="font-size:11px;color:var(--gray)">Ingresá nombre del paciente, DNI, cama, o nombre de la campaña/hospital destino.</span>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Responsable de la baja (Operador actual)</label>
+      <input class="form-control" id="consume-responsable" readonly style="background:var(--gray-light);font-size:13px;font-weight:600;color:var(--navy)" />
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Observaciones / Notas adicionales</label>
+      <textarea class="form-control" id="consume-notas" rows="2" placeholder="Ej: Solicitud médica firmada por Dr. Ramírez. Protocolo de transfusión OK."></textarea>
+    </div>
+
+    <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:14px">
+      <button class="btn btn-outline" onclick="closeStockConsumeModal()">Cancelar</button>
+      <button class="btn btn-primary" style="background:var(--red);border-color:var(--red)" onclick="submitStockConsumption()">
+        Confirmar y Registrar Baja
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Registrar Ingreso / Transferencia de Stock con Trazabilidad -->
+<div class="modal-overlay" id="stock-income-modal">
+  <div class="modal-box" style="max-width:540px">
+    <button class="modal-close" onclick="closeStockIncomeModal()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+    <div class="modal-title" style="display:flex;align-items:center;gap:8px">
+      <span>➕ Registrar Ingreso de Stock de Sangre</span>
+    </div>
+    
+    <div style="background:#EFF6FF;border:1px solid #BFDBFE;padding:12px 14px;border-radius:8px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;gap:12px">
+      <div>
+        <div style="font-size:12px;font-weight:700;color:#1E40AF">¿El ingreso proviene de un donante voluntario?</div>
+        <div style="font-size:11px;color:#1E3A8A">Podés registrar la donación completa vinculada a la ficha del donante.</div>
+      </div>
+      <button class="btn btn-primary btn-sm" style="white-space:nowrap;padding:6px 12px;font-size:11px" onclick="closeStockIncomeModal(); openDonationModal();">
+        🩸 Ir a Donación
+      </button>
+    </div>
+
+    <input type="hidden" id="income-stock-id" />
+
+    <div class="grid grid-2" style="gap:12px">
+      <div class="form-group">
+        <label class="form-label">Grupo sanguíneo</label>
+        <input class="form-control" id="income-grupo" readonly style="font-weight:700;background:var(--gray-light)" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">Unidades a ingresar *</label>
+        <input class="form-control" id="income-unidades" type="number" min="1" max="60" value="1" required />
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Motivo / Vía de ingreso *</label>
+      <select class="form-control" id="income-motivo">
+        <option value="Transferencia interhospitalaria">Transferencia interhospitalaria</option>
+        <option value="Campaña externa de colecta">Campaña externa de colecta</option>
+        <option value="Recepción desde Banco Regional">Recepción desde Banco Regional</option>
+        <option value="Ajuste de inventario verificado">Ajuste de inventario verificado</option>
+        <option value="Donación externa / Colecta móvil">Donación externa / Colecta móvil</option>
+        <option value="Otro ingreso">Otro ingreso</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Centro remitente / Origen del stock *</label>
+      <input class="form-control" id="income-origen" placeholder="Ej: Hospital Central / Móvil Colecta Tupungato / Banco Regional" required />
+      <span style="font-size:11px;color:var(--gray)">Hospital, centro derivador, colecta comunitaria o entidad que envía las unidades.</span>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Responsable del ingreso (Operador actual)</label>
+      <input class="form-control" id="income-responsable" readonly style="background:var(--gray-light);font-size:13px;font-weight:600;color:var(--navy)" />
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Observaciones / Lote / Nro de bolsas</label>
+      <textarea class="form-control" id="income-notas" rows="2" placeholder="Ej: Lote EXT-2026-44. Cadena de frío verificada a 4°C. Serología validada."></textarea>
+    </div>
+
+    <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:14px">
+      <button class="btn btn-outline" onclick="closeStockIncomeModal()">Cancelar</button>
+      <button class="btn btn-primary" style="background:var(--green);border-color:var(--green)" onclick="submitStockIncome()">
+        Confirmar y Registrar Ingreso
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Quiero Donar Sangre (Agendar Turno / Intención de Donar) -->
+<div class="modal-overlay" id="appointment-modal">
+  <div class="modal-box" style="max-width:580px">
+    <button class="modal-close" onclick="closeAppointmentModal()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+    <div class="modal-title" style="display:flex;align-items:center;gap:10px">
+      <span style="font-size:24px">🩸</span>
+      <div>
+        <div style="font-size:18px;font-weight:800;color:var(--navy)">Quiero donar sangre</div>
+        <div style="font-size:12px;color:var(--gray);font-weight:400">Coordiná tu visita a un centro de donación de Mendoza</div>
+      </div>
+    </div>
+
+    <!-- Si proviene de responder a una alerta urgente -->
+    <div id="appointment-alert-banner" style="display:none;background:#FEF2F2;border:1px solid #FECACA;padding:12px 14px;border-radius:8px;margin-bottom:16px">
+      <div style="display:flex;align-items:center;gap:8px">
+        <span style="font-size:18px">🚨</span>
+        <div style="font-size:13px;font-weight:700;color:var(--red)" id="appointment-alert-title">Respondiendo a llamado solidario urgente</div>
+      </div>
+      <div style="font-size:12px;color:#991B1B;margin-top:2px" id="appointment-alert-desc"></div>
+      <input type="hidden" id="appointment-alert-id" />
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Elegí el centro de donación más cercano *</label>
+      <select class="form-control" id="appointment-centro" required></select>
+      <div id="appointment-centro-info" style="font-size:12px;color:var(--gray);margin-top:4px"></div>
+    </div>
+
+    <div class="grid grid-2" style="gap:12px">
+      <div class="form-group">
+        <label class="form-label">Fecha deseada *</label>
+        <input class="form-control" id="appointment-fecha" type="date" required />
+      </div>
+      <div class="form-group">
+        <label class="form-label">Franja horaria preferida *</label>
+        <select class="form-control" id="appointment-franja">
+          <option value="Mañana (08:00 a 09:30)">Mañana (08:00 a 09:30)</option>
+          <option value="Mañana (09:30 a 11:30)" selected>Mañana (09:30 a 11:30)</option>
+          <option value="Tarde (13:30 a 15:30)">Tarde (13:30 a 15:30)</option>
+          <option value="Tarde (15:30 a 17:30)">Tarde (15:30 a 17:30)</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Checklist previo amigable -->
+    <div style="background:var(--gray-light);border-radius:10px;padding:14px;margin-bottom:16px;border:1px solid var(--gray-border)">
+      <div style="font-size:12px;font-weight:700;color:var(--navy);margin-bottom:8px;display:flex;align-items:center;gap:6px">
+        <span>💡</span> Recordatorios clave para el día de tu donación:
+      </div>
+      <ul style="font-size:12px;color:var(--navy-mid);margin:0;padding-left:18px;line-height:1.6">
+        <li><strong>No vengas en ayunas:</strong> Tomá líquidos dulces, café, té o mate, y comé frutas. Evitá lácteos y grasas.</li>
+        <li><strong>Llevá tu DNI</strong> o documento oficial para identificarte.</li>
+        <li><strong>Pesar más de 50 kg</strong> y sentirte bien de salud.</li>
+        <li>Haber descansado al menos 6 horas la noche anterior.</li>
+      </ul>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Comentarios o consultas (opcional)</label>
+      <textarea class="form-control" id="appointment-notas" rows="2" placeholder="Ej: Es mi primera vez donando / Llego alrededor de las 10:00"></textarea>
+    </div>
+
+    <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:14px">
+      <button class="btn btn-outline" onclick="closeAppointmentModal()">Cancelar</button>
+      <button class="btn btn-primary" onclick="submitAppointment()">
+        Confirmar turno de donación
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Notificar y Contactar al Donante -->
+<div class="modal-overlay" id="notify-donor-modal">
+  <div class="modal-box" style="max-width:540px">
+    <button class="modal-close" onclick="closeNotifyDonorModal()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+    <div class="modal-title" style="display:flex;align-items:center;gap:8px">
+      <span style="font-size:22px">💬</span>
+      <span>Notificar y Contactar Donante</span>
+    </div>
+
+    <!-- Info del donante destinatario -->
+    <div style="background:#EFF6FF;border:1px solid #BFDBFE;border-radius:10px;padding:12px 16px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between">
+      <div>
+        <div style="font-weight:800;color:var(--navy);font-size:15px" id="notify-donor-name">María González</div>
+        <div style="font-size:12px;color:var(--navy-mid);margin-top:2px" id="notify-donor-meta">DNI 30.123.456 · Grupo O+ · Turno: 06/10/2026</div>
+      </div>
+      <div id="notify-donor-phone-badge" style="font-size:12px;font-weight:700;color:var(--green)">
+        📱 +54 9 261 456-7890
+      </div>
+    </div>
+
+    <input type="hidden" id="notify-appointment-id" />
+    <input type="hidden" id="notify-donor-phone" />
+    <input type="hidden" id="notify-appointment-date" />
+    <input type="hidden" id="notify-appointment-center" />
+
+    <!-- Plantillas rápidas -->
+    <div class="form-group mb-14">
+      <label class="form-label" style="font-size:12px;font-weight:700">Plantillas rápidas sugeridas</label>
+      <div style="display:flex;gap:6px;flex-wrap:wrap">
+        <button type="button" class="btn btn-outline btn-sm" style="font-size:11px;padding:4px 8px" onclick="applyNotifyTemplate('confirmacion')">
+          ✅ Confirmación
+        </button>
+        <button type="button" class="btn btn-outline btn-sm" style="font-size:11px;padding:4px 8px" onclick="applyNotifyTemplate('recordatorio')">
+          🔔 Recordatorio &amp; Requisitos
+        </button>
+        <button type="button" class="btn btn-outline btn-sm" style="font-size:11px;padding:4px 8px" onclick="applyNotifyTemplate('reprogramar')">
+          ⏳ Reprogramación
+        </button>
+        <button type="button" class="btn btn-outline btn-sm" style="font-size:11px;padding:4px 8px" onclick="applyNotifyTemplate('agradecimiento')">
+          ❤️ Agradecimiento
+        </button>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Título de la notificación</label>
+      <input class="form-control" id="notify-title-input" placeholder="Ej: Confirmación de tu turno de donación" />
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Mensaje personalizado</label>
+      <textarea class="form-control" id="notify-body-input" rows="4" placeholder="Escribí el mensaje para el donante..."></textarea>
+    </div>
+
+    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-top:18px">
+      <button type="button" class="btn btn-outline btn-sm" onclick="sendNotifyWhatsApp()" style="color:#15803D;border-color:#86EFAC;display:flex;align-items:center;gap:6px;font-weight:700">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91C2.13 13.66 2.59 15.36 3.45 16.86L2.05 22L7.3 20.62C8.75 21.41 10.38 21.83 12.04 21.83C17.5 21.83 21.95 17.38 21.95 11.92C21.95 9.27 20.92 6.78 19.05 4.91C17.18 3.03 14.69 2 12.04 2M12.05 3.67C14.25 3.67 16.31 4.53 17.87 6.09C19.42 7.65 20.28 9.72 20.28 11.92C20.28 16.46 16.58 20.15 12.04 20.15C10.56 20.15 9.11 19.76 7.85 19L7.55 18.83L4.43 19.65L5.26 16.61L5.06 16.29C4.24 14.99 3.81 13.47 3.81 11.91C3.81 7.37 7.5 3.67 12.05 3.67Z"/></svg>
+        Contactar por WhatsApp
+      </button>
+
+      <div style="display:flex;gap:8px">
+        <button type="button" class="btn btn-outline" onclick="closeNotifyDonorModal()">Cancelar</button>
+        <button type="button" class="btn btn-primary" onclick="submitDonorNotification()">
+          📨 Enviar Notificación App
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Cambiar Estado / Asignación de Turno -->
+<div class="modal-overlay" id="appointment-status-modal">
+  <div class="modal-box" style="max-width:480px">
+    <button class="modal-close" onclick="closeAppointmentStatusModal()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+    <div class="modal-title">Actualizar Estado de Turno</div>
+
+    <input type="hidden" id="status-modal-appointment-id" />
+
+    <div class="form-group">
+      <label class="form-label">Donante</label>
+      <input class="form-control" id="status-modal-donor-name" readonly style="background:var(--gray-light)" />
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Nuevo Estado del Turno</label>
+      <select class="form-control" id="status-modal-new-estado">
+        <option value="Confirmada">Confirmada (Turno aprobado)</option>
+        <option value="Pendiente">Pendiente (A la espera de confirmación)</option>
+        <option value="Completada">Completada (Donación realizada)</option>
+        <option value="Cancelada">Cancelada (Por el centro o donante)</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Notas internas o de reprogramación</label>
+      <textarea class="form-control" id="status-modal-notas" rows="2" placeholder="Ej: Se coordinó llegada a las 09:30"></textarea>
+    </div>
+
+    <div class="form-group">
+      <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer">
+        <input type="checkbox" id="status-modal-notify-donor" checked />
+        <span>Enviar notificación automática al donante sobre este cambio</span>
+      </label>
+    </div>
+
+    <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:16px">
+      <button class="btn btn-outline" onclick="closeAppointmentStatusModal()">Cancelar</button>
+      <button class="btn btn-primary" onclick="submitAppointmentStatusChange()">Guardar Estado</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Reprogramar Turno de Donación -->
+<div class="modal-overlay" id="modal-reschedule-appointment">
+  <div class="modal-box" style="max-width:500px">
+    <button class="modal-close" onclick="closeRescheduleModal()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+    <div class="modal-title">🔄 Reprogramar Turno de Donación</div>
+    <p style="font-size:13px;color:var(--gray);margin-bottom:14px">
+      Modificá la fecha y horario del turno. Se notificará inmediatamente al donante con los nuevos datos.
+    </p>
+
+    <input type="hidden" id="resched-appointment-id" />
+
+    <div class="form-group">
+      <label class="form-label">Donante</label>
+      <input class="form-control" id="resched-donor-name" readonly style="background:var(--gray-light);font-weight:600" />
+    </div>
+
+    <div class="grid grid-2" style="gap:12px">
+      <div class="form-group">
+        <label class="form-label">Nueva Fecha *</label>
+        <input class="form-control" id="resched-new-fecha" type="date" required />
+      </div>
+      <div class="form-group">
+        <label class="form-label">Nueva Franja Horaria *</label>
+        <select class="form-control" id="resched-new-franja">
+          <option value="07:00 – 08:00">07:00 – 08:00</option>
+          <option value="08:00 – 09:00">08:00 – 09:00</option>
+          <option value="09:00 – 10:00">09:00 – 10:00</option>
+          <option value="10:00 – 11:00">10:00 – 11:00</option>
+          <option value="11:00 – 12:00">11:00 – 12:00</option>
+          <option value="12:00 – 13:00">12:00 – 13:00</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Motivo de reprogramación (Opcional)</label>
+      <input class="form-control" id="resched-motivo" placeholder="Ej: Solicitud del donante / Reorganización de guardia" />
+    </div>
+
+    <div class="form-group">
+      <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer">
+        <input type="checkbox" id="resched-notify-donor" checked />
+        <span>Enviar notificación automática al donante</span>
+      </label>
+    </div>
+
+    <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:16px">
+      <button class="btn btn-outline" onclick="closeRescheduleModal()">Cancelar</button>
+      <button class="btn btn-primary" onclick="submitRescheduleAppointment()">Guardar y Reprogramar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Asignar Nuevo Turno por Administrador -->
+<div class="modal-overlay" id="modal-admin-new-appointment">
+  <div class="modal-box" style="max-width:520px">
+    <button class="modal-close" onclick="closeAdminNewAppointmentModal()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+    <div class="modal-title">➕ Asignar Turno de Donación</div>
+    <p style="font-size:13px;color:var(--gray);margin-bottom:14px">
+      Creá una cita programada directamente para cualquier donante registrado en el centro que elijas.
+    </p>
+
+    <div class="form-group">
+      <label class="form-label">Seleccionar Donante *</label>
+      <select class="form-control" id="admin-new-apt-user" onchange="checkAdminSelectedDonorAptitude()"></select>
+      <div id="admin-new-apt-donor-warning" style="display:none;margin-top:6px"></div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Centro de Donación *</label>
+      <select class="form-control" id="admin-new-apt-centro"></select>
+    </div>
+
+    <div class="grid grid-2" style="gap:12px">
+      <div class="form-group">
+        <label class="form-label">Fecha del Turno *</label>
+        <input class="form-control" id="admin-new-apt-fecha" type="date" required />
+      </div>
+      <div class="form-group">
+        <label class="form-label">Franja Horaria *</label>
+        <select class="form-control" id="admin-new-apt-franja">
+          <option value="07:00 – 08:00">07:00 – 08:00</option>
+          <option value="08:00 – 09:00">08:00 – 09:00</option>
+          <option value="09:00 – 10:00" selected>09:00 – 10:00</option>
+          <option value="10:00 – 11:00">10:00 – 11:00</option>
+          <option value="11:00 – 12:00">11:00 – 12:00</option>
+          <option value="12:00 – 13:00">12:00 – 13:00</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Motivo o Notas</label>
+      <input class="form-control" id="admin-new-apt-motivo" placeholder="Ej: Convocatoria directa de Hemoterapia" value="Turno asignado por Hemoterapia" />
+    </div>
+
+    <div class="form-group">
+      <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer">
+        <input type="checkbox" id="admin-new-apt-notify" checked />
+        <span>Enviar notificación automática al donante</span>
+      </label>
+    </div>
+
+    <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:16px">
+      <button class="btn btn-outline" onclick="closeAdminNewAppointmentModal()">Cancelar</button>
+      <button class="btn btn-primary" onclick="submitAdminNewAppointment()">Confirmar y Asignar Turno</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Crear o Editar Centro de Donación -->
+<div class="modal-overlay" id="modal-center-form">
+  <div class="modal-box" style="max-width:540px">
+    <button class="modal-close" onclick="closeCenterModal()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+    <div class="modal-title" id="center-modal-title">➕ Nuevo Centro de Donación</div>
+
+    <input type="hidden" id="center-form-id" />
+
+    <div class="form-group">
+      <label class="form-label">Nombre del Centro / Hospital *</label>
+      <input class="form-control" id="center-form-nombre" placeholder="Ej: Hospital Universitario" required />
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Dirección Completa *</label>
+      <input class="form-control" id="center-form-direccion" placeholder="Ej: Paso de los Andes 3051, Ciudad de Mendoza" required />
+    </div>
+
+    <div class="grid grid-2" style="gap:12px">
+      <div class="form-group">
+        <label class="form-label">Horario de Atención *</label>
+        <input class="form-control" id="center-form-horario" placeholder="Ej: Lun–Vie 7:30 – 12:30" required />
+      </div>
+      <div class="form-group">
+        <label class="form-label">Días de Atención *</label>
+        <input class="form-control" id="center-form-dias" placeholder="Ej: Lunes a Viernes" required />
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Teléfono de Contacto</label>
+      <input class="form-control" id="center-form-telefono" placeholder="Ej: +54 261 413-5000" />
+    </div>
+
+    <div class="form-group">
+      <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer">
+        <input type="checkbox" id="center-form-activo" checked />
+        <span>Centro activo y habilitado para recibir turnos y donantes</span>
+      </label>
+    </div>
+
+    <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:16px">
+      <button class="btn btn-outline" onclick="closeCenterModal()">Cancelar</button>
+      <button class="btn btn-primary" onclick="submitCenterForm()">Guardar Centro</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Agenda Detallada del Día Seleccionado -->
+<div class="modal-overlay" id="modal-day-agenda">
+  <div class="modal-box" style="max-width:620px">
+    <button class="modal-close" onclick="closeDayAgendaModal()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+    <div class="modal-title" id="day-agenda-modal-title">📅 Turnos del Día</div>
+    <div id="day-agenda-modal-body" style="margin-top:14px;display:flex;flex-direction:column;gap:12px;max-height:460px;overflow-y:auto">
+      <!-- Turnos generados dinámicamente -->
+    </div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-top:18px;padding-top:12px;border-top:1px solid var(--gray-border)">
+      <button class="btn btn-outline btn-sm" onclick="closeDayAgendaModal()">Cerrar</button>
+      <button class="btn btn-primary btn-sm" onclick="openAdminNewAppointmentForDate()">+ Asignar Turno en esta fecha</button>
+    </div>
+  </div>
+</div>
+
+<!-- Contenedor de notificaciones flotantes en tiempo real -->
+<div class="toast-notif-container" id="toast-notif-container"></div>
+
+<script src="js/api.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

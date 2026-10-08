@@ -1,0 +1,10 @@
+**/node_modules
+**/venv
+**/.venv
+**/__pycache__
+*.pyc
+*.pyo
+.git
+.gitignore
+.env
+soydonante.db
