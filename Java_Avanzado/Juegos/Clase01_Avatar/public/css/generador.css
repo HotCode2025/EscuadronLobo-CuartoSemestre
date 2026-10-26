@@ -37,7 +37,7 @@
     color: var(--color-texto-tenue);
 }
 
-/* [TAREA 4] Flexbox: los controles del generador se acomodan en columna en
+/* Flexbox: los controles del generador se acomodan en columna en
    mobile y se estiran en fila en pantallas más anchas */
 .generador__custom {
     display: flex;
@@ -146,7 +146,7 @@
     font-family: var(--fuente-mono);
 }
 
-/* [TAREA 4] Flexbox en columna: una barra por elemento, una debajo de otra */
+/* Flexbox en columna: una barra por elemento, una debajo de otra */
 .resultado__conteo {
     display: flex;
     flex-direction: column;
@@ -229,5 +229,211 @@
         flex-direction: row;
         align-items: flex-end;
         justify-content: space-between;
+    }
+}
+
+/* =========================================================================
+   "¿Cómo funciona?": dos opciones desplegables (sencilla y con código)
+   ========================================================================= */
+
+.generador__intro {
+    margin: 8px 0 14px;
+    color: var(--color-texto);
+    font-size: 0.95rem;
+}
+
+.generador__nota-musica {
+    display: block;
+    margin-top: 4px;
+    color: var(--color-texto-tenue);
+    font-size: 0.82rem;
+}
+
+.desplegable {
+    margin-top: 12px;
+    border: 1px solid var(--color-borde);
+    border-radius: var(--radio);
+    background: rgba(2, 12, 38, 0.55);
+    overflow: hidden;
+}
+
+.desplegable > summary {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 18px;
+    cursor: pointer;
+    list-style: none; /* saca el triangulito por defecto */
+    font-family: var(--fuente-display);
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    color: var(--color-texto);
+    transition: background 0.15s ease;
+}
+
+.desplegable > summary::-webkit-details-marker {
+    display: none;
+}
+
+/* Flecha propia a la derecha: gira al abrir */
+.desplegable > summary::after {
+    content: "▾";
+    margin-left: auto;
+    font-size: 1.3rem;
+    color: var(--cian);
+    transition: transform 0.2s ease;
+}
+
+.desplegable[open] > summary::after {
+    transform: rotate(180deg);
+}
+
+.desplegable > summary:hover {
+    background: rgba(92, 200, 255, 0.1);
+}
+
+.desplegable > summary:focus-visible {
+    outline: 3px solid var(--cian);
+    outline-offset: -3px;
+}
+
+.desplegable[open] > summary {
+    color: var(--cian-claro);
+    border-bottom: 1px solid var(--color-borde);
+}
+
+.desplegable__icono {
+    font-size: 1.5rem;
+}
+
+.desplegable__titulo small {
+    display: block;
+    margin-top: 2px;
+    font-family: var(--fuente-texto);
+    font-weight: 400;
+    font-size: 0.8rem;
+    letter-spacing: 0;
+    color: var(--color-texto-tenue);
+}
+
+.desplegable__contenido {
+    padding: 16px 18px 18px;
+    font-size: 0.95rem;
+}
+
+.desplegable__contenido > p:first-child {
+    margin-top: 0;
+}
+
+.desplegable__subtitulo {
+    margin: 18px 0 8px;
+    font-size: 0.95rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--cian);
+}
+
+.pasos-simples {
+    margin: 0;
+    padding-left: 22px;
+}
+
+.pasos-simples li {
+    margin-bottom: 8px;
+}
+
+.pasos-simples li::marker {
+    color: var(--cian);
+    font-weight: 700;
+}
+
+.glosario {
+    margin: 0;
+}
+
+.glosario dt {
+    margin-top: 10px;
+    font-weight: 700;
+    color: var(--amarillo);
+}
+
+.glosario dd {
+    margin: 2px 0 0;
+    color: var(--color-texto);
+}
+
+.desplegable__aviso {
+    margin: 18px 0 0;
+    padding: 10px 14px;
+    border-left: 4px solid var(--cian);
+    border-radius: 6px;
+    background: rgba(92, 200, 255, 0.1);
+    font-size: 0.9rem;
+}
+
+/* =========================================================================
+   Botón "Volver al juego": grande y brillante, para que se vea sobre el fondo
+   (mismo estilo que el botón "Jugar" de la portada)
+   ========================================================================= */
+
+.pie {
+    padding: 14px 0 10px;
+}
+
+.pie__enlace {
+    display: inline-flex;
+    align-items: center;
+    gap: 14px;
+    padding: 0.75em 2em;
+    font-family: var(--fuente-display);
+    font-weight: 700;
+    font-size: clamp(1.15rem, 3.6vw, 1.6rem);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--cian-claro);
+    text-shadow: 0 0 10px rgba(92, 200, 255, 0.95);
+    text-decoration: none;
+    border: 2px solid rgba(170, 235, 255, 0.95);
+    border-radius: 999px;
+    background: linear-gradient(180deg, rgba(40, 150, 255, 0.85), rgba(8, 40, 140, 0.95));
+    box-shadow: 0 0 22px rgba(60, 170, 255, 0.75), inset 0 0 14px rgba(120, 220, 255, 0.35), 0 8px 24px rgba(0, 0, 0, 0.5);
+    animation: pulso-enlace 2.4s ease-in-out infinite;
+    transition: transform 0.15s ease, filter 0.15s ease;
+}
+
+.pie__enlace:hover {
+    color: #ffffff;
+    border-color: #ffffff;
+    transform: scale(1.06);
+    filter: brightness(1.15);
+}
+
+.pie__enlace:active {
+    transform: scale(0.97);
+}
+
+.pie__enlace:focus-visible {
+    outline: 3px solid #ffffff;
+    outline-offset: 4px;
+}
+
+.pie__flecha {
+    font-size: 1.3em;
+    line-height: 1;
+}
+
+@keyframes pulso-enlace {
+    0%,
+    100% {
+        box-shadow: 0 0 16px rgba(60, 170, 255, 0.6), inset 0 0 12px rgba(120, 220, 255, 0.3), 0 8px 24px rgba(0, 0, 0, 0.5);
+    }
+    50% {
+        box-shadow: 0 0 34px rgba(90, 200, 255, 1), inset 0 0 18px rgba(150, 230, 255, 0.5), 0 8px 24px rgba(0, 0, 0, 0.5);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .pie__enlace {
+        animation: none;
     }
 }

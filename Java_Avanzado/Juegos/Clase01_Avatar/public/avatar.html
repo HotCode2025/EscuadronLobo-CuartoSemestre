@@ -9,16 +9,20 @@
 </head>
 
 <body>
+    <!-- Capa decorativa que cubre TODA la pantalla (queda detrás del juego): el lobo del
+         Escuadrón y la esfera de los 4 elementos van flotando por todo el fondo -->
+    <div class="fondo-animado" aria-hidden="true">
+        <span class="vagabundo vagabundo--lobo"><img src="./assets/img/lobo-escuadron.png" alt="" /></span>
+        <span class="vagabundo vagabundo--esfera"><img src="./assets/img/esfera-elementos.png" alt="" /></span>
+    </div>
+
     <div class="tablero">
 
         <header class="encabezado">
             <div class="logo-wrap">
-                <img class="logo-principal" src="./assets/img/logo.png" alt="Los Elementos: La Leyenda de Aang — Escuadrón Lobo" />
-                <span class="emblema-flotante">
-                    <img class="emblema-flotante__img" src="./assets/img/emblema-elementos.png" alt="Los cuatro elementos" />
-                </span>
+                <img class="logo-principal" src="./assets/img/logo-los-elementos.jpg" alt="Los Elementos: la leyenda de Aang. Katara, Aang, Zuko y Toph" />
             </div>
-            <h1><img class="titulo-imagen" src="./assets/img/titulo-avatar.png" alt="AVATAR" /></h1> <!--Esto es estático, No cambia, el h1 se usa una sola vez-->
+            <h1><img class="titulo-imagen" src="./assets/img/titulo-avatar-transparente.png" alt="AVATAR" /></h1> <!--Esto es estático, No cambia, el h1 se usa una sola vez-->
             <p class="subtitulo">La leyenda de Aang</p>
         </header>
 
@@ -47,45 +51,59 @@
             </div>
         </section>
 
-        <section id="seleccionar-ataque" class="panel">
-            <h2>Elige tu ataque</h2> <!--Se puede utilizar varias veces-->
+        <!-- Escenario: el mapa y el panel de combate van juntos (lado a lado en
+             pantallas anchas) para ver a los personajes mientras se pelea -->
+        <div id="escenario" class="escenario">
+            <section id="ver-mapa" class="panel panel--mapa">
+                <h2>Recorre el mapa</h2>
+                <!-- El canvas es el "lienzo" donde JS dibuja el fondo y los personajes.
+                     Su tamaño (ancho/alto) lo fija iniciarMapa() en avatar.js -->
+                <canvas id="mapa">Tu navegador no soporta canvas.</canvas>
+                <p class="mapa__ayuda">Mové a tu personaje con las flechas del teclado ⬆️ ⬇️ ⬅️ ➡️</p>
+            </section>
 
-            <div class="marcador">
-                <div class="marcador__lado">
-                    <p class="marcador__fila">Tu personaje <span id="personaje-jugador" class="marcador__nombre"></span></p>
-                    <div class="vidas" id="vidas-jugador-corazones"> <!--Flexbox: fila de corazones animada-->
-                        <span class="vidas__corazon">❤️</span>
-                        <span class="vidas__corazon">❤️</span>
-                        <span class="vidas__corazon">❤️</span>
+            <div class="escenario__combate">
+                <section id="seleccionar-ataque" class="panel">
+                    <h2>Elige tu ataque</h2> <!--Se puede utilizar varias veces-->
+
+                    <div class="marcador">
+                        <div class="marcador__lado">
+                            <p class="marcador__fila">Tu personaje <span id="personaje-jugador" class="marcador__nombre"></span></p>
+                            <div class="vidas" id="vidas-jugador-corazones"> <!--Flexbox: fila de corazones animada-->
+                                <span class="vidas__corazon">❤️</span>
+                                <span class="vidas__corazon">❤️</span>
+                                <span class="vidas__corazon">❤️</span>
+                            </div>
+                            <span id="vidas-jugador" class="visualmente-oculto">3</span> <!--Con esta etiqueta vamos a modificar el 3 con JS, queda oculta pero accesible-->
+                        </div>
+
+                        <div class="marcador__lado">
+                            <p class="marcador__fila">El personaje <span id="personaje-enemigo" class="marcador__nombre"></span> del enemigo</p>
+                            <div class="vidas" id="vidas-enemigo-corazones">
+                                <span class="vidas__corazon">❤️</span>
+                                <span class="vidas__corazon">❤️</span>
+                                <span class="vidas__corazon">❤️</span>
+                            </div>
+                            <span id="vidas-enemigo" class="visualmente-oculto">3</span>
+                        </div>
                     </div>
-                    <span id="vidas-jugador" class="visualmente-oculto">3</span> <!--Con esta etiqueta vamos a modificar el 3 con JS, queda oculta pero accesible-->
-                </div>
 
-                <div class="marcador__lado">
-                    <p class="marcador__fila">El personaje <span id="personaje-enemigo" class="marcador__nombre"></span> del enemigo</p>
-                    <div class="vidas" id="vidas-enemigo-corazones">
-                        <span class="vidas__corazon">❤️</span>
-                        <span class="vidas__corazon">❤️</span>
-                        <span class="vidas__corazon">❤️</span>
+                    <div class="fila-ataques">
+                        <button id="boton-punio" class="boton boton--ataque">Puño 👊</button>
+                        <button id="boton-patada" class="boton boton--ataque">Patada 🦵</button>
+                        <button id="boton-barrida" class="boton boton--ataque">Barrida 🧹</button>
                     </div>
-                    <span id="vidas-enemigo" class="visualmente-oculto">3</span>
-                </div>
+                </section>
+
+                <section id="mensajes" class="panel panel--mensajes">
+                    <div id="resultados-rondas" class="fila-resultados"></div> <!--Acá se van agregando en fila los resultados de cada ronda-->
+                </section>
+
+                <section id="reiniciar" class="panel panel--reiniciar">
+                    <button id="boton-reiniciar" class="boton boton--primario">Reiniciar</button>
+                </section>
             </div>
-
-            <div class="fila-ataques">
-                <button id="boton-punio" class="boton boton--ataque">Puño 👊</button>
-                <button id="boton-patada" class="boton boton--ataque">Patada 🦵</button>
-                <button id="boton-barrida" class="boton boton--ataque">Barrida 🧹</button>
-            </div>
-        </section>
-
-        <section id="mensajes" class="panel panel--mensajes">
-            <div id="resultados-rondas" class="fila-resultados"></div> <!--Acá se van agregando en fila los resultados de cada ronda-->
-        </section>
-
-        <section id="reiniciar" class="panel panel--reiniciar">
-            <button id="boton-reiniciar" class="boton boton--primario">Reiniciar</button>
-        </section>
+        </div>
 
         <section id="reglas" class="panel panel--reglas">
             <h3>Ayuda del juego</h3>
@@ -136,6 +154,9 @@
         </footer>
 
     </div>
+    <!-- Botón fijo en la esquina para silenciar o reactivar la música y los efectos -->
+    <button id="boton-sonido" class="boton-sonido" type="button" aria-label="Activar o silenciar el sonido" title="Sonido">🔊</button>
+    <script src="./js/audio.js"></script>
     <script src="./js/avatar-clase.js"></script>
     <script src="./js/avatar.js"></script>
 </body>

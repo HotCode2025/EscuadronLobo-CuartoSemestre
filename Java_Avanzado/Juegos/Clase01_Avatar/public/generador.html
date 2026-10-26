@@ -17,9 +17,78 @@
             <p class="subtitulo">Paradigma POO · Escuadrón Lobo</p>
         </header>
 
-        <section class="panel">
+        <section class="panel" id="como-funciona">
             <h2>¿Cómo funciona?</h2>
-            <p class="generador__explicacion">
+            <p class="generador__intro">
+                Elegí cómo querés que te lo cuente. Tocá una de las dos opciones para abrirla 👇
+                <span class="generador__nota-musica">🔊 Mientras haya una abierta suena una música de latidos.</span>
+            </p>
+
+            <!-- Opción 1: lenguaje sencillo, para quienes recién empiezan -->
+            <details class="desplegable" id="explicacion-sencilla">
+                <summary>
+                    <span class="desplegable__icono">🌱</span>
+                    <span class="desplegable__titulo">Explicación sencilla
+                        <small>para quienes recién empiezan</small>
+                    </span>
+                </summary>
+                <div class="desplegable__contenido">
+                    <p>
+                        <strong>Pensalo como un molde de galletitas 🍪.</strong> Un personaje es un molde que
+                        ya trae todo lo que hace falta: un <strong>nombre</strong>, un <strong>elemento</strong>
+                        (fuego, agua, tierra o aire) y sus <strong>vidas</strong>. Con ese mismo molde podés
+                        hacer 1 personaje o 10.000: todos salen armados igual, pero cada uno con su propio
+                        nombre y elemento.
+                    </p>
+
+                    <h3 class="desplegable__subtitulo">Paso a paso</h3>
+                    <ol class="pasos-simples">
+                        <li><strong>Elegí cuántos querés.</strong> Tocá 100, 1.000 o 10.000, o escribí el número
+                            que prefieras en "Cantidad personalizada".</li>
+                        <li><strong>Tocá "Generar".</strong> La computadora arma todos al instante y le da a
+                            cada uno un nombre y un elemento al azar.</li>
+                        <li><strong>Mirá el resultado.</strong> Abajo aparece cuántos se crearon, cuánto tardó
+                            (en milisegundos: 1.000 ms es 1 segundo) y cuántos salieron de cada elemento.</li>
+                        <li><strong>¿Querés uno solo tuyo?</strong> En "Crear personaje personalizado" escribí
+                            un nombre, elegí su elemento y tocá "Crear personaje". Después lo vas a encontrar
+                            en el juego, en la lista "Personajes personalizados".</li>
+                    </ol>
+
+                    <h3 class="desplegable__subtitulo">Las palabras difíciles, en criollo</h3>
+                    <dl class="glosario">
+                        <dt>Clase</dt>
+                        <dd>El molde: la receta que dice cómo es un personaje.</dd>
+                        <dt>Instancia (u objeto)</dt>
+                        <dd>Cada personaje que sale del molde. Si hacés 100, tenés 100 instancias.</dd>
+                        <dt>Herencia</dt>
+                        <dd>Los personajes de Fuego, Agua, Tierra y Aire copian todo lo básico del molde general
+                            y le suman lo propio. Es como una familia: todos llevan el apellido, pero cada uno
+                            tiene su forma de ser.</dd>
+                        <dt>Polimorfismo</dt>
+                        <dd>Una misma orden ("atacar") que cada elemento cumple a su manera, con su propio
+                            poder.</dd>
+                        <dt>Encapsulamiento</dt>
+                        <dd>Las vidas están "guardadas" dentro del personaje: nadie desde afuera puede
+                            cambiarlas por error.</dd>
+                    </dl>
+
+                    <p class="desplegable__aviso">
+                        💡 Esto es una demostración: sirve para ver que, usando clases, el programa puede crear
+                        miles de personajes en un abrir y cerrar de ojos.
+                    </p>
+                </div>
+            </details>
+
+            <!-- Opción 2: la explicación técnica, con el código -->
+            <details class="desplegable" id="explicacion-codigo">
+                <summary>
+                    <span class="desplegable__icono">💻</span>
+                    <span class="desplegable__titulo">Explicación con código
+                        <small>para quienes programan</small>
+                    </span>
+                </summary>
+                <div class="desplegable__contenido">
+                    <p class="generador__explicacion">
                 Cada personaje generado es una <strong>instancia</strong> de una clase
                 (<code>PersonajeFuego</code>, <code>PersonajeAgua</code>, <code>PersonajeTierra</code>
                 o <code>PersonajeAire</code>), y las cuatro <strong>heredan</strong> de una clase
@@ -27,7 +96,7 @@
                 combinando un nombre y un elemento al azar.
             </p>
 
-            <pre class="codigo-muestra"><code>class Personaje {
+                    <pre class="codigo-muestra"><code>class Personaje {
   #vidas               <span class="codigo-muestra__comentario">// encapsulado: no se toca desde afuera</span>
   constructor(nombre, elemento) { ... }
   atacar() { return `${this.nombre} ataca` }
@@ -36,6 +105,8 @@
 class PersonajeFuego extends Personaje {   <span class="codigo-muestra__comentario">// herencia</span>
   atacar() { return `${this.nombre} 🔥 lanza una bola de fuego` } <span class="codigo-muestra__comentario">// polimorfismo</span>
 }</code></pre>
+                </div>
+            </details>
         </section>
 
         <section class="panel">
@@ -96,13 +167,18 @@ class PersonajeFuego extends Personaje {   <span class="codigo-muestra__comentar
         </section>
 
         <footer class="pie">
-            <a href="./avatar.html" class="pie__enlace">← Volver al juego</a>
+            <a href="./avatar.html" class="pie__enlace"><span class="pie__flecha" aria-hidden="true">←</span> Volver al juego</a>
         </footer>
 
     </div>
 
+    <!-- Botón fijo en la esquina para silenciar o reactivar el sonido -->
+    <button id="boton-sonido" class="boton-sonido" type="button" aria-label="Activar o silenciar el sonido" title="Sonido">🔊</button>
+
+    <script src="./js/audio.js"></script>
     <script src="./js/personajes-poo.js"></script>
     <script src="./js/generador-demo.js"></script>
+    <script src="./js/generador-sonido.js"></script>
 </body>
 
 </html>

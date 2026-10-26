@@ -22,6 +22,14 @@ const sectionSeleccionarAtaque = document.getElementById('seleccionar-ataque')
 const sectionMensajes = document.getElementById('mensajes')
 const contenedorRondas = document.getElementById('resultados-rondas')
 const sectionReiniciar = document.getElementById('reiniciar')
+const sectionVerMapa = document.getElementById('ver-mapa')
+const sectionReglas = document.getElementById('reglas')
+const escenario = document.getElementById('escenario') // mapa + combate, juntos
+
+/* --- Mapa (canvas): "mapa" es el elemento y "lienzo" es el contexto 2D con
+   el que dibujamos sobre él (drawImage, clearRect, etc.) --- */
+const mapa = document.getElementById('mapa')
+const lienzo = mapa.getContext('2d')
 
 /* --- Inputs de selección de personaje --- */
 const inputZuko = document.getElementById('zuko')
@@ -46,6 +54,7 @@ const botonPunio = document.getElementById('boton-punio')
 const botonPatada = document.getElementById('boton-patada')
 const botonBarrida = document.getElementById('boton-barrida')
 const botonReiniciar = document.getElementById('boton-reiniciar')
+const botonSonido = document.getElementById('boton-sonido')
 
 /* --- Datos del juego ---
    Guardarlos en arreglos permite recorrerlos con un loop en vez de repetir
@@ -80,6 +89,24 @@ let ataqueJugador
 let ataqueEnemigo
 let vidasJugador = 3
 let vidasEnemigo = 3
+
+/* --- Estado del mapa ---
+   personajeJugador / personajeEnemigo guardan el NOMBRE elegido (texto);
+   los "...Objeto" guardan el objeto Avatar completo (con x, y, velocidad...).
+   Los declaramos acá, globales, para que las funciones del mapa los
+   compartan, y se les asigna el valor recién cuando se elige personaje. */
+let personajeJugador
+let personajeEnemigo
+let personajeJugadorObjeto
+let personajeEnemigoObjeto
+let intervalo // guarda el setInterval que repinta el mapa, para poder frenarlo
+let temporizadorSonidoEmpate // espera del sonido de empate de la última ronda (se cancela si empieza otra)
+
+// Imagen de fondo del mapa: la creamos y le damos el src apenas arranca el
+// archivo para que ya esté cargada cuando se dibuje por primera vez
+const VELOCIDAD = 5 // píxeles que avanza el personaje en cada repintado (cada 30 ms)
+let mapaBackground = new Image()
+mapaBackground.src = './assets/img/mapa.jpg'
 
 function cargarPersonajesCustom() {
     try {
@@ -121,9 +148,52 @@ function limpiarPersonajesCustom() {
     renderizarPersonajesCustom()
 }
 
+/* =========================================================================
+   Sonido (la música y los efectos están en audio.js, objeto "Sonido")
+   ========================================================================= */
+
+function actualizarBotonSonido() {
+    botonSonido.textContent = Sonido.estaSilenciado() ? '🔇' : '🔊'
+}
+
+function inicializarSonido() {
+    // La música del menú queda "anotada": los navegadores no dejan sonar nada
+    // hasta que la persona toca la página, así que arranca en el primer
+    // click o tecla (o apenas el navegador lo permita)
+    Sonido.musica('menu')
+    actualizarBotonSonido()
+
+    const arrancarSonido = (evento) => {
+        // Si el primer toque fue en el botón de sonido, lo maneja el botón
+        if (evento.target.closest && evento.target.closest('#boton-sonido')) {
+            return
+        }
+        Sonido.iniciar()
+        window.removeEventListener('pointerdown', arrancarSonido)
+        window.removeEventListener('keydown', arrancarSonido)
+    }
+    window.addEventListener('pointerdown', arrancarSonido)
+    window.addEventListener('keydown', arrancarSonido)
+
+    botonSonido.addEventListener('click', () => {
+        const yaEstabaActivo = Sonido.estaActivo()
+        Sonido.iniciar()
+        // Primer click con el sonido todavía apagado: alcanza con encenderlo,
+        // salvo que estuviera silenciado de antes (ahí lo reactivamos)
+        if (yaEstabaActivo || Sonido.estaSilenciado()) {
+            Sonido.alternar()
+        }
+        actualizarBotonSonido()
+    })
+
+    Sonido.iniciar() // por si el navegador ya permite audio sin tocar nada
+}
+
 function iniciarJuego() {
+    inicializarSonido()
     sectionSeleccionarAtaque.style.display = 'none'
     sectionReiniciar.style.display = 'none'
+    sectionVerMapa.style.display = 'none'
     renderizarPersonajesCustom()
 
     botonPersonaje.addEventListener('click', seleccionarPersonajeJugador)
@@ -150,21 +220,182 @@ function seleccionarPersonajeJugador() {
         return
     }
 
-    const personajeJugador = seleccionado ? seleccionado.nombre : personajeCustomSeleccionado
+    personajeJugador = seleccionado ? seleccionado.nombre : personajeCustomSeleccionado
     spanPersonajeJugador.innerHTML = personajeJugador
+
+    // Batalla: la música de la pantalla anterior se apaga (con fundido) y arranca la música
+    // épica, que suena en loop todo el tiempo que se juega, hasta que termina la partida
+    Sonido.musica('batalla')
 
     sectionSeleccionarAtaque.style.display = 'block' // mostramos
     sectionSeleccionarPersonaje.style.display = 'none' // ocultamos
 
-    const personajeEnemigo = elegirPersonajeEnemigo(personajeJugador)
+    personajeEnemigo = elegirPersonajeEnemigo(personajeJugador)
     spanPersonajeEnemigo.innerHTML = personajeEnemigo
+
+    // El mapa se inicia ACÁ, después de saber quién es el jugador y quién el
+    // enemigo: iniciarMapa() necesita esos dos nombres para buscar sus objetos
+    // (si se llamara antes, las variables todavía serían undefined)
+    sectionVerMapa.style.display = 'flex'
+    escenario.classList.add('escenario--activo') // muestra mapa y combate juntos
+    document.body.classList.add('en-partida') // modo compacto: todo entra en una pantalla
+
+    // Las reglas pasan a estar justo DEBAJO de las vidas y los botones de ataque, así
+    // se pueden consultar sin irse de la zona de combate (antes de jugar quedan al
+    // final de la página). Es el mismo elemento: solo cambia de lugar en el HTML.
+    sectionSeleccionarAtaque.after(sectionReglas)
+    iniciarMapa()
+
+    // Con el encabezado achicado, todo el escenario entra arriba de la página:
+    // volvemos al principio para verlo completo (sin tener que bajar)
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+}
+
+/* =========================================================================
+   Mapa y movimiento con el teclado
+   ========================================================================= */
+
+function iniciarMapa() {
+    mapa.width = ANCHO_MAPA
+    mapa.height = ALTO_MAPA
+
+    // Buscamos el objeto Avatar completo de cada uno y lo guardamos en las
+    // variables globales para que todas las funciones de movimiento lo usen
+    personajeJugadorObjeto = obtenerObjetoPersonaje(personajeJugador)
+    personajeEnemigoObjeto = obtenerObjetoPersonaje(personajeEnemigo)
+
+    intervalo = setInterval(pintarCanvas, 30) // repinta el mapa cada 30 ms
+
+    window.addEventListener('keydown', sePresionoUnaTecla) // al apretar una tecla
+    window.addEventListener('keyup', detenerMovimiento) // al soltarla, frena
+}
+
+// Antes se llamaba pintarPersonaje, pero ya no pinta solo al personaje: pinta
+// todo el canvas (fondo + jugador + enemigo), por eso el nombre nuevo
+function pintarCanvas() {
+    // 1) Actualizamos la posición según la velocidad actual
+    personajeJugadorObjeto.x += personajeJugadorObjeto.velocidadX
+    personajeJugadorObjeto.y += personajeJugadorObjeto.velocidadY
+
+    // 2) Evitamos que el personaje se salga del mapa
+    personajeJugadorObjeto.x = Math.max(0, Math.min(mapa.width - personajeJugadorObjeto.ancho, personajeJugadorObjeto.x))
+    personajeJugadorObjeto.y = Math.max(0, Math.min(mapa.height - personajeJugadorObjeto.alto, personajeJugadorObjeto.y))
+
+    // 3) Limpiamos y dibujamos: primero el fondo, después los personajes
+    lienzo.clearRect(0, 0, mapa.width, mapa.height)
+    lienzo.drawImage(mapaBackground, 0, 0, mapa.width, mapa.height)
+    // El que está más abajo en el mapa (y mayor) se dibuja al final, así queda
+    // por delante del otro: da sensación de profundidad
+    ;[personajeEnemigoObjeto, personajeJugadorObjeto]
+        .sort((a, b) => a.y - b.y)
+        .forEach((avatar) => avatar.pintarAvatar(lienzo))
+
+    // Los efectos de ataque van al final, por encima de todo
+    personajeEnemigoObjeto.pintarEfecto(lienzo)
+    personajeJugadorObjeto.pintarEfecto(lienzo)
+}
+
+function sePresionoUnaTecla(event) {
+    // event es un objeto que trae toda la info del evento; event.key dice
+    // qué tecla se apretó
+    switch (event.key) {
+        case 'ArrowUp':
+            event.preventDefault() // evita que la flecha también haga scroll
+            Sonido.pasos(true)
+            moverArriba()
+            break
+        case 'ArrowDown':
+            event.preventDefault()
+            Sonido.pasos(true)
+            moverAbajo()
+            break
+        case 'ArrowLeft':
+            event.preventDefault()
+            Sonido.pasos(true)
+            moverIzquierda()
+            break
+        case 'ArrowRight':
+            event.preventDefault()
+            Sonido.pasos(true)
+            moverDerecha()
+            break
+        default:
+            break
+    }
+}
+
+function moverArriba() {
+    personajeJugadorObjeto.velocidadY = -VELOCIDAD
+}
+
+function moverAbajo() {
+    personajeJugadorObjeto.velocidadY = VELOCIDAD
+}
+
+function moverIzquierda() {
+    personajeJugadorObjeto.velocidadX = -VELOCIDAD
+}
+
+function moverDerecha() {
+    personajeJugadorObjeto.velocidadX = VELOCIDAD
+}
+
+function detenerMovimiento() {
+    Sonido.pasos(false) // al frenar, dejan de sonar los pasos
+    personajeJugadorObjeto.velocidadX = 0
+    personajeJugadorObjeto.velocidadY = 0
+}
+
+// Cada elemento se dibuja en el mapa con el aspecto de un personaje base:
+// Fuego → Zuko, Agua → Katara, Tierra → Toph, Aire → Aang
+const PERSONAJE_POR_ELEMENTO = { fuego: 'Zuko', agua: 'Katara', tierra: 'Toph', aire: 'Aang' }
+
+// Devuelve el personaje base (Zuko, Katara, Aang o Toph) cuyo aspecto le toca a
+// "nombre". Los 4 principales son su propia base; los personalizados (creados en
+// el generador) usan la base de su elemento. Si no se puede saber, devuelve ''.
+function personajeBaseDe(nombre) {
+    if (PERSONAJES.includes(nombre)) {
+        return nombre
+    }
+    const personalizado = cargarPersonajesCustom().find((personaje) => personaje.nombre === nombre)
+    const elemento = personalizado ? String(personalizado.elemento).trim().toLowerCase() : ''
+    return PERSONAJE_POR_ELEMENTO[elemento] || ''
+}
+
+// Recorre el array "avatares" (creado en avatar-clase.js) y devuelve el
+// objeto completo del personaje cuyo nombre coincide. Si el nombre no está (un
+// personaje creado desde el generador), devuelve un Avatar nuevo con ese nombre
+// pero con el aspecto de su elemento, para que el mapa lo dibuje igual.
+function obtenerObjetoPersonaje(nombre) {
+    for (let i = 0; i < avatares.length; i++) {
+        if (nombre === avatares[i].nombre) {
+            return avatares[i]
+        }
+    }
+
+    const base = personajeBaseDe(nombre).toLowerCase() // ej: 'zuko'
+    if (base) {
+        return new Avatar(
+            nombre,
+            `./assets/img/${base}.png`,
+            3,
+            `./assets/img/mapa-${base}-1.png`,
+            `./assets/img/mapa-${base}-2.png`
+        )
+    }
+
+    // Último recurso (elemento desconocido): el emblema de los 4 elementos
+    return new Avatar(nombre, './assets/img/emblema-elementos.png', 3)
 }
 
 function elegirPersonajeEnemigo(personajeJugador) {
     let personajeEnemigo = ''
     // Elegimos un personaje al azar de la lista y lo comparamos con el del
     // jugador; si coinciden, volvemos a sortear hasta que sean distintos
-    while (personajeEnemigo === '' || personajeEnemigo === personajeJugador) {
+    // (se compara con la base del jugador: si elegiste un personaje de Fuego,
+    // el enemigo no puede ser Zuko porque se verían iguales en el mapa)
+    const baseJugador = personajeBaseDe(personajeJugador)
+    while (personajeEnemigo === '' || personajeEnemigo === baseJugador) {
         const indiceAleatorio = Math.floor(Math.random() * PERSONAJES.length)
         personajeEnemigo = PERSONAJES[indiceAleatorio]
     }
@@ -192,17 +423,48 @@ function ataqueAleatorioEnemigo() {
 }
 
 function combate() {
+    // Si quedó sonando (o por sonar) el resultado de la ronda anterior, se corta:
+    // empieza una ronda nueva
+    clearTimeout(temporizadorSonidoEmpate)
+    Sonido.cortarResultado()
+
+    // Los dos personajes ejecutan en el mapa el ataque que eligieron
+    animarAtaques()
+
     if (ataqueJugador === ataqueEnemigo) {
         crearMensaje('EMPATE')
+        // Ronda empatada: suena el sonido de empate cuando terminan los golpes
+        temporizadorSonidoEmpate = setTimeout(() => Sonido.efecto('finalEmpatado'), DURACION_ATAQUE + 250)
     } else if (esVictoriaDelJugador(ataqueJugador, ataqueEnemigo)) {
         crearMensaje('GANASTE')
         restarVida('enemigo')
+        personajeEnemigoObjeto.recibirGolpe() // el enemigo parpadea: perdió la ronda
+        sonarGolpeRecibido()
     } else {
         crearMensaje('PERDISTE')
         restarVida('jugador')
+        personajeJugadorObjeto.recibirGolpe()
+        sonarGolpeRecibido()
     }
 
     revisarVidas()
+}
+
+// Cada personaje hace en el mapa el ataque que eligió (puño, patada o barrida),
+// mirando y lanzándose hacia su oponente
+function animarAtaques() {
+    personajeJugadorObjeto.atacar(ataqueJugador, personajeEnemigoObjeto)
+    personajeEnemigoObjeto.atacar(ataqueEnemigo, personajeJugadorObjeto)
+
+    // Cada ataque suena: el del enemigo un poco más bajo y apenas después
+    Sonido.efecto(ataqueJugador)
+    setTimeout(() => Sonido.efecto(ataqueEnemigo, 0.75), 80)
+}
+
+// El golpe del que pierde la ronda suena justo cuando el ataque rival llega
+// (a la mitad de la animación), igual que el parpadeo en el mapa
+function sonarGolpeRecibido() {
+    setTimeout(() => Sonido.efecto('golpe'), DURACION_ATAQUE / 2)
 }
 
 function esVictoriaDelJugador(ataqueJugador, ataqueEnemigo) {
@@ -243,6 +505,17 @@ function revisarVidas() {
 
 function crearMensajeFinal(resultado) {
     sectionReiniciar.style.display = 'block'
+    detenerMapa()
+
+    // La música épica sigue sonando mientras se ve el último golpe, y recién después se
+    // apaga suavemente; justo cuando se está yendo, suena el sonido del resultado final
+    // (ganaste o perdiste). Así los golpes, la música y el resultado no se pisan.
+    setTimeout(() => Sonido.musica(null), DURACION_ATAQUE + 300)
+    setTimeout(
+        () => Sonido.efecto(resultado === 'GANASTE' ? 'finalGanado' : 'finalPerdido'),
+        DURACION_ATAQUE + 550
+    )
+
     // Va directo a sectionMensajes (no a la fila de rondas), así queda solo,
     // debajo de la fila, bien destacado
     crearImagenResultado(resultado, 'mensaje-resultado mensaje-resultado--final', sectionMensajes)
@@ -251,6 +524,18 @@ function crearMensajeFinal(resultado) {
     BOTONES_ATAQUE.forEach((boton) => {
         boton.disabled = true
     })
+}
+
+// Frena el repintado del mapa y deja de escuchar el teclado (fin de partida)
+function detenerMapa() {
+    // El personaje deja de responder al teclado ya mismo...
+    window.removeEventListener('keydown', sePresionoUnaTecla)
+    window.removeEventListener('keyup', detenerMovimiento)
+    detenerMovimiento()
+
+    // ...pero el mapa sigue repintándose un momento más, para que se llegue a
+    // ver completa la animación del último golpe
+    setTimeout(() => clearInterval(intervalo), DURACION_ATAQUE + 600)
 }
 
 function crearMensaje(resultado) {

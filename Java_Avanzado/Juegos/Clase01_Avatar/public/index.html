@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AVATAR: La Leyenda del Escuadrón Lobo</title>
+    <link rel="preload" as="image" href="./assets/img/portada.jpg">
+    <link rel="stylesheet" href="./css/portada.css" />
+</head>
+
+<body>
+    <!-- PORTADA: es la primera pantalla del juego. Muestra la imagen de entrada,
+         suena la música de entrada y el botón "Jugar" lleva a avatar.html -->
+    <main class="portada">
+        <!-- Mismo dibujo pero borroso y oscuro, para rellenar los costados en pantallas anchas -->
+        <div class="portada__fondo" aria-hidden="true"></div>
+
+        <div class="portada__escena">
+            <img class="portada__imagen" src="./assets/img/portada.jpg" alt="Avatar: La leyenda del Escuadrón Lobo" />
+
+            <div class="portada__acciones">
+                <button id="boton-comenzar" class="portada__boton" type="button">Jugar</button>
+                <p id="aviso-sonido" class="portada__aviso">🔊 Tocá la pantalla para activar la música</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- Botón fijo en la esquina para silenciar o reactivar la música -->
+    <button id="boton-sonido" class="boton-sonido" type="button" aria-label="Activar o silenciar el sonido" title="Sonido">🔊</button>
+
+    <!-- Cortina negra: se desvanece hacia negro al tocar "Jugar", antes de cambiar de página -->
+    <div id="cortina" class="portada__cortina" aria-hidden="true"></div>
+
+    <script src="./js/audio.js"></script>
+    <script src="./js/portada.js"></script>
+</body>
+
+</html>

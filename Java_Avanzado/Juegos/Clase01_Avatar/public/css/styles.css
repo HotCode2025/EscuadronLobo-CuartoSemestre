@@ -27,11 +27,10 @@
      🌱 Tierra (Toph) → verde / verde oscuro
      🌪️ Aire (Aang)  → amarillo / dorado
 
-   Los 6 puntos pedidos en la consigna siguen marcados con [TAREA n].
    ========================================================================= */
 
-/* Importamos las tipografías de Google Fonts (ver [TAREA 3] Tipografía) */
-@import url("https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Work+Sans:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap");
+/* Importamos las tipografías de Google Fonts */
+@import url("https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;900&family=Work+Sans:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap");
 
 :root {
     /* --- Paleta oficial --- */
@@ -48,14 +47,19 @@
     --crema: #f4e6c5;
     --dorado: #d99518;
 
-    /* --- Roles: qué color de la paleta cumple cada función del sitio --- */
-    --color-bg: var(--negro-carbon);
-    --color-bg-panel: var(--azul-oscuro);
-    --color-bg-panel-alt: var(--marron-oscuro);
-    --color-borde: #3a2c22;
+    /* --- Colores de la portada (azul noche + celeste con brillo) --- */
+    --cian: #5cc8ff;
+    --cian-claro: #eaffff;
+    --azul-noche: #02061a;
 
-    --color-texto: var(--crema);
-    --color-texto-tenue: #c9bda3;
+    /* --- Roles: qué color de la paleta cumple cada función del sitio --- */
+    --color-bg: var(--azul-noche);
+    --color-bg-panel: rgba(5, 22, 58, 0.78); /* vidrio azul oscuro: deja ver el fondo */
+    --color-bg-panel-alt: rgba(2, 10, 32, 0.6);
+    --color-borde: rgba(120, 210, 255, 0.3);
+
+    --color-texto: #e8f6ff;
+    --color-texto-tenue: #a8cbe3;
 
     --color-fuego: var(--naranja-fuego);
     --color-fuego-sombra: var(--rojo-oscuro);
@@ -66,7 +70,7 @@
     --color-aire: var(--amarillo);
     --color-aire-sombra: var(--dorado);
 
-    /* [TAREA 3] Tipografía: una fuente "display" para títulos y otra para texto */
+    /* Tipografía: una fuente "display" para títulos y otra para texto */
     --fuente-display: "Cinzel", serif;
     --fuente-texto: "Work Sans", system-ui, sans-serif;
     --fuente-mono: "JetBrains Mono", "Courier New", monospace;
@@ -85,24 +89,22 @@
     box-sizing: border-box; /* así el padding no rompe los anchos calculados */
 }
 
-/* [TAREA 2] Background a todo el sitio: la imagen principal del elenco cubre
-   toda la pantalla, con un degradé oscuro encima para que el texto se siga
-   leyendo bien sobre ella */
+/* Background a todo el sitio: el paisaje (fondo-paisaje.jpg) con un velo oscuro
+   suave encima para que los textos se lean bien sobre él */
 body {
     margin: 0;
     min-height: 100vh;
-    background-color: var(--color-bg);
-    background-image:
-        linear-gradient(180deg, rgba(11, 17, 21, 0.88), rgba(11, 17, 21, 0.95)),
-        url("../assets/img/fondo-elementos.png");
-    background-repeat: no-repeat, no-repeat;
-    background-position: center, center top;
-    background-size: cover, cover;
-    background-attachment: fixed, fixed;
+    background-color: var(--azul-noche);
+    background-image: linear-gradient(rgba(2, 10, 30, 0.12), rgba(2, 10, 30, 0.38)), url("../assets/img/fondo-paisaje.jpg");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    background-attachment: fixed;
     color: var(--color-texto);
     font-family: var(--fuente-texto);
     line-height: 1.5;
     padding: 32px 16px 64px;
+    overflow-x: clip; /* los resplandores decorativos no deben agrandar la página hacia los costados */
 }
 
 h1, h2, h3, h4 {
@@ -111,7 +113,7 @@ h1, h2, h3, h4 {
     margin: 0 0 12px;
 }
 
-/* [TAREA 4] Flexbox: el tablero completo se acomoda en columna con separación pareja */
+/* Flexbox: el tablero completo se acomoda en columna con separación pareja */
 .tablero {
     max-width: var(--ancho-tablero);
     margin: 0 auto;
@@ -125,17 +127,35 @@ h1, h2, h3, h4 {
    ========================================================================= */
 
 .encabezado {
+    /* Ancho del logo: lo más grande posible (hasta 820 px) sin pasarse del ancho
+       de la pantalla ni del alto (para que no ocupe más de lo razonable) */
+    --ancho-logo: min(820px, calc(100vw - 32px), calc((100vh - 190px) * 1.5));
+    position: relative;
     text-align: center;
     padding: 12px 0 4px;
+    /* se sale del ancho del tablero (720 px) y se centra respecto a la pantalla */
+    width: min(900px, calc(100vw - 32px));
+    margin-left: 50%;
+    transform: translateX(-50%);
+}
+
+/* Resplandor celeste suave detrás del encabezado: hace que el logo y los
+   personajes "floten" y sean lo primero que se ve */
+.encabezado::before {
+    content: "";
+    position: absolute;
+    inset: -30px 0 -10px; /* sin salirse por los costados */
+    background: radial-gradient(ellipse at center, rgba(92, 200, 255, 0.28), transparent 68%);
+    pointer-events: none;
+    z-index: -1;
 }
 
 /* Imagen principal del juego, centrada y responsive (nunca se desborda) */
 .logo-wrap {
     position: relative;
-    display: inline-block;
-    max-width: 480px;
-    width: 100%;
-    margin: 0 auto 18px;
+    display: block;
+    width: var(--ancho-logo);
+    margin: 0 auto 14px;
 }
 
 .logo-principal {
@@ -143,34 +163,81 @@ h1, h2, h3, h4 {
     width: 100%;
     height: auto;
     border-radius: var(--radio);
-    box-shadow: var(--sombra);
+    /* marco fino celeste + brillo, como el botón "Jugar" de la portada */
+    border: 2px solid rgba(170, 235, 255, 0.55);
+    box-shadow: 0 0 0 4px rgba(92, 200, 255, 0.12), 0 0 34px rgba(60, 170, 255, 0.45), var(--sombra);
 }
 
-/* [TAREA 4] Flexbox: el emblema de los 4 elementos gira sobre sí mismo (animación).
-   El <span> exterior tiene su propio fondo sólido + borde, así "tapa" por completo
-   lo que haya debajo (no se ve la imagen del logo transparentándose en los bordes).
-   Se ubica *adentro* del recuadro del logo (no colgando del borde) para que se
-   lea como una insignia propia del arte, no como algo pegado encima. */
-.emblema-flotante {
+.tablero > *:not(.encabezado) {
+    position: relative;
+    z-index: 2; /* por encima de la capa .fondo-animado */
+}
+
+/* Capa animada de fondo: cubre TODA la pantalla (position: fixed) y va
+   detrás del juego. Adentro flotan dos "vagabundos":
+     - la esfera de los 4 elementos: gira sobre sí misma mientras viaja, y
+     - el lobo del Escuadrón: se balancea suavemente mientras viaja.
+   Cada uno usa DOS animaciones a la vez, una para "left" y otra para "top", con
+   duraciones distintas: así recorren toda la pantalla con una trayectoria suave que
+   tarda mucho en repetirse. --w y --h son el tamaño de cada uno; los límites del
+   recorrido se calculan con ellos para que nunca se salgan de la pantalla. */
+/* Orden de capas: fondo de la página < encabezado (logo y título) < esta capa <
+   paneles del juego. Así el lobo y la esfera pasan por delante del logo, pero por
+   detrás de los paneles de vidrio (el mapa y los botones nunca quedan tapados). */
+.fondo-animado {
+    position: fixed;
+    inset: 0;
+    z-index: 1;
+    overflow: hidden;
+    pointer-events: none; /* no tapa ningún clic del juego */
+}
+
+.vagabundo {
     position: absolute;
-    right: 14px;
-    bottom: 14px;
-    width: 64px;
-    height: 64px;
+    left: 0;
+    top: 0;
     display: block;
-    border-radius: 50%;
-    background: var(--negro-carbon);
-    border: 2px solid var(--dorado);
-    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.6), 0 0 0 4px rgba(11, 17, 21, 0.85);
-    overflow: hidden; /* recorta la imagen interna en un círculo perfecto */
-    animation: girar-emblema 12s linear infinite;
+    width: var(--w);
+    height: var(--h);
+    filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.55));
 }
 
-.emblema-flotante__img {
+.vagabundo img {
     display: block;
     width: 100%;
     height: 100%;
-    object-fit: cover; /* llena todo el círculo sin dejar bordes vacíos */
+}
+
+.vagabundo--esfera {
+    --w: clamp(46px, 7vmin, 86px);
+    --h: var(--w);
+    animation: vagar-x 19s ease-in-out infinite alternate, vagar-y 12s ease-in-out infinite alternate;
+    animation-delay: -6s, -3s; /* empieza ya "a mitad de camino" */
+}
+
+.vagabundo--esfera img {
+    animation: girar-emblema 6s linear infinite;
+}
+
+.vagabundo--lobo {
+    --w: clamp(62px, 10vmin, 122px);
+    --h: calc(var(--w) * 1.145); /* proporción de la imagen del lobo */
+    animation: vagar-x 27s ease-in-out infinite alternate, vagar-y 16s ease-in-out infinite alternate;
+    animation-delay: -15s, -9s;
+}
+
+.vagabundo--lobo img {
+    animation: balanceo-lobo 4.5s ease-in-out infinite alternate;
+}
+
+@keyframes vagar-x {
+    from { left: 0; }
+    to   { left: calc(100% - var(--w)); }
+}
+
+@keyframes vagar-y {
+    from { top: 0; }
+    to   { top: calc(100% - var(--h)); }
 }
 
 @keyframes girar-emblema {
@@ -178,31 +245,78 @@ h1, h2, h3, h4 {
     to   { transform: rotate(360deg); }
 }
 
-/* [TAREA 1] Color y background al h1 + [TAREA 5] Formato y layout del título principal.
+@keyframes balanceo-lobo {
+    from { transform: rotate(-7deg) scale(1); }
+    to   { transform: rotate(7deg) scale(1.07); }
+}
+
+/* Si la persona pidió menos movimiento: quedan quietos en un rincón */
+@media (prefers-reduced-motion: reduce) {
+    .vagabundo,
+    .vagabundo img {
+        animation: none;
+    }
+
+    .vagabundo--esfera {
+        left: 3%;
+        top: calc(100% - var(--h) - 3%);
+    }
+
+    .vagabundo--lobo {
+        left: calc(100% - var(--w) - 3%);
+        top: calc(100% - var(--h) - 3%);
+    }
+}
+
+/* Color y background al h1 + Formato y layout del título principal.
    El h1 ahora contiene la imagen del título; el brillo dorado de fondo hace de
    "background" del título sin taparle el marco propio que ya trae la imagen. */
 h1 {
     display: inline-block;
-    background: radial-gradient(circle, rgba(217, 149, 24, 0.22), transparent 70%);
+    background: radial-gradient(ellipse at center, rgba(92, 200, 255, 0.22), transparent 70%);
     border-radius: var(--radio);
     padding: 14px 18px;
 }
 
 .titulo-imagen {
     display: block;
-    width: 100%;
-    max-width: 420px;
+    /* mismo eje que el logo; ancho proporcional al logo para que se vean parejos */
+    width: calc(var(--ancho-logo) * 0.6);
+    max-width: none;
+    margin: 0 auto;
     height: auto;
-    filter: drop-shadow(0 10px 22px rgba(0, 0, 0, 0.55));
+    filter: drop-shadow(0 0 14px rgba(92, 200, 255, 0.45)) drop-shadow(0 10px 22px rgba(0, 0, 0, 0.55));
 }
 
+/* Subtítulo al estilo de la portada: Cinzel con letras bien separadas, brillo
+   celeste y dos líneas de luz a los costados ("— LA LEYENDA DE AANG —") */
 .subtitulo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
     margin: 10px 0 0;
-    color: var(--color-texto-tenue);
-    font-family: var(--fuente-mono);
-    font-size: 0.85rem;
+    color: var(--cian-claro);
+    font-family: var(--fuente-display);
+    font-weight: 600;
+    font-size: clamp(0.85rem, 2.4vw, 1.05rem);
     text-transform: uppercase;
-    letter-spacing: 0.18em;
+    letter-spacing: 0.4em;
+    text-indent: 0.4em; /* compensa el espacio extra de la última letra */
+    text-shadow: 0 0 12px rgba(92, 200, 255, 0.85);
+}
+
+.subtitulo::before,
+.subtitulo::after {
+    content: "";
+    flex: 0 1 90px;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--cian));
+    box-shadow: 0 0 8px rgba(92, 200, 255, 0.8);
+}
+
+.subtitulo::after {
+    transform: scaleX(-1); /* la línea derecha es la espejada de la izquierda */
 }
 
 /* =========================================================================
@@ -214,22 +328,29 @@ h1 {
     border: 1px solid var(--color-borde);
     border-radius: var(--radio);
     padding: 22px 24px;
-    box-shadow: var(--sombra);
+    /* vidrio esmerilado: se ve apenas el cielo detrás, con un leve brillo celeste */
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    box-shadow: var(--sombra), 0 0 26px rgba(60, 170, 255, 0.14), inset 0 0 0 1px rgba(170, 235, 255, 0.05);
 }
 
-/* [TAREA 5] Formato y layout de los subtítulos h2 de cada sección */
+/* Formato y layout de los subtítulos h2 de cada sección */
 .panel h2 {
-    font-size: 1.2rem;
-    color: var(--color-texto);
-    border-left: 4px solid var(--azul-agua);
-    padding-left: 10px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--cian-claro);
+    text-shadow: 0 0 12px rgba(92, 200, 255, 0.7);
+    border-left: 4px solid var(--cian);
+    padding-left: 12px;
 }
 
 /* =========================================================================
    Selección de personaje: tarjetas con el arte de cada participante
    ========================================================================= */
 
-/* [TAREA 4] Flexbox: las tarjetas de personaje se acomodan en fila y bajan de
+/* Flexbox: las tarjetas de personaje se acomodan en fila y bajan de
    línea solas (wrap) cuando no entran, en vez de una grilla fija */
 .grilla-personajes {
     display: flex;
@@ -256,7 +377,7 @@ h1 {
     cursor: pointer;
 }
 
-/* [TAREA 4] Flexbox para centrar la imagen del personaje dentro de cada tarjeta */
+/* Flexbox para centrar la imagen del personaje dentro de cada tarjeta */
 .carta-personaje__label {
     display: flex;
     justify-content: center;
@@ -291,10 +412,12 @@ h1 {
 }
 
 .seleccion-personalizada label {
-    font-size: 0.8rem;
+    font-family: var(--fuente-display);
+    font-weight: 600;
+    font-size: 0.78rem;
     color: var(--color-texto-tenue);
     text-transform: uppercase;
-    letter-spacing: 0.06em;
+    letter-spacing: 0.14em;
 }
 
 .seleccion-personalizada__fila {
@@ -308,8 +431,8 @@ h1 {
     min-width: 0;
     padding: 11px 14px;
     border-radius: 999px;
-    border: 1px solid var(--color-borde);
-    background: var(--negro-carbon);
+    border: 1px solid rgba(120, 210, 255, 0.45);
+    background: rgba(2, 12, 38, 0.8);
     color: var(--color-texto);
     font-family: var(--fuente-texto);
     font-size: 0.9rem;
@@ -361,7 +484,7 @@ h1 {
    Marcador de vidas
    ========================================================================= */
 
-/* [TAREA 4] Flexbox: el marcador pone el lado del jugador y el del enemigo
+/* Flexbox: el marcador pone el lado del jugador y el del enemigo
    en fila, y cada uno de esos lados es a su vez una columna flex */
 .marcador {
     display: flex;
@@ -387,8 +510,11 @@ h1 {
 }
 
 .marcador__nombre {
-    font-weight: 600;
-    color: var(--color-agua);
+    font-family: var(--fuente-display);
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    color: var(--cian);
+    text-shadow: 0 0 10px rgba(92, 200, 255, 0.6);
 }
 
 /* Fila de corazones, en flexbox, uno por vida */
@@ -435,27 +561,30 @@ h1 {
    Botones
    ========================================================================= */
 
-/* [TAREA 4] Tipos de display: inline-flex, para centrar ícono + texto dentro
+/* Tipos de display: inline-flex, para centrar ícono + texto dentro
    de un elemento que sigue siendo "en línea" con lo que lo rodea */
 .boton {
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    font-family: var(--fuente-texto);
-    font-weight: 600;
-    font-size: 0.95rem;
-    padding: 11px 20px;
+    font-family: var(--fuente-display);
+    font-weight: 700;
+    font-size: 0.88rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 11px 22px;
     border-radius: 999px;
-    border: 1px solid var(--color-borde);
-    background: var(--negro-carbon);
+    border: 1px solid rgba(120, 210, 255, 0.45);
+    background: rgba(2, 12, 38, 0.8);
     color: var(--color-texto);
     cursor: pointer;
-    transition: transform 0.12s ease, background 0.12s ease, border-color 0.12s ease;
+    transition: transform 0.12s ease, background 0.12s ease, border-color 0.12s ease, box-shadow 0.12s ease;
 }
 
 .boton:hover:not(:disabled) {
     transform: translateY(-2px);
-    border-color: var(--color-texto-tenue);
+    border-color: var(--cian);
+    box-shadow: 0 0 16px rgba(92, 200, 255, 0.55);
 }
 
 .boton:active:not(:disabled) {
@@ -471,8 +600,8 @@ h1 {
 }
 
 .boton--secundario {
-    background: var(--color-bg-panel-alt);
-    border-color: var(--color-borde);
+    background: rgba(2, 12, 38, 0.7);
+    border-color: rgba(120, 210, 255, 0.4);
     color: var(--color-texto);
     text-decoration: none;
 }
@@ -483,12 +612,15 @@ h1 {
 }
 
 .boton--primario {
-    background: var(--azul-agua);
-    border-color: var(--azul-agua);
-    color: var(--negro-carbon);
+    /* igual al botón "Jugar" de la portada: celeste brillante con borde claro */
+    background: linear-gradient(180deg, rgba(40, 150, 255, 0.75), rgba(8, 40, 140, 0.9));
+    border: 2px solid rgba(170, 235, 255, 0.9);
+    color: var(--cian-claro);
+    text-shadow: 0 0 10px rgba(92, 200, 255, 0.9);
+    box-shadow: 0 0 16px rgba(60, 170, 255, 0.6), inset 0 0 12px rgba(120, 220, 255, 0.3);
 }
 
-/* [TAREA 4] Flexbox con wrap: en pantallas angostas los botones bajan de línea solos */
+/* Flexbox con wrap: en pantallas angostas los botones bajan de línea solos */
 .fila-ataques {
     display: flex;
     flex-wrap: wrap;
@@ -504,7 +636,7 @@ h1 {
    Mensajes de combate
    ========================================================================= */
 
-/* [TAREA 4] Flexbox en columna: arriba la fila de rondas, abajo -separado y
+/* Flexbox en columna: arriba la fila de rondas, abajo -separado y
    solo- el resultado final de la partida */
 .panel--mensajes {
     display: flex;
@@ -513,13 +645,13 @@ h1 {
     gap: 14px;
 }
 
-/* [TAREA 4] Tipos de display: "none" para ocultar el panel apenas está vacío
+/* Tipos de display: "none" para ocultar el panel apenas está vacío
    (todavía no hubo ningún combate ni resultado final) */
 .panel--mensajes:not(:has(img)) {
     display: none;
 }
 
-/* [TAREA 4] Flexbox en fila con wrap: las imágenes de cada ronda se acomodan
+/* Flexbox en fila con wrap: las imágenes de cada ronda se acomodan
    una al lado de la otra y bajan de línea solas cuando no entran, en vez de
    apilarse hacia abajo y alargar la página */
 .fila-resultados {
@@ -604,17 +736,19 @@ h1 {
     padding-bottom: 14px;
 }
 
-/* [TAREA 5] Formato y layout del h3 de esta sección */
+/* Formato y layout del h3 de esta sección */
 .panel--reglas h3 {
     font-size: 1rem;
     color: var(--color-texto-tenue);
     text-transform: uppercase;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.14em;
 }
 
 #reglas summary {
     cursor: pointer;
-    font-weight: 600;
+    font-family: var(--fuente-display);
+    font-weight: 700;
+    letter-spacing: 0.08em;
     padding: 4px 0;
 }
 
@@ -622,15 +756,17 @@ h1 {
     padding-left: 20px;
 }
 
-/* [TAREA 5] Formato y layout de los h4 dentro de las reglas */
+/* Formato y layout de los h4 dentro de las reglas */
 #reglas h4 {
     font-size: 0.95rem;
     margin-top: 14px;
-    color: var(--color-agua);
+    font-family: var(--fuente-display);
+    letter-spacing: 0.06em;
+    color: var(--cian);
 }
 
 /* =========================================================================
-   [TAREA 6] Responsive
+   Responsive
    -------------------------------------------------------------------------
    Con el viewport meta-tag del HTML + unidades relativas (clamp, %, fr) el
    juego ya se acomoda solo en la mayoría de los tamaños. Estos breakpoints
@@ -639,7 +775,7 @@ h1 {
 
 @media (max-width: 600px) {
     body {
-        padding: 20px 12px 48px;
+        padding: 60px 12px 48px; /* arriba queda lugar para el botón de sonido */
         /* background-attachment: fixed genera trabas de scroll en varios navegadores
            de celular, así que en pantallas chicas lo cambiamos a scroll normal */
         background-attachment: scroll, scroll;
@@ -653,12 +789,6 @@ h1 {
         max-width: 360px;
     }
 
-    .emblema-flotante {
-        width: 46px;
-        height: 46px;
-        right: 8px;
-        bottom: 8px;
-    }
 
     .titulo-imagen {
         max-width: 300px;
@@ -682,6 +812,352 @@ h1 {
     .boton--ataque {
         width: 100%;
         justify-content: center;
+    }
+}
+
+/* =========================================================================
+   Mapa (canvas): recorrido con el teclado
+   ========================================================================= */
+
+/* Escenario: agrupa el mapa y el panel de combate. Oculto hasta que se elige
+   personaje (JS le suma la clase --activo). En pantallas anchas se ubican lado
+   a lado y centrados; en chicas, uno debajo del otro. */
+.escenario {
+    display: none;
+}
+
+.escenario--activo {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.escenario__combate {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+@media (min-width: 1180px) {
+    .escenario--activo {
+        flex-direction: row;
+        align-items: flex-start;
+        justify-content: center;
+        /* Se sale del ancho del tablero (720px) y se centra respecto a la pantalla */
+        width: min(1180px, calc(100vw - 48px));
+        margin-left: 50%;
+        transform: translateX(-50%);
+    }
+
+    .escenario__combate {
+        flex: 1 1 0;
+        min-width: 320px;
+        max-width: 460px;
+    }
+}
+
+.panel--mapa {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+
+.panel--mapa h2 {
+    align-self: stretch;
+}
+
+#mapa {
+    width: 100%; /* se adapta al ancho del panel (el dibujo interno es 640x500) */
+    max-width: 640px;
+    height: auto;
+    border: 3px solid rgba(170, 235, 255, 0.85);
+    border-radius: 10px;
+    background: var(--verde-oscuro);
+    box-shadow: 0 0 24px rgba(60, 170, 255, 0.5), var(--sombra);
+}
+
+.mapa__ayuda {
+    color: var(--color-texto-tenue);
+    font-size: 0.9rem;
+    text-align: center;
+}
+
+/* =========================================================================
+   Botón de sonido (fijo en la esquina)
+   ========================================================================= */
+
+.boton-sonido {
+    position: fixed;
+    top: 14px;
+    right: 14px;
+    z-index: 50;
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    border: 2px solid var(--cian);
+    background: rgba(4, 14, 50, 0.75);
+    color: var(--cian-claro);
+    font-size: 1.3rem;
+    line-height: 1;
+    cursor: pointer;
+    box-shadow: var(--sombra);
+    transition: transform 0.15s ease, background 0.15s ease;
+}
+
+.boton-sonido:hover {
+    transform: scale(1.08);
+    box-shadow: 0 0 18px rgba(92, 200, 255, 0.7);
+}
+
+.boton-sonido:focus-visible {
+    outline: 3px solid var(--amarillo);
+    outline-offset: 2px;
+}
+
+/* =========================================================================
+   MODO PARTIDA (compacto)
+   -------------------------------------------------------------------------
+   Apenas se elige personaje, JS le pone la clase "en-partida" al <body>.
+   Entonces el encabezado se achica y el escenario se ajusta al alto de la
+   pantalla, para ver a la vez el mapa, las vidas, los botones y las cartas
+   de cada jugada, sin tener que bajar la página.
+   ========================================================================= */
+
+body.en-partida {
+    padding: 12px 16px 4px;
+}
+
+body.en-partida .tablero {
+    gap: 12px;
+}
+
+/* Encabezado en una sola fila y bien chico: logo pequeño + título AVATAR */
+body.en-partida .encabezado {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    padding: 0;
+}
+
+body.en-partida .encabezado::before {
+    inset: -8px 0;
+}
+
+body.en-partida .encabezado {
+    --ancho-logo: 150px;
+}
+
+body.en-partida .logo-wrap {
+    width: 150px;
+    max-width: 150px;
+    margin: 0;
+}
+
+body.en-partida .logo-principal {
+    border-width: 1px;
+    box-shadow: 0 0 0 2px rgba(92, 200, 255, 0.12), 0 0 18px rgba(60, 170, 255, 0.4), var(--sombra);
+}
+
+
+body.en-partida h1 {
+    margin: 0;
+    padding: 0;
+}
+
+body.en-partida .titulo-imagen {
+    width: 220px;
+    margin: 0;
+}
+
+body.en-partida .subtitulo {
+    display: none;
+}
+
+/* Paneles del escenario más ajustados */
+body.en-partida .escenario--activo .panel {
+    padding: 12px 16px;
+}
+
+body.en-partida .escenario--activo .panel h2 {
+    margin: 0 0 8px;
+    font-size: 0.95rem;
+}
+
+body.en-partida .escenario__combate {
+    gap: 10px;
+}
+
+body.en-partida .panel--mapa {
+    gap: 8px;
+}
+
+body.en-partida .mapa__ayuda {
+    font-size: 0.78rem;
+}
+
+body.en-partida .marcador {
+    gap: 10px;
+    padding: 8px 10px;
+    margin-bottom: 10px;
+}
+
+body.en-partida .marcador__lado {
+    gap: 4px;
+    font-size: 0.9rem;
+    text-align: center;
+}
+
+body.en-partida .vidas__corazon {
+    font-size: 1.25rem;
+}
+
+body.en-partida .boton--ataque {
+    padding: 9px 14px;
+    font-size: 0.78rem;
+    letter-spacing: 0.05em;
+}
+
+/* Cartas de las jugadas: más chicas, y la carta final al lado de la fila de
+   rondas (en vez de debajo) para que el panel sea bajo */
+body.en-partida .mensaje-resultado {
+    width: 38px;
+    padding: 3px;
+}
+
+body.en-partida .fila-resultados {
+    gap: 6px;
+}
+
+body.en-partida .panel--mensajes {
+    flex-direction: row;
+    justify-content: center;
+    gap: 14px;
+}
+
+body.en-partida .mensaje-resultado--final {
+    width: 88px;
+    padding: 6px;
+    flex: 0 0 auto;
+}
+
+body.en-partida .panel--reiniciar {
+    padding: 8px 16px;
+}
+
+body.en-partida .panel--reiniciar .boton {
+    padding: 8px 22px;
+}
+
+/* Reglas del juego: en modo partida viven debajo de las vidas. Se muestran como una
+   sola línea ("Reglas del juego"); al abrirlas, el texto se despliega POR ENCIMA de
+   los paneles de abajo (con su propia barra de scroll), así no corre nada de lugar
+   ni estira la página */
+body.en-partida .panel--reglas {
+    position: relative;
+    z-index: 5;
+    padding: 8px 16px;
+}
+
+body.en-partida .panel--reglas h3 {
+    display: none;
+}
+
+body.en-partida #reglas summary {
+    padding: 2px 0;
+    font-size: 0.9rem;
+}
+
+body.en-partida #reglas details[open] > ul {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 100%;
+    margin: 6px 0 0;
+    max-height: 42vh;
+    overflow-y: auto;
+    padding: 10px 18px 12px 34px;
+    background: rgba(4, 18, 50, 0.97);
+    border: 1px solid var(--color-borde);
+    border-radius: var(--radio);
+    box-shadow: 0 14px 30px rgba(0, 0, 10, 0.55);
+}
+
+/* Ventanas bajas (laptops chicas, navegador con muchas barras): un poco más
+   de compactación en la columna de combate para que siga entrando todo */
+@media (max-height: 700px) {
+    body.en-partida .escenario--activo .panel {
+        padding: 9px 14px;
+    }
+
+    body.en-partida .escenario--activo .panel h2 {
+        margin-bottom: 6px;
+    }
+
+    body.en-partida .escenario__combate {
+        gap: 8px;
+    }
+
+    body.en-partida .marcador {
+        padding: 5px 8px;
+        margin-bottom: 8px;
+    }
+
+    body.en-partida .vidas__corazon {
+        font-size: 1.1rem;
+    }
+
+    body.en-partida .boton--ataque {
+        padding: 7px 12px;
+    }
+
+    body.en-partida .mensaje-resultado {
+        width: 32px;
+    }
+
+    body.en-partida .mensaje-resultado--final {
+        width: 66px;
+        padding: 4px;
+    }
+
+    body.en-partida .panel--reglas {
+        padding: 6px 14px;
+    }
+
+    body.en-partida .panel--reiniciar {
+        padding: 6px 14px;
+    }
+
+    body.en-partida .panel--reiniciar .boton {
+        padding: 6px 20px;
+    }
+}
+
+/* Pantallas medianas y grandes: marcador y botones en una sola fila */
+@media (min-width: 601px) {
+    body.en-partida .marcador {
+        flex-wrap: nowrap;
+    }
+
+    body.en-partida .marcador__lado {
+        flex: 1 1 0;
+    }
+
+    body.en-partida .fila-ataques {
+        flex-wrap: nowrap;
+        justify-content: center;
+        gap: 8px;
+    }
+}
+
+/* Lado a lado: el mapa se ajusta al ALTO de la pantalla (mantiene su
+   proporción 640x500) para que mapa y combate entren sin hacer scroll */
+@media (min-width: 1180px) {
+    body.en-partida #mapa {
+        width: auto;
+        max-width: 100%;
+        height: clamp(260px, calc(100vh - 258px), 500px);
     }
 }
 

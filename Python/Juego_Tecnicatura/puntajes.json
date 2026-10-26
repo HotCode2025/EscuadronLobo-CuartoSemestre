@@ -1,12 +1,27 @@
 [
   {
     "nombre": "PILOTO",
+    "puntos": 2605,
+    "nivel": 4
+  },
+  {
+    "nombre": "LIONEL",
+    "puntos": 1920,
+    "nivel": 3
+  },
+  {
+    "nombre": "VALERIA",
+    "puntos": 1905,
+    "nivel": 3
+  },
+  {
+    "nombre": "PILOTO",
     "puntos": 1750,
     "nivel": 3
   },
   {
-    "nombre": "CECILIA",
-    "puntos": 1060,
-    "nivel": 2
+    "nombre": "FELIPE",
+    "puntos": 1715,
+    "nivel": 3
   }
 ]

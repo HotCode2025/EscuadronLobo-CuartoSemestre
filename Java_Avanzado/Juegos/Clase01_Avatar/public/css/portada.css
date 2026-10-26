@@ -1,0 +1,221 @@
+/* =========================================================================
+   PORTADA (index.html): imagen de entrada + botón "Jugar"
+   ========================================================================= */
+
+@import url("https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Work+Sans:wght@400;500&display=swap");
+
+:root {
+    --cian: #5cc8ff;
+    --cian-claro: #eaffff;
+    --azul-noche: #02061a;
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    height: 100%;
+    margin: 0;
+    background: var(--azul-noche);
+    color: var(--cian-claro);
+    font-family: "Work Sans", system-ui, sans-serif;
+    overflow: hidden; /* la portada ocupa justo la pantalla, sin scroll */
+}
+
+.portada {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 100%;
+    height: 100vh;
+    height: 100dvh;
+    overflow: hidden;
+}
+
+/* Fondo: la misma imagen, agrandada, borrosa y oscurecida */
+.portada__fondo {
+    position: absolute;
+    inset: -6%;
+    background: url("../assets/img/portada.jpg") center / cover no-repeat;
+    filter: blur(26px) brightness(0.5) saturate(1.2);
+}
+
+/* Escena: un cuadrado (la imagen es cuadrada) lo más grande posible */
+.portada__escena {
+    position: relative;
+    width: min(100vw, 100vh);
+    width: min(100vw, 100dvh);
+    aspect-ratio: 1 / 1;
+    animation: entrada-escena 1.8s ease-out both;
+}
+
+.portada__imagen {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    /* Los bordes se desvanecen para mezclarse con el fondo borroso */
+    -webkit-mask-image:
+        linear-gradient(to right, transparent, #000 5%, #000 95%, transparent),
+        linear-gradient(to bottom, transparent, #000 5%, #000 95%, transparent);
+    -webkit-mask-composite: source-in;
+    mask-image:
+        linear-gradient(to right, transparent, #000 5%, #000 95%, transparent),
+        linear-gradient(to bottom, transparent, #000 5%, #000 95%, transparent);
+    mask-composite: intersect;
+}
+
+/* Zona del botón: sobre el agua, debajo del logo */
+.portada__acciones {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 5%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    padding: 0 16px;
+}
+
+.portada__boton {
+    font-family: "Cinzel", serif;
+    font-weight: 700;
+    font-size: clamp(1.05rem, 2.6vmin, 1.6rem);
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    text-indent: 0.3em; /* compensa el espacio extra de la última letra */
+    color: var(--cian-claro);
+    text-shadow: 0 0 10px rgba(92, 200, 255, 0.9);
+    padding: 0.8em 2.8em;
+    border: 2px solid rgba(170, 235, 255, 0.9);
+    border-radius: 999px;
+    background: linear-gradient(180deg, rgba(40, 150, 255, 0.55), rgba(8, 40, 140, 0.8));
+    box-shadow: 0 0 18px rgba(60, 170, 255, 0.75), inset 0 0 14px rgba(120, 220, 255, 0.35);
+    -webkit-backdrop-filter: blur(4px);
+    backdrop-filter: blur(4px);
+    cursor: pointer;
+    animation: pulso 2.4s ease-in-out infinite;
+    transition: transform 0.15s ease, filter 0.15s ease;
+}
+
+.portada__boton:hover {
+    transform: scale(1.07);
+    filter: brightness(1.2);
+}
+
+.portada__boton:active {
+    transform: scale(0.97);
+}
+
+.portada__boton:focus-visible {
+    outline: 3px solid #ffffff;
+    outline-offset: 4px;
+}
+
+.portada__boton:disabled {
+    cursor: default;
+    animation: none;
+}
+
+.portada__aviso {
+    margin: 0;
+    font-size: clamp(0.72rem, 1.7vmin, 0.95rem);
+    color: #bfe9ff;
+    text-shadow: 0 0 8px rgba(0, 0, 0, 0.9);
+    transition: opacity 0.4s ease;
+}
+
+.portada__aviso.oculto {
+    opacity: 0;
+}
+
+/* Pantallas verticales (celulares): sobra espacio arriba y abajo de la imagen,
+   así que el botón va DEBAJO del dibujo en vez de taparle el logo del lobo */
+@media (max-aspect-ratio: 1 / 1) {
+    .portada__acciones {
+        bottom: auto;
+        top: 100%;
+        margin-top: 22px;
+    }
+}
+
+/* Botón de sonido (fijo en la esquina) */
+.boton-sonido {
+    position: fixed;
+    top: 14px;
+    right: 14px;
+    z-index: 50;
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    border: 2px solid var(--cian);
+    background: rgba(4, 14, 50, 0.75);
+    color: var(--cian-claro);
+    font-size: 1.3rem;
+    line-height: 1;
+    cursor: pointer;
+    box-shadow: 0 0 14px rgba(60, 170, 255, 0.5);
+    transition: transform 0.15s ease;
+}
+
+.boton-sonido:hover {
+    transform: scale(1.08);
+}
+
+.boton-sonido:focus-visible {
+    outline: 3px solid #ffffff;
+    outline-offset: 2px;
+}
+
+/* Cortina negra de salida */
+.portada__cortina {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    background: #000;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.9s ease-in;
+}
+
+.portada__cortina.saliendo {
+    opacity: 1;
+}
+
+@keyframes entrada-escena {
+    from {
+        opacity: 0;
+        transform: scale(1.05);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes pulso {
+    0%,
+    100% {
+        box-shadow: 0 0 14px rgba(60, 170, 255, 0.6), inset 0 0 12px rgba(120, 220, 255, 0.3);
+    }
+    50% {
+        box-shadow: 0 0 30px rgba(90, 200, 255, 1), inset 0 0 18px rgba(150, 230, 255, 0.5);
+    }
+}
+
+/* Si la persona pidió menos movimiento, sin animaciones */
+@media (prefers-reduced-motion: reduce) {
+    .portada__escena,
+    .portada__boton {
+        animation: none;
+    }
+
+    .portada__cortina {
+        transition: none;
+    }
+}
