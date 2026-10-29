@@ -357,7 +357,8 @@ h1 {
     flex-wrap: wrap;
     justify-content: center;
     gap: 14px;
-    margin: 16px 0 20px;
+    margin: 16px auto 20px;
+    max-width: 520px; /* 3 tarjetas por fila: con 6 personajes quedan 3 + 3 (y no 4 + 2) */
 }
 
 .carta-personaje {
@@ -447,6 +448,8 @@ h1 {
 .carta-personaje--katara .carta-personaje__label:hover { border-color: var(--color-agua); }
 .carta-personaje--aang   .carta-personaje__label:hover { border-color: var(--color-aire); }
 .carta-personaje--toph   .carta-personaje__label:hover { border-color: var(--color-tierra); }
+.carta-personaje--jake   .carta-personaje__label:hover { border-color: #4a90d9; }
+.carta-personaje--terron .carta-personaje__label:hover { border-color: #c8924d; }
 
 /* Al elegir un personaje, la tarjeta cambia de color de fondo por completo
    (no solo el borde) para que se note claramente cuál está seleccionado */
@@ -472,6 +475,19 @@ h1 {
     background: linear-gradient(160deg, var(--verde), var(--verde-oscuro));
     border-color: var(--color-tierra);
     box-shadow: 0 0 0 3px rgba(95, 174, 36, 0.35);
+    transform: translateY(-3px) scale(1.03);
+}
+
+.carta-personaje--jake   .carta-personaje__input:checked ~ .carta-personaje__label {
+    background: linear-gradient(160deg, #4a90d9, #14284b);
+    border-color: #4a90d9;
+    box-shadow: 0 0 0 3px rgba(74, 144, 217, 0.35);
+    transform: translateY(-3px) scale(1.03);
+}
+.carta-personaje--terron .carta-personaje__input:checked ~ .carta-personaje__label {
+    background: linear-gradient(160deg, #d9a35f, var(--marron-tierra));
+    border-color: #c8924d;
+    box-shadow: 0 0 0 3px rgba(200, 146, 77, 0.35);
     transform: translateY(-3px) scale(1.03);
 }
 
@@ -818,6 +834,54 @@ h1 {
 /* =========================================================================
    Mapa (canvas): recorrido con el teclado
    ========================================================================= */
+
+/* Panel "Buscá a tu rival": se ve mientras se camina por el mapa, antes del primer choque */
+.panel--rival p {
+    margin: 4px 0 12px;
+    font-size: 0.92rem;
+}
+
+.rivales {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.rivales__item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    width: 104px;
+    padding: 8px 6px;
+    border: 1px solid var(--color-borde);
+    border-radius: var(--radio);
+    background: rgba(2, 12, 38, 0.55);
+    text-align: center;
+}
+
+.rivales__imagen {
+    width: 56px;
+    height: 56px;
+    object-fit: contain;
+}
+
+.rivales__nombre {
+    font-family: var(--fuente-display);
+    font-weight: 700;
+    font-size: 0.85rem;
+    letter-spacing: 0.06em;
+    color: var(--cian-claro);
+}
+
+.rivales__favorito {
+    font-size: 0.7rem;
+    color: var(--color-texto-tenue);
+}
 
 /* Escenario: agrupa el mapa y el panel de combate. Oculto hasta que se elige
    personaje (JS le suma la clase --activo). En pantallas anchas se ubican lado

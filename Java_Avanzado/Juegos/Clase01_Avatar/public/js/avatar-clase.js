@@ -19,10 +19,20 @@ const ANCHO_MAPA = 640
 const ALTO_MAPA = 500
 const TAMANIO_AVATAR = 90
 
+// Choque entre personajes: a cada dibujo se le descuentan estos píxeles de borde (las poses
+// tienen aire y efectos alrededor), así solo cuenta cuando los cuerpos realmente se tocan
+const MARGEN_COLISION = 14
+
 // Animación de combate en el mapa
 const DURACION_ATAQUE = 650 // ms que dura el ataque de cada personaje
 const ALCANCE_ATAQUE = { Punio: 70, Patada: 90, Barrida: 110 } // px que avanza
 const EMOJI_ATAQUE = { Punio: '👊', Patada: '🦵', Barrida: '🧹' }
+
+// Convierte un nombre en algo seguro para usar de id o de clase CSS: sin tildes y en minúscula
+// (ej: "Terrón" -> "terron"; así los nombres con tilde no complican los ids ni los archivos)
+function aSlug(nombre) {
+    return nombre.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase()
+}
 
 // Devuelve un número entero al azar entre min y max (ambos incluidos)
 function aleatorio(min, max) {
@@ -32,7 +42,8 @@ function aleatorio(min, max) {
 class Avatar {
     // imagen = foto de la tarjeta de selección; imagenMapa1/2 = las dos poses
     // (con fondo transparente) que se usan para dibujarlo en el mapa
-    constructor(nombre, imagen, vidas, imagenMapa1 = imagen, imagenMapa2 = imagenMapa1) {
+    // x, y (opcionales) = dónde aparece en el mapa; si no se indican, en un lugar al azar
+    constructor(nombre, imagen, vidas, imagenMapa1 = imagen, imagenMapa2 = imagenMapa1, x, y) {
         this.nombre = nombre
         this.imagen = imagen
         this.vidas = vidas
@@ -41,8 +52,11 @@ class Avatar {
         // --- Datos para dibujarlo en el mapa (canvas) ---
         this.ancho = TAMANIO_AVATAR
         this.alto = TAMANIO_AVATAR
-        this.x = aleatorio(0, ANCHO_MAPA - this.ancho)
-        this.y = aleatorio(0, ALTO_MAPA - this.alto)
+        this.x = x ?? aleatorio(0, ANCHO_MAPA - this.ancho)
+        this.y = y ?? aleatorio(0, ALTO_MAPA - this.alto)
+        this.objetivo = null // lugar al que se acerca solo (para ponerse frente a frente en el duelo)
+        this.etiqueta = '' // cartelito con el nombre que se dibuja sobre la cabeza (los rivales del mapa)
+        this.reposoAnimado = false // si es true, alterna de pose despacito aun estando quieto
         this.mapaFoto = new Image()
         this.mapaFoto.src = imagenMapa1
         this.mapaFoto2 = new Image() // segunda pose: se alterna al caminar
@@ -53,6 +67,20 @@ class Avatar {
         this.ataqueActual = null // ataque que se está animando (si hay)
         this.golpeInicio = 0 // cuándo empieza a parpadear por un golpe recibido
         this.efectoVisible = null // emoji/destello del ataque, si hay uno en pantalla
+    }
+
+    // Se desliza de a poco hacia this.objetivo (cuando llega, deja de moverse)
+    moverHaciaObjetivo() {
+        if (!this.objetivo) {
+            return
+        }
+        this.x += (this.objetivo.x - this.x) * 0.18
+        this.y += (this.objetivo.y - this.y) * 0.18
+        if (Math.hypot(this.objetivo.x - this.x, this.objetivo.y - this.y) < 1) {
+            this.x = this.objetivo.x
+            this.y = this.objetivo.y
+            this.objetivo = null
+        }
     }
 
     // Ejecuta un ataque (Punio, Patada o Barrida) en el mapa: el personaje se
@@ -120,7 +148,11 @@ class Avatar {
 
         // Al caminar alterna las dos poses cada 150 ms; quieto, la primera.
         // Al atacar usa la segunda pose (la más "de combate").
-        const usarPose2 = efecto ? true : seMueve && Math.floor(ahora / 150) % 2 === 1
+        const usarPose2 = efecto
+            ? true
+            : seMueve
+              ? Math.floor(ahora / 150) % 2 === 1
+              : this.reposoAnimado && Math.floor(ahora / 700) % 2 === 1
         const foto = usarPose2 ? this.mapaFoto2 : this.mapaFoto
 
         const centroX = this.x + this.ancho / 2 + desplazaX + sacudida
@@ -139,6 +171,30 @@ class Avatar {
         lienzo.scale(this.mirandoIzquierda ? -1 : 1, escalaY)
         lienzo.drawImage(foto, -this.ancho / 2, -this.alto, this.ancho, this.alto)
         lienzo.restore()
+
+        // Cartelito con el nombre (los rivales del mapa lo llevan, para saber quién es quién)
+        if (this.etiqueta) {
+            lienzo.save()
+            lienzo.font = 'bold 12px "Work Sans", Arial, sans-serif'
+            lienzo.textAlign = 'center'
+            lienzo.textBaseline = 'middle'
+            const anchoCartel = lienzo.measureText(this.etiqueta).width + 16
+            const yCartel = pies - this.alto - salto - 6
+            lienzo.beginPath()
+            if (lienzo.roundRect) {
+                lienzo.roundRect(centroX - anchoCartel / 2, yCartel - 10, anchoCartel, 20, 10)
+            } else {
+                lienzo.rect(centroX - anchoCartel / 2, yCartel - 10, anchoCartel, 20) // navegadores viejos
+            }
+            lienzo.fillStyle = 'rgba(2, 12, 38, 0.8)'
+            lienzo.fill()
+            lienzo.strokeStyle = 'rgba(170, 235, 255, 0.85)'
+            lienzo.lineWidth = 1
+            lienzo.stroke()
+            lienzo.fillStyle = '#eaffff'
+            lienzo.fillText(this.etiqueta, centroX, yCartel)
+            lienzo.restore()
+        }
 
         // Guardamos el efecto del ataque; se dibuja aparte (pintarEfecto) y DESPUÉS
         // de los dos personajes, para que el otro avatar no lo tape
@@ -182,12 +238,15 @@ let zuko = new Avatar('Zuko', './assets/img/zuko.png', 3, './assets/img/mapa-zuk
 let katara = new Avatar('Katara', './assets/img/katara.png', 3, './assets/img/mapa-katara-1.png', './assets/img/mapa-katara-2.png')
 let aang = new Avatar('Aang', './assets/img/aang.png', 3, './assets/img/mapa-aang-1.png', './assets/img/mapa-aang-2.png')
 let toph = new Avatar('Toph', './assets/img/toph.png', 3, './assets/img/mapa-toph-1.png', './assets/img/mapa-toph-2.png')
+// Los dos personajes nuevos: la imagen de la tarjeta (con su nombre) y las dos poses que se usan en el mapa
+let jake = new Avatar('Jake', './assets/img/jake.png', 3, './assets/img/mapa-jake-1.png', './assets/img/mapa-jake-2.png')
+let terron = new Avatar('Terrón', './assets/img/terron.png', 3, './assets/img/mapa-terron-1.png', './assets/img/mapa-terron-2.png')
 
 /* --- Creamos el array vacío y cargamos las instancias con push --- */
 let avatares = []
-avatares.push(zuko, katara, aang, toph)
+avatares.push(zuko, katara, aang, toph, jake, terron)
 
-// Vemos el resultado: 4 objetos Avatar dentro del array
+// Vemos el resultado: 6 objetos Avatar dentro del array
 console.log('Avatares cargados:', avatares)
 console.log('Cantidad de avatares (length):', avatares.length)
 
@@ -205,7 +264,7 @@ console.log('Cantidad luego de volver a hacer push():', avatares.length)
 /* =========================================================================
    Ciclos: manipulando el DOM con iteradores
    -------------------------------------------------------------------------
-   Ahora que tenemos el array "avatares" con los 4 objetos Avatar, en vez de
+   Ahora que tenemos el array "avatares" con los 6 objetos Avatar, en vez de
    escribir las 4 tarjetas de personaje a mano en el HTML, las generamos
    dinámicamente recorriendo el array con forEach().
 
@@ -226,7 +285,7 @@ let opcionAvatares
 // mismo id/value que ya usaba la versión estática de avatar.html, para no
 // romper ni el diseño (styles.css) ni la lógica de selección (avatar.js)
 avatares.forEach((avatar) => {
-    const nombreEnMinuscula = avatar.nombre.toLowerCase()
+    const nombreEnMinuscula = aSlug(avatar.nombre) // sin tildes: 'Terrón' -> 'terron'
 
     opcionAvatares = `
         <div class="carta-personaje carta-personaje--${nombreEnMinuscula}">
@@ -238,4 +297,38 @@ avatares.forEach((avatar) => {
     `
 
     contenedorTarjetas.innerHTML += opcionAvatares
+})
+
+/* =========================================================================
+   Los RIVALES que se ven en el mapa
+   -------------------------------------------------------------------------
+   Son otras instancias de la clase Avatar (una por personaje), parados en un
+   lugar fijo del mapa: cada uno cerca de "su" elemento (Katara junto al lago,
+   Aang junto al remolino de viento, Zuko junto a la lava, Toph junto a las
+   rocas, Jake en el bosque de arriba y Terrón en el pasto de abajo). Al chocar con uno de ellos empieza el combate contra ese rival.
+   Los dos últimos números del constructor son su posición: x, y.
+   ========================================================================= */
+let zukoEnemigo = new Avatar('Zuko', './assets/img/zuko.png', 3, './assets/img/mapa-zuko-1.png', './assets/img/mapa-zuko-2.png', 430, 320)
+let kataraEnemigo = new Avatar('Katara', './assets/img/katara.png', 3, './assets/img/mapa-katara-1.png', './assets/img/mapa-katara-2.png', 100, 70)
+let aangEnemigo = new Avatar('Aang', './assets/img/aang.png', 3, './assets/img/mapa-aang-1.png', './assets/img/mapa-aang-2.png', 470, 40)
+let tophEnemigo = new Avatar('Toph', './assets/img/toph.png', 3, './assets/img/mapa-toph-1.png', './assets/img/mapa-toph-2.png', 80, 310)
+let jakeEnemigo = new Avatar('Jake', './assets/img/jake.png', 3, './assets/img/mapa-jake-1.png', './assets/img/mapa-jake-2.png', 290, 60)
+let terronEnemigo = new Avatar('Terrón', './assets/img/terron.png', 3, './assets/img/mapa-terron-1.png', './assets/img/mapa-terron-2.png', 260, 350)
+
+let enemigos = []
+enemigos.push(zukoEnemigo, kataraEnemigo, aangEnemigo, tophEnemigo, jakeEnemigo, terronEnemigo)
+
+// Cada rival tiene un ataque FAVORITO: aparece 3 veces en su lista, así sale más seguido
+// cuando se sortea (Zuko y Toph: Puño · Katara y Jake: Barrida · Aang: Patada · Terrón: Puño, embiste de cabeza)
+zukoEnemigo.ataques = ['Punio', 'Punio', 'Punio', 'Patada', 'Barrida']
+kataraEnemigo.ataques = ['Barrida', 'Barrida', 'Barrida', 'Patada', 'Punio']
+aangEnemigo.ataques = ['Patada', 'Patada', 'Patada', 'Punio', 'Barrida']
+tophEnemigo.ataques = ['Punio', 'Punio', 'Punio', 'Patada', 'Barrida']
+jakeEnemigo.ataques = ['Barrida', 'Barrida', 'Barrida', 'Punio', 'Patada'] // su hacha barre en arco
+terronEnemigo.ataques = ['Punio', 'Punio', 'Punio', 'Barrida', 'Patada'] // embiste de cabeza
+
+// En el mapa llevan el nombre arriba y respiran (alternan de pose despacito)
+enemigos.forEach((enemigo) => {
+    enemigo.etiqueta = enemigo.nombre
+    enemigo.reposoAnimado = true
 })

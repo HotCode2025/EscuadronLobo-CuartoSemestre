@@ -24,6 +24,9 @@ const contenedorRondas = document.getElementById('resultados-rondas')
 const sectionReiniciar = document.getElementById('reiniciar')
 const sectionVerMapa = document.getElementById('ver-mapa')
 const sectionReglas = document.getElementById('reglas')
+const sectionBuscarRival = document.getElementById('buscar-rival') // panel que se ve antes del primer choque
+const listaRivales = document.getElementById('lista-rivales')
+const mapaAyuda = document.getElementById('mapa-ayuda') // texto que está debajo del mapa
 const escenario = document.getElementById('escenario') // mapa + combate, juntos
 
 /* --- Mapa (canvas): "mapa" es el elemento y "lienzo" es el contexto 2D con
@@ -36,6 +39,8 @@ const inputZuko = document.getElementById('zuko')
 const inputKatara = document.getElementById('katara')
 const inputAang = document.getElementById('aang')
 const inputToph = document.getElementById('toph')
+const inputJake = document.getElementById('jake')
+const inputTerron = document.getElementById('terron') // el id va sin tilde (ver aSlug en avatar-clase.js)
 const selectPersonajeCustom = document.getElementById('select-personaje-custom')
 const botonLimpiarPersonajes = document.getElementById('boton-limpiar-personajes')
 const STORAGE_KEY_PERSONAJES = 'avatarPersonajesDisponibles'
@@ -59,7 +64,7 @@ const botonSonido = document.getElementById('boton-sonido')
 /* --- Datos del juego ---
    Guardarlos en arreglos permite recorrerlos con un loop en vez de repetir
    el mismo bloque de código una vez por personaje o por ataque. */
-const PERSONAJES = ['Zuko', 'Katara', 'Aang', 'Toph']
+const PERSONAJES = ['Zuko', 'Katara', 'Aang', 'Toph', 'Jake', 'Terrón']
 const ATAQUES = ['Punio', 'Patada', 'Barrida']
 const BOTONES_ATAQUE = [botonPunio, botonPatada, botonBarrida] // mismo orden que ATAQUES
 
@@ -68,6 +73,8 @@ let INPUTS_PERSONAJE = [
     { input: inputKatara, nombre: 'Katara' },
     { input: inputAang, nombre: 'Aang' },
     { input: inputToph, nombre: 'Toph' },
+    { input: inputJake, nombre: 'Jake' },
+    { input: inputTerron, nombre: 'Terrón' },
 ]
 
 // Puño vence a Barrida, Patada vence a Puño, Barrida vence a Patada
@@ -100,6 +107,8 @@ let personajeEnemigo
 let personajeJugadorObjeto
 let personajeEnemigoObjeto
 let intervalo // guarda el setInterval que repinta el mapa, para poder frenarlo
+let enCombate = false // pasa a true cuando el jugador choca con un rival (y ya no se puede caminar)
+let enemigosEnMapa = [] // los rivales que se ven en el mapa en esta partida
 let temporizadorSonidoEmpate // espera del sonido de empate de la última ronda (se cancela si empieza otra)
 
 // Imagen de fondo del mapa: la creamos y le damos el src apenas arranca el
@@ -227,15 +236,14 @@ function seleccionarPersonajeJugador() {
     // épica, que suena en loop todo el tiempo que se juega, hasta que termina la partida
     Sonido.musica('batalla')
 
-    sectionSeleccionarAtaque.style.display = 'block' // mostramos
     sectionSeleccionarPersonaje.style.display = 'none' // ocultamos
 
-    personajeEnemigo = elegirPersonajeEnemigo(personajeJugador)
-    spanPersonajeEnemigo.innerHTML = personajeEnemigo
+    // El panel de ataques todavía NO se muestra, y el enemigo todavía no se eligió: primero
+    // hay que caminar por el mapa y chocar con un rival (ver revisarColision). Mientras tanto
+    // se ve el panel "Buscá a tu rival".
 
-    // El mapa se inicia ACÁ, después de saber quién es el jugador y quién el
-    // enemigo: iniciarMapa() necesita esos dos nombres para buscar sus objetos
-    // (si se llamara antes, las variables todavía serían undefined)
+    // El mapa se inicia ACÁ, después de saber quién es el jugador (iniciarMapa() necesita
+    // su nombre para buscar su objeto)
     sectionVerMapa.style.display = 'flex'
     escenario.classList.add('escenario--activo') // muestra mapa y combate juntos
     document.body.classList.add('en-partida') // modo compacto: todo entra en una pantalla
@@ -259,10 +267,21 @@ function iniciarMapa() {
     mapa.width = ANCHO_MAPA
     mapa.height = ALTO_MAPA
 
-    // Buscamos el objeto Avatar completo de cada uno y lo guardamos en las
-    // variables globales para que todas las funciones de movimiento lo usen
+    // Buscamos el objeto Avatar completo del jugador y lo guardamos en la variable global
+    // para que todas las funciones de movimiento lo usen
     personajeJugadorObjeto = obtenerObjetoPersonaje(personajeJugador)
-    personajeEnemigoObjeto = obtenerObjetoPersonaje(personajeEnemigo)
+
+    // El jugador arranca en el centro del mapa, quieto
+    personajeJugadorObjeto.x = (ANCHO_MAPA - personajeJugadorObjeto.ancho) / 2
+    personajeJugadorObjeto.y = (ALTO_MAPA - personajeJugadorObjeto.alto) / 2
+    personajeJugadorObjeto.velocidadX = 0
+    personajeJugadorObjeto.velocidadY = 0
+
+    // Rivales que se ven en el mapa: todos menos el que se parece al jugador (si elegiste a
+    // Zuko, o a un personaje de Fuego, no te cruzás con otro Zuko: se verían iguales)
+    const baseJugador = personajeBaseDe(personajeJugador)
+    enemigosEnMapa = enemigos.filter((enemigo) => enemigo.nombre !== baseJugador)
+    mostrarRivales()
 
     intervalo = setInterval(pintarCanvas, 30) // repinta el mapa cada 30 ms
 
@@ -270,10 +289,29 @@ function iniciarMapa() {
     window.addEventListener('keyup', detenerMovimiento) // al soltarla, frena
 }
 
+// Arma la lista del panel "Buscá a tu rival": una tarjetita por cada rival del mapa, con su
+// ataque favorito (el que más veces aparece en su lista de ataques)
+function mostrarRivales() {
+    const NOMBRES_ATAQUE = { Punio: 'Puño', Patada: 'Patada', Barrida: 'Barrida' }
+    listaRivales.innerHTML = ''
+    enemigosEnMapa.forEach((enemigo) => {
+        const favorito = ATAQUES.reduce((mejor, ataque) =>
+            enemigo.ataques.filter((a) => a === ataque).length > enemigo.ataques.filter((a) => a === mejor).length ? ataque : mejor
+        )
+        listaRivales.innerHTML += `
+            <li class="rivales__item">
+                <img class="rivales__imagen" src="${enemigo.mapaFoto.src}" alt="${enemigo.nombre}" />
+                <span class="rivales__nombre">${enemigo.nombre}</span>
+                <span class="rivales__favorito">Favorito: ${NOMBRES_ATAQUE[favorito]}</span>
+            </li>
+        `
+    })
+}
+
 // Antes se llamaba pintarPersonaje, pero ya no pinta solo al personaje: pinta
-// todo el canvas (fondo + jugador + enemigo), por eso el nombre nuevo
+// todo el canvas (fondo + jugador + rivales), por eso el nombre nuevo
 function pintarCanvas() {
-    // 1) Actualizamos la posición según la velocidad actual
+    // 1) Actualizamos la posición del jugador según la velocidad actual
     personajeJugadorObjeto.x += personajeJugadorObjeto.velocidadX
     personajeJugadorObjeto.y += personajeJugadorObjeto.velocidadY
 
@@ -281,21 +319,106 @@ function pintarCanvas() {
     personajeJugadorObjeto.x = Math.max(0, Math.min(mapa.width - personajeJugadorObjeto.ancho, personajeJugadorObjeto.x))
     personajeJugadorObjeto.y = Math.max(0, Math.min(mapa.height - personajeJugadorObjeto.alto, personajeJugadorObjeto.y))
 
-    // 3) Limpiamos y dibujamos: primero el fondo, después los personajes
+    // 3) Si hay un duelo por empezar, los dos se acercan despacito a su lugar (frente a frente)
+    ;[personajeJugadorObjeto, personajeEnemigoObjeto].forEach((avatar) => avatar && avatar.moverHaciaObjetivo())
+
+    // 4) Limpiamos y dibujamos: primero el fondo, después los personajes
     lienzo.clearRect(0, 0, mapa.width, mapa.height)
     lienzo.drawImage(mapaBackground, 0, 0, mapa.width, mapa.height)
+
+    // Antes del choque se ven TODOS los rivales; durante el combate, solo el elegido
+    const enEscena = enCombate ? [personajeEnemigoObjeto, personajeJugadorObjeto] : [...enemigosEnMapa, personajeJugadorObjeto]
+
     // El que está más abajo en el mapa (y mayor) se dibuja al final, así queda
-    // por delante del otro: da sensación de profundidad
-    ;[personajeEnemigoObjeto, personajeJugadorObjeto]
-        .sort((a, b) => a.y - b.y)
-        .forEach((avatar) => avatar.pintarAvatar(lienzo))
+    // por delante de los otros: da sensación de profundidad
+    ;[...enEscena].sort((a, b) => a.y - b.y).forEach((avatar) => avatar.pintarAvatar(lienzo))
 
     // Los efectos de ataque van al final, por encima de todo
-    personajeEnemigoObjeto.pintarEfecto(lienzo)
-    personajeJugadorObjeto.pintarEfecto(lienzo)
+    enEscena.forEach((avatar) => avatar.pintarEfecto(lienzo))
+
+    // 5) ¿Chocó con algún rival? Solo se revisa mientras camina y antes de que empiece un combate
+    if (!enCombate && (personajeJugadorObjeto.velocidadX !== 0 || personajeJugadorObjeto.velocidadY !== 0)) {
+        enemigosEnMapa.forEach((enemigo) => revisarColision(enemigo))
+    }
+}
+
+/* =========================================================================
+   Colisiones: chocar con un rival empieza el combate
+   -------------------------------------------------------------------------
+   Dos rectángulos (el del jugador y el del rival) NO se tocan si se cumple
+   alguna de estas cuatro condiciones:
+     - el jugador está todo ARRIBA del rival   (abajoPersonaje < arribaEnemigo)
+     - el jugador está todo ABAJO del rival    (arribaPersonaje > abajoEnemigo)
+     - el jugador está todo a la IZQUIERDA     (derechaPersonaje < izquierdaEnemigo)
+     - el jugador está todo a la DERECHA       (izquierdaPersonaje > derechaEnemigo)
+   Si no se cumple ninguna, se están tocando: hay choque.
+   ========================================================================= */
+function revisarColision(enemigo) {
+    if (enCombate) {
+        return // ya empezó un combate: no se revisa más
+    }
+
+    // Bordes del rival y del jugador (sin el "aire" del dibujo: ver MARGEN_COLISION)
+    const arribaEnemigo = enemigo.y + MARGEN_COLISION // acá empieza el cuerpo del rival
+    const abajoEnemigo = enemigo.y + enemigo.alto - MARGEN_COLISION
+    const derechaEnemigo = enemigo.x + enemigo.ancho - MARGEN_COLISION
+    const izquierdaEnemigo = enemigo.x + MARGEN_COLISION
+
+    const arribaPersonaje = personajeJugadorObjeto.y + MARGEN_COLISION
+    const abajoPersonaje = personajeJugadorObjeto.y + personajeJugadorObjeto.alto - MARGEN_COLISION
+    const derechaPersonaje = personajeJugadorObjeto.x + personajeJugadorObjeto.ancho - MARGEN_COLISION
+    const izquierdaPersonaje = personajeJugadorObjeto.x + MARGEN_COLISION
+
+    if (
+        abajoPersonaje < arribaEnemigo ||
+        arribaPersonaje > abajoEnemigo ||
+        derechaPersonaje < izquierdaEnemigo ||
+        izquierdaPersonaje > derechaEnemigo
+    ) {
+        return // no se tocan
+    }
+
+    iniciarCombate(enemigo) // ¡chocaron!
+}
+
+// Pasa del mapa "para explorar" al combate contra el rival con el que se chocó
+function iniciarCombate(enemigo) {
+    enCombate = true
+    detenerMovimiento() // el personaje se frena (y dejan de sonar los pasos)
+    Sonido.efecto('seleccion') // aviso sonoro: ¡empieza el combate!
+
+    seleccionarPersonajeEnemigo(enemigo) // el rival es el que tocamos, ya no se sortea
+
+    // Se cambia el panel "Buscá a tu rival" por el de los ataques (el mapa queda a la vista:
+    // ahí se ven las animaciones de cada golpe)
+    sectionBuscarRival.style.display = 'none'
+    sectionSeleccionarAtaque.style.display = 'block'
+    mapaAyuda.textContent = '¡Combate! Elegí un ataque en el panel de la derecha.' // ya no se camina
+
+    prepararDuelo()
+}
+
+// El rival con el que se chocó pasa a ser "el enemigo" de esta partida
+function seleccionarPersonajeEnemigo(enemigo) {
+    personajeEnemigo = enemigo.nombre
+    spanPersonajeEnemigo.innerHTML = personajeEnemigo
+    personajeEnemigoObjeto = enemigo
+}
+
+// Los dos se acomodan frente a frente, a la altura del medio del lugar donde chocaron
+// (así los golpes no se superponen); se deslizan solos hacia ahí, no se teletransportan
+function prepararDuelo() {
+    const yDuelo = Math.max(40, Math.min(ALTO_MAPA - TAMANIO_AVATAR - 40, (personajeJugadorObjeto.y + personajeEnemigoObjeto.y) / 2))
+    personajeJugadorObjeto.objetivo = { x: ANCHO_MAPA * 0.2, y: yDuelo }
+    personajeEnemigoObjeto.objetivo = { x: ANCHO_MAPA * 0.62, y: yDuelo }
+    personajeJugadorObjeto.mirandoIzquierda = false // se miran uno al otro
+    personajeEnemigoObjeto.mirandoIzquierda = true
 }
 
 function sePresionoUnaTecla(event) {
+    if (enCombate) {
+        return // durante el combate el personaje ya no camina
+    }
     // event es un objeto que trae toda la info del evento; event.key dice
     // qué tecla se apretó
     switch (event.key) {
@@ -373,7 +496,7 @@ function obtenerObjetoPersonaje(nombre) {
         }
     }
 
-    const base = personajeBaseDe(nombre).toLowerCase() // ej: 'zuko'
+    const base = aSlug(personajeBaseDe(nombre)) // ej: 'zuko' (sin tildes, para armar el nombre del archivo)
     if (base) {
         return new Avatar(
             nombre,
@@ -386,20 +509,6 @@ function obtenerObjetoPersonaje(nombre) {
 
     // Último recurso (elemento desconocido): el emblema de los 4 elementos
     return new Avatar(nombre, './assets/img/emblema-elementos.png', 3)
-}
-
-function elegirPersonajeEnemigo(personajeJugador) {
-    let personajeEnemigo = ''
-    // Elegimos un personaje al azar de la lista y lo comparamos con el del
-    // jugador; si coinciden, volvemos a sortear hasta que sean distintos
-    // (se compara con la base del jugador: si elegiste un personaje de Fuego,
-    // el enemigo no puede ser Zuko porque se verían iguales en el mapa)
-    const baseJugador = personajeBaseDe(personajeJugador)
-    while (personajeEnemigo === '' || personajeEnemigo === baseJugador) {
-        const indiceAleatorio = Math.floor(Math.random() * PERSONAJES.length)
-        personajeEnemigo = PERSONAJES[indiceAleatorio]
-    }
-    return personajeEnemigo
 }
 
 function mostrarError(texto) {
@@ -417,8 +526,9 @@ function elegirAtaque(ataque) {
 }
 
 function ataqueAleatorioEnemigo() {
-    const indiceAleatorio = Math.floor(Math.random() * ATAQUES.length)
-    ataqueEnemigo = ATAQUES[indiceAleatorio]
+    // Cada rival tiene su propia lista de ataques (con su favorito repetido): se sortea de ahí
+    const ataquesDelRival = personajeEnemigoObjeto.ataques
+    ataqueEnemigo = ataquesDelRival[Math.floor(Math.random() * ataquesDelRival.length)]
     combate()
 }
 

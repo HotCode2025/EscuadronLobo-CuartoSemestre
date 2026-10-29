@@ -59,10 +59,18 @@
                 <!-- El canvas es el "lienzo" donde JS dibuja el fondo y los personajes.
                      Su tamaño (ancho/alto) lo fija iniciarMapa() en avatar.js -->
                 <canvas id="mapa">Tu navegador no soporta canvas.</canvas>
-                <p class="mapa__ayuda">Mové a tu personaje con las flechas del teclado ⬆️ ⬇️ ⬅️ ➡️</p>
+                <p class="mapa__ayuda" id="mapa-ayuda">Mové a tu personaje con las flechas del teclado ⬆️ ⬇️ ⬅️ ➡️</p>
             </section>
 
             <div class="escenario__combate">
+                <!-- Antes del primer choque se ve este panel; al chocar con un rival se oculta y
+                     aparece el de los ataques (ver revisarColision() en js/avatar.js) -->
+                <section id="buscar-rival" class="panel panel--rival">
+                    <h2>Buscá a tu rival</h2>
+                    <p>Caminá por el mapa con las flechas del teclado y <strong>chocá con uno de los rivales</strong> para empezar el combate.</p>
+                    <ul id="lista-rivales" class="rivales"></ul>
+                </section>
+
                 <section id="seleccionar-ataque" class="panel">
                     <h2>Elige tu ataque</h2> <!--Se puede utilizar varias veces-->
 
@@ -112,13 +120,14 @@
                     <ul style="list-style-type: square;">
                         <h4>1️⃣ Seleccion de Personajes:</h4>
                         <ul>
-                            <li>El jugador elige uno de los cuatro personajes: Zuko, Katara, Aang o Toph.</li>
-                            <li>El enemigo es asignado aleatoriamente de entre estos personajes.</li>
+                            <li>El jugador elige uno de los seis personajes: Zuko, Katara, Aang, Toph, Jake o Terrón.</li>
+                            <li>Aparece el mapa: se camina con las flechas del teclado.</li>
+                            <li>El enemigo es el personaje con el que chocás en el mapa.</li>
                         </ul>
                         <h4>2️⃣ Ataques:</h4>
                         <ul>
                             <li>El jugador elige entre tres ataques: Puño, Patada o Barrida.</li>
-                            <li>El enemigo elige su ataque aleatoriamente.</li>
+                            <li>El enemigo elige su ataque al azar, pero cada uno tiene un favorito: Zuko, Toph y Terrón, el Puño; Katara y Jake, la Barrida; Aang, la Patada.</li>
                         </ul>
                         <h4>3️⃣ Reglas del Combate:</h4>
                         <ul>

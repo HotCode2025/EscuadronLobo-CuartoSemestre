@@ -118,3 +118,34 @@ Todos los archivos de `assets/audio/` están **masterizados**: se les subió el 
 música está un poco más baja (`0.85` / `0.9`, en la tabla `TEMAS` de `js/audio.js`) para que los golpes se
 escuchen por encima. Si hay que subir o bajar algo, se cambia ese número; si se reemplaza un archivo, conviene
 igualarlo en volumen con los demás.
+
+## Rivales en el mapa y choques
+
+Al elegir personaje aparece el mapa con los **rivales parados** (cada uno cerca de su elemento: Katara junto al
+lago, Aang junto al remolino, Zuko junto a la lava y Toph junto a las rocas, con su nombre arriba). El panel de la
+derecha dice **«Buscá a tu rival»** y todavía no muestra los ataques. Se camina con las flechas y, **al chocar con
+un rival, empieza el combate contra ese rival**: se frena el personaje, aparece el panel de ataques y los dos se
+acomodan frente a frente (los otros rivales desaparecen del mapa).
+
+- **Rivales:** instancias de la clase `Avatar` (`zukoEnemigo`, `kataraEnemigo`, `aangEnemigo`, `tophEnemigo`, en el
+  array `enemigos`) al final de `js/avatar-clase.js`. Los dos últimos números del constructor son su posición `x, y`.
+- **Choque:** `revisarColision()` en `js/avatar.js` compara los bordes del jugador y del rival; a cada dibujo se le
+  descuentan `MARGEN_COLISION` píxeles de "aire", así solo cuenta cuando los cuerpos se tocan. `iniciarCombate()`
+  arma el combate y `prepararDuelo()` los pone frente a frente.
+- **Ataque favorito:** cada rival tiene su lista `ataques` con su favorito repetido (Zuko y Toph: Puño · Katara:
+  Barrida · Aang: Patada), y `ataqueAleatorioEnemigo()` sortea de esa lista.
+- Si elegís un personaje que se ve como Zuko (o uno de Fuego), no aparece otro Zuko en el mapa.
+
+## Personajes: ahora son 6
+
+Además de Zuko, Katara, Aang y Toph, se sumaron **Jake** (guerrero del hacha de agua) y **Terrón** (el bisonte de tierra).
+Cada personaje usa dos imágenes: la de la **tarjeta de selección** (`assets/img/jake.png`, `terron.png`, con su nombre) y
+las **dos poses del mapa**, sin fondo (`assets/img/mapa-jake-1.png` / `-2.png`, `mapa-terron-1.png` / `-2.png`): una
+se usa de pie y la otra al caminar y al atacar, igual que en los demás.
+
+- Están en el array `avatares` (los que se pueden elegir) y, como rivales, en `enemigos`, al final de `js/avatar-clase.js`.
+  En el mapa, Jake está arriba junto al lago y Terrón abajo, entre las rocas y la lava.
+- Ataque favorito como rival: **Jake, la Barrida** (su hacha barre en arco) y **Terrón, el Puño** (embiste de cabeza).
+- Para sumar otro personaje: agregá sus dos imágenes, una instancia más en `avatares` y otra en `enemigos`, y su nombre en
+  `PERSONAJES` y en `INPUTS_PERSONAJE` de `js/avatar.js`. Los nombres con tilde (como Terrón) se convierten con `aSlug()` para
+  armar ids y nombres de archivo sin tilde (`terron`).
